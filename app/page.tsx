@@ -1,50 +1,32 @@
-import { Inter } from "next/font/google";
-import { IntakeForm } from "./intake-form";
-import styles from "./page.module.css";
-
-const inter = Inter({ subsets: ["latin"], display: "swap" });
-
-const MODULE_COUNT = 43;
-
 export default function Home() {
   return (
-    <div className={`${styles.page} ${inter.className}`}>
-      <div className={styles.inner}>
-        <header className={styles.header}>
-          <div className={styles.logo}>
-            <span className={styles.logoMark} aria-hidden>
-              LS
-            </span>
-            <span>Local SEO &amp; AEO Pro</span>
+    <main style={{ background: "#0B0E16", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "sans-serif", padding: "20px" }}>
+      <div style={{ maxWidth: 600, width: "100%", textAlign: "center" }}>
+        <div style={{ fontSize: 12, color: "#10D9A0", letterSpacing: "2px", marginBottom: 16 }}>AI LOCAL SEO & AEO PLATFORM</div>
+        <h1 style={{ fontSize: 36, fontWeight: 700, color: "#F1F5F9", lineHeight: 1.2, marginBottom: 16 }}>The Most Powerful AI Local SEO & AEO Platform Ever Created</h1>
+        <p style={{ fontSize: 16, color: "#94A3B8", marginBottom: 40 }}>We analyze 74 signals that determine where your business shows up in Google. 47 get fixed automatically. On your live website. While you sleep.</p>
+        <div style={{ background: "#161B2E", border: "1px solid #1E293B", borderRadius: 12, padding: 32, textAlign: "left" }}>
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 12, color: "#94A3B8", display: "block", marginBottom: 6 }}>BUSINESS NAME</label>
+            <input type="text" placeholder="Citywide Alarms" style={{ width: "100%", padding: "12px 16px", background: "#0B0E16", border: "1px solid #1E293B", borderRadius: 8, color: "#F1F5F9", fontSize: 14, boxSizing: "border-box" }} />
           </div>
-          <span className={styles.badge}>{MODULE_COUNT} power modules</span>
-        </header>
-
-        <div className={styles.hero}>
-          <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>Local + answer-engine visibility</p>
-            <h1 className={styles.headline}>
-              Rank locally.{" "}
-              <span className={styles.gradient}>Get cited by AI.</span>
-            </h1>
-            <p className={styles.sub}>
-              One platform for maps, citations, reviews, entities, and structured answers — built for teams who want premium
-              control without the spreadsheet chaos.
-            </p>
-            <ul className={styles.pills} aria-label="Platform capabilities">
-              <li>GBP &amp; local pack</li>
-              <li>Schema &amp; entities</li>
-              <li>AEO / LLM-ready content</li>
-              <li>Reporting &amp; automations</li>
-            </ul>
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 12, color: "#94A3B8", display: "block", marginBottom: 6 }}>EMAIL ADDRESS</label>
+            <input type="email" placeholder="you@yourbusiness.com" style={{ width: "100%", padding: "12px 16px", background: "#0B0E16", border: "1px solid #1E293B", borderRadius: 8, color: "#F1F5F9", fontSize: 14, boxSizing: "border-box" }} />
           </div>
-          <IntakeForm />
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 12, color: "#94A3B8", display: "block", marginBottom: 6 }}>WEBSITE URL</label>
+            <input type="url" placeholder="https://yourbusiness.com" style={{ width: "100%", padding: "12px 16px", background: "#0B0E16", border: "1px solid #1E293B", borderRadius: 8, color: "#F1F5F9", fontSize: 14, boxSizing: "border-box" }} />
+          </div>
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ fontSize: 12, color: "#94A3B8", display: "block", marginBottom: 6 }}>PHONE NUMBER</label>
+            <input type="tel" placeholder="(636) 555-0100" style={{ width: "100%", padding: "12px 16px", background: "#0B0E16", border: "1px solid #1E293B", borderRadius: 8, color: "#F1F5F9", fontSize: 14, boxSizing: "border-box" }} />
+          </div>
+          <button style={{ width: "100%", padding: "14px", background: "#10D9A0", border: "none", borderRadius: 8, color: "#0B0E16", fontSize: 16, fontWeight: 700, cursor: "pointer" }}>
+            Run My Free SEO Audit →
+          </button>
         </div>
-
-        <footer className={styles.footer}>
-          Local SEO &amp; AEO Pro — intake for early access. Connect your stack when you&apos;re ready.
-        </footer>
       </div>
-    </div>
+    </main>
   );
 }
