@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Next App",
-  description: "Created with Next.js",
+  title: "Local SEO & AEO Pro",
+  description: "Premium local search and answer-engine optimization — maps, entities, and AI-ready visibility.",
 };
 
 export default function RootLayout({
