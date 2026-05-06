@@ -1,36 +1,95 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ComponentType } from "react";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 
-// Default-export modules
-import AutoFixEngine from "@/modules/AutoFixEngine";
-import GBPOptimizer from "@/modules/GBPOptimizer";
-import HeadingStructureAuditor from "@/modules/HeadingStructureAuditor";
-import TitleMetaAuditor from "@/modules/TitleMetaAuditor";
-import CanonicalAuditor from "@/modules/CanonicalAuditor";
-import ImageAuditor from "@/modules/ImageAuditor";
-import InternalLinkAuditor from "@/modules/InternalLinkAuditor";
-import CriticalSignalsChecker from "@/modules/CriticalSignalsChecker";
-import KeywordInspector from "@/modules/KeywordInspector";
-import CompetitorIntelligence from "@/modules/CompetitorIntelligence";
-import GeoGridTracker from "@/modules/GeoGridTracker";
-import GBPPostScheduler from "@/modules/GBPPostScheduler";
-import GBPListingProtection from "@/modules/GBPListingProtection";
-import CitationIntelligence from "@/modules/CitationIntelligence";
-import CitationAutoSubmit from "@/modules/CitationAutoSubmit";
-import ReviewRequestCampaign from "@/modules/ReviewRequestCampaign";
-import MultiPlatformReviewMonitor from "@/modules/MultiPlatformReviewMonitor";
-import AIVisibilityChecker from "@/modules/AIVisibilityChecker";
-import AEOQAGeneratorV2 from "@/modules/AEOQAGeneratorV2";
-import AEOQAPageGenerator from "@/modules/AEOQAPageGenerator";
-import PageSpeedIntelligence from "@/modules/PageSpeedIntelligence";
-import HostingIntelligence from "@/modules/HostingIntelligence";
-import WhiteLabelReportGenerator from "@/modules/WhiteLabelReportGenerator";
+/** Props passed into each tool module (code-split via dynamic import to avoid huge webpack chunks on Vercel). */
+type DashboardModuleProps = {
+  businessName: string;
+  websiteUrl: string;
+  city: string;
+  industry: string;
+  mode: string;
+  plan: string;
+  userId?: string;
+  wpUrl?: string;
+  wpUsername?: string;
+  wpAppPassword?: string;
+  onStatusChange?: (status: string) => void;
+};
 
-import { KeywordOwnershipMap, KeywordIntelligence } from "@/modules/KeywordModules";
-import { CityPageGenerator, BlogPlanner, FAQGenerator, PricingPageGenerator, ComparisonPageGenerator } from "@/modules/ContentGenerationModules";
-import { RankTracker, BacklinkFinder, XMLSitemapBuilder } from "@/modules/TechnicalModules";
+function ModuleLoading() {
+  return (
+    <div style={{ color: "#94A3B8", fontSize: 14, padding: 24 }}>Loading module…</div>
+  );
+}
+
+const MODULE_MAP = {
+  WhiteLabelReportGenerator: dynamic(() => import("@/modules/WhiteLabelReportGenerator"), { loading: ModuleLoading }),
+  AutoFixEngine: dynamic(() => import("@/modules/AutoFixEngine"), { loading: ModuleLoading }),
+  HeadingStructureAuditor: dynamic(() => import("@/modules/HeadingStructureAuditor"), { loading: ModuleLoading }),
+  TitleMetaAuditor: dynamic(() => import("@/modules/TitleMetaAuditor"), { loading: ModuleLoading }),
+  CanonicalAuditor: dynamic(() => import("@/modules/CanonicalAuditor"), { loading: ModuleLoading }),
+  ImageAuditor: dynamic(() => import("@/modules/ImageAuditor"), { loading: ModuleLoading }),
+  InternalLinkAuditor: dynamic(() => import("@/modules/InternalLinkAuditor"), { loading: ModuleLoading }),
+  CriticalSignalsChecker: dynamic(() => import("@/modules/CriticalSignalsChecker"), { loading: ModuleLoading }),
+  KeywordInspector: dynamic(() => import("@/modules/KeywordInspector"), { loading: ModuleLoading }),
+  KeywordOwnershipMap: dynamic(
+    () => import("@/modules/KeywordModules").then((m) => ({ default: m.KeywordOwnershipMap })),
+    { loading: ModuleLoading }
+  ),
+  KeywordIntelligence: dynamic(
+    () => import("@/modules/KeywordModules").then((m) => ({ default: m.KeywordIntelligence })),
+    { loading: ModuleLoading }
+  ),
+  CompetitorIntelligence: dynamic(() => import("@/modules/CompetitorIntelligence"), { loading: ModuleLoading }),
+  GeoGridTracker: dynamic(() => import("@/modules/GeoGridTracker"), { loading: ModuleLoading }),
+  GBPOptimizer: dynamic(() => import("@/modules/GBPOptimizer"), { loading: ModuleLoading }),
+  GBPPostScheduler: dynamic(() => import("@/modules/GBPPostScheduler"), { loading: ModuleLoading }),
+  GBPListingProtection: dynamic(() => import("@/modules/GBPListingProtection"), { loading: ModuleLoading }),
+  CitationIntelligence: dynamic(() => import("@/modules/CitationIntelligence"), { loading: ModuleLoading }),
+  CitationAutoSubmit: dynamic(() => import("@/modules/CitationAutoSubmit"), { loading: ModuleLoading }),
+  ReviewRequestCampaign: dynamic(() => import("@/modules/ReviewRequestCampaign"), { loading: ModuleLoading }),
+  MultiPlatformReviewMonitor: dynamic(() => import("@/modules/MultiPlatformReviewMonitor"), { loading: ModuleLoading }),
+  AIVisibilityChecker: dynamic(() => import("@/modules/AIVisibilityChecker"), { loading: ModuleLoading }),
+  AEOQAGeneratorV2: dynamic(() => import("@/modules/AEOQAGeneratorV2"), { loading: ModuleLoading }),
+  AEOQAPageGenerator: dynamic(() => import("@/modules/AEOQAPageGenerator"), { loading: ModuleLoading }),
+  CityPageGenerator: dynamic(
+    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.CityPageGenerator })),
+    { loading: ModuleLoading }
+  ),
+  BlogPlanner: dynamic(
+    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.BlogPlanner })),
+    { loading: ModuleLoading }
+  ),
+  FAQGenerator: dynamic(
+    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.FAQGenerator })),
+    { loading: ModuleLoading }
+  ),
+  PricingPageGenerator: dynamic(
+    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.PricingPageGenerator })),
+    { loading: ModuleLoading }
+  ),
+  ComparisonPageGenerator: dynamic(
+    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.ComparisonPageGenerator })),
+    { loading: ModuleLoading }
+  ),
+  PageSpeedIntelligence: dynamic(() => import("@/modules/PageSpeedIntelligence"), { loading: ModuleLoading }),
+  HostingIntelligence: dynamic(() => import("@/modules/HostingIntelligence"), { loading: ModuleLoading }),
+  RankTracker: dynamic(
+    () => import("@/modules/TechnicalModules").then((m) => ({ default: m.RankTracker })),
+    { loading: ModuleLoading }
+  ),
+  BacklinkFinder: dynamic(
+    () => import("@/modules/TechnicalModules").then((m) => ({ default: m.BacklinkFinder })),
+    { loading: ModuleLoading }
+  ),
+  XMLSitemapBuilder: dynamic(
+    () => import("@/modules/TechnicalModules").then((m) => ({ default: m.XMLSitemapBuilder })),
+    { loading: ModuleLoading }
+  ),
+} as Record<string, ComponentType<DashboardModuleProps>>;
 
 const NAV = [
   { group: "Overview", modules: [
@@ -83,17 +142,6 @@ const NAV = [
 ];
 
 const ALL_MODULES = NAV.flatMap(g => g.modules);
-
-const MODULE_MAP = {
-  WhiteLabelReportGenerator, AutoFixEngine, HeadingStructureAuditor, TitleMetaAuditor,
-  CanonicalAuditor, ImageAuditor, InternalLinkAuditor, CriticalSignalsChecker,
-  KeywordInspector, KeywordOwnershipMap, KeywordIntelligence, CompetitorIntelligence,
-  GeoGridTracker, GBPOptimizer, GBPPostScheduler, GBPListingProtection,
-  CitationIntelligence, CitationAutoSubmit, ReviewRequestCampaign, MultiPlatformReviewMonitor,
-  AIVisibilityChecker, AEOQAGeneratorV2, AEOQAPageGenerator,
-  CityPageGenerator, BlogPlanner, FAQGenerator, PricingPageGenerator, ComparisonPageGenerator,
-  PageSpeedIntelligence, HostingIntelligence, RankTracker, BacklinkFinder, XMLSitemapBuilder,
-};
 
 type Profile = {
   business_name: string; city: string; website: string;
@@ -192,11 +240,11 @@ export default function Dashboard() {
     );
   }
 
-  type MP = { businessName: string; websiteUrl: string; city: string; industry: string; mode: string; plan: string; userId?: string; wpUrl?: string; wpUsername?: string; wpAppPassword?: string; onStatusChange?: (status: string) => void; };
-  const ActiveModule = (activeId in MODULE_MAP ? MODULE_MAP[activeId as keyof typeof MODULE_MAP] : null) as React.ComponentType<MP> | null;
+  const ActiveModule =
+    activeId in MODULE_MAP ? MODULE_MAP[activeId] : null;
   const activeMeta   = ALL_MODULES.find(m => m.id === activeId);
 
-  const moduleProps: MP = {
+  const moduleProps: DashboardModuleProps = {
     businessName: profile.business_name,
     websiteUrl:   profile.website,
     city:         profile.city,
