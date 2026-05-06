@@ -25,15 +25,47 @@ export default function AdminPage() {
 
   async function handleAuth(ev: React.FormEvent) {
     ev.preventDefault();
-    setAuthErr(""); setLoading(true);
-    const res = await fetch("/api/admin-auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
-    const data = await res.json();
-    if (!data.ok) { setAuthErr("Wrong password"); setLoading(false); return; }
+    setAuthErr("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin-auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      let data: { ok?: boolean; error?: string };
+      try {
+        data = await res.json();
+      } catch {
+        setAuthErr("Server returned an invalid response. Try again.");
+        return;
+      }
+      if (!data.ok) {
+        setAuthErr(res.status === 401 ? "Wrong password" : (data.error || "Sign-in failed"));
+        return;
+      }
 
-    const dr = await fetch("/api/admin-audits", { headers: { "x-admin-password": password } });
-    const dd = await dr.json();
-    if (dd.ok) { setProfiles(dd.profiles); setAudits(dd.audits); setSnaps(dd.snapshots); setAuthed(true); }
-    setLoading(false);
+      const dr = await fetch("/api/admin-audits", { headers: { "x-admin-password": password } });
+      let dd: { ok?: boolean; error?: string; profiles?: Profile[]; audits?: Audit[]; snapshots?: Snap[] };
+      try {
+        dd = await dr.json();
+      } catch {
+        setAuthErr("Could not load admin data (bad response). Check Supabase env on the server.");
+        return;
+      }
+      if (!dd.ok) {
+        setAuthErr(dd.error || "Could not load admin data. Check SUPABASE_SERVICE_ROLE_KEY and database tables.");
+        return;
+      }
+      setProfiles(dd.profiles ?? []);
+      setAudits(dd.audits ?? []);
+      setSnaps(dd.snapshots ?? []);
+      setAuthed(true);
+    } catch {
+      setAuthErr("Network error. Check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const statusColor: Record<string, string> = { clean: "#34D399", "needs-work": "#FBBF24", critical: "#F87171", multiple: "#94A3B8" };
