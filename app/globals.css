@@ -8,3 +8,17 @@ body {
   margin: 0;
   font-family: system-ui, sans-serif;
 }
+
+:root {
+  --color-background: #0B0E16;
+  --color-background-secondary: #161B2E;
+  --color-background-tertiary: #1E293B;
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-border-primary: #334155;
+  --color-border-secondary: #243147;
+  --color-border-tertiary: #1E293B;
+  --color-accent: #10D9A0;
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "Courier New", monospace;
+}

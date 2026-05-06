@@ -107,51 +107,103 @@ const TIER_CONFIG = {
 const GRADE_COLOR = { A: "#34D399", B: "#84CC16", C: "#FBBF24", D: "#F97316", F: "#F87171" };
 const PROTO_COLOR = { "HTTP/3": "#34D399", "HTTP/2": "#FBBF24", "HTTP/1.1": "#F87171" };
 
+// Build a plain-English result from the real API response
+function buildResult(data, websiteUrl) {
+  const cf = data.cloudflareActive;
+  const host = data.detectedHost;
+  const server = data.webServer;
+  const proto = data.httpProtocol;
+
+  // Grade
+  let grade = "C";
+  if (data.tier === "premium") grade = "A";
+  else if (data.tier === "managed") grade = "B";
+  else if (data.tier === "quality") grade = cf ? "B" : "C";
+  else if (data.tier === "budget") grade = cf ? "C" : "D";
+  else if (data.tier === "failing") grade = "F";
+  else if (data.tier === "unknown" && cf) grade = "B"; // CF hiding origin
+
+  // TTFB benchmarks
+  const ttfbMap = { premium: "~150–200ms", managed: "~200–300ms", quality: "~280–400ms", budget: "~400–600ms", failing: "~700–900ms", unknown: "N/A (Cloudflare caching active)" };
+  const ttfbRatingMap = { premium: "excellent", managed: "good", quality: "good", budget: "poor", failing: "failing", unknown: "good" };
+
+  // Cloudflare note
+  const cloudflareNote = cf
+    ? "Cloudflare is active and confirmed by live response headers (CF-Ray detected). Your site gets CDN caching, DDoS protection, and automatic HTTPS from Cloudflare."
+    : "No Cloudflare detected. Adding Cloudflare (free plan) would add a global CDN, speed up your site for visitors far from your server, and add security protection.";
+
+  // Speed killers
+  const handled = [];
+  const notHandled = [];
+  if (cf) { handled.push("CDN (Cloudflare is caching pages globally)"); handled.push("DDoS protection"); handled.push("Automatic HTTPS"); }
+  else { notHandled.push("No CDN — every visitor hits your server directly"); }
+  if (proto === "HTTP/3" || proto === "HTTP/2") handled.push(`${proto} (modern, fast protocol active)`);
+  else notHandled.push("Old HTTP/1.1 protocol — upgrade to HTTP/2 for faster loading");
+  if (server === "LiteSpeed") handled.push("LiteSpeed server (fast built-in page caching)");
+  if (data.tier === "budget" || data.tier === "failing") {
+    notHandled.push("Slow server response time (TTFB)");
+    notHandled.push("Shared server resources with many other sites");
+  }
+
+  // Upgrade
+  const upgradeNeeded = ["budget", "failing"].includes(data.tier) && !cf;
+  const upgradeRecommendation = upgradeNeeded ? {
+    ttfbImprovement: `${ttfbMap[data.tier]} → industry-leading TTFB`,
+    speedImprovement: "Estimated 1–2 seconds faster on every page load",
+    migrationCost: "No charge — we handle the full move for you",
+    migrationTime: "Typically under 2 hours with zero downtime",
+  } : null;
+
+  // Summary
+  let summary = "";
+  if (cf && host.includes("hidden")) {
+    summary = `Your site is running behind Cloudflare — confirmed by live response headers. This means your traffic gets CDN caching, global speed delivery, and DDoS protection automatically. The actual hosting server is masked by Cloudflare (this is normal and good). Protocol detected: ${proto}. Server type: ${server}.`;
+  } else if (cf) {
+    summary = `${websiteUrl} is hosted on ${host} with Cloudflare active (confirmed by CF-Ray header in the live response). Cloudflare is handling CDN and security. Protocol: ${proto}. Server: ${server}.`;
+  } else {
+    summary = `${websiteUrl} is hosted on ${host}. No Cloudflare CDN detected. Adding Cloudflare's free plan would immediately speed up the site and add security protection. Protocol: ${proto}. Server: ${server}.`;
+  }
+
+  return {
+    detectedHost: host,
+    detectionConfidence: data.detectionConfidence,
+    detectionMethod: data.detectionMethod,
+    tier: data.tier === "unknown" ? (cf ? "quality" : "budget") : data.tier,
+    ttfbBenchmark: ttfbMap[data.tier] ?? "Unknown",
+    ttfbRating: ttfbRatingMap[data.tier] ?? "poor",
+    cloudflareActive: cf,
+    cloudflareNote,
+    httpProtocol: proto,
+    webServer: server,
+    monthlyHostingCost: "Contact host for current pricing",
+    speedKillersHandled: handled,
+    speedKillersNotHandled: notHandled,
+    upgradeNeeded,
+    upgradeRecommendation,
+    overallGrade: grade,
+    summary,
+    topAction: cf
+      ? "Cloudflare is active — focus on page speed optimizations like image compression and caching rules."
+      : "Add Cloudflare (free) to get a CDN and speed boost without changing your hosting.",
+    notableHeaders: data.notableHeaders,
+  };
+}
+
 export default function HostingIntelligence({ industry, city, websiteUrl, businessName, plan = "free" }) {
   const [running, setRunning] = useState(false);
   const [result,  setResult]  = useState(null);
+  const [fetchError, setFetchError] = useState(null);
 
   const run = async () => {
-    setRunning(true); setResult(null);
+    setRunning(true); setResult(null); setFetchError(null);
+    const url = websiteUrl || "https://citywidealarms.com";
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1800, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Analyze hosting for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles, MO"}\nWebsite: ${websiteUrl||"https://citywidealarms.com"}\n\nDetect the hosting provider from the URL pattern and generate realistic hosting intelligence. Most local business sites are on GoDaddy or Bluehost. Be specific about upgrade recommendations.` }]
-        })
-      });
+      const res  = await fetch(`/api/detect-hosting?url=${encodeURIComponent(url)}`);
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text||"{}").replace(/```[\w]*\n?/g,"").trim()));
-    } catch {
-      setResult({
-        detectedHost: "GoDaddy", detectionConfidence: "high",
-        detectionMethod: "Nameserver ns1.domaincontrol.com + Server: Apache header",
-        tier: "failing", ttfbBenchmark: "~790ms", ttfbRating: "failing",
-        cloudflareActive: false, cloudflareNote: "No Cloudflare detected — all traffic hits origin server directly, no CDN protection or speed benefit",
-        httpProtocol: "HTTP/1.1", webServer: "Apache",
-        serverLocation: "Phoenix, AZ (estimated)", distanceFromCity: "~2,400km from St. Charles — adds ~12ms latency without CDN",
-        monthlyHostingCost: "$3–$8/month", 
-        speedKillersHandled: [],
-        speedKillersNotHandled: ["K13 Slow TTFB", "K14 No browser caching", "K15 No CDN", "K16 No GZIP", "K19 No page caching"],
-        upgradeNeeded: true,
-        upgradeRecommendation: {
-          host: "SiteGround", plan: "GrowBig plan",
-          monthlyCost: "$3.99–$14.99/month",
-          ttfbImprovement: "790ms → ~300ms",
-          speedImprovement: "Estimated 1.5–2.5 seconds faster on every page load",
-          migrationComplexity: "easy",
-          migrationHandledBy: "SiteGround migration team handles everything free",
-          migrationTime: "Under 2 hours, zero downtime",
-          migrationCost: "Free with any SiteGround plan",
-          whyThisHost: "SiteGround uses LiteSpeed servers, NVMe storage, and a built-in CDN — all the speed upgrades GoDaddy lacks. 100% uptime in 2025 benchmarks. Perfect for local business WordPress sites.",
-          affiliateNote: "LocalRank Pro partners with SiteGround — free migration included when you upgrade through us"
-        },
-        ipNeighborhoodRisk: "medium",
-        overallGrade: "F",
-        summary: `${websiteUrl||"This website"} is hosted on GoDaddy's shared hosting — one of the slowest providers in independent benchmark testing with a TTFB of approximately 790ms. This means the server takes nearly 0.8 seconds just to respond before a single image or script loads. No Cloudflare, no CDN, running on HTTP/1.1 instead of HTTP/3. Upgrading to SiteGround would cost roughly the same per month and immediately cut page load times by 1.5–2.5 seconds across every page on the site.`,
-        topAction: "Migrate to SiteGround or Hostinger — free migration, same cost, immediate 2-second speed improvement on every page."
-      });
+      if (!data.ok) throw new Error(data.error || "Detection failed");
+      setResult(buildResult(data, url));
+    } catch (err) {
+      setFetchError(err.message || "Could not reach the site");
     }
     setRunning(false);
   };
@@ -234,25 +286,30 @@ export default function HostingIntelligence({ industry, city, websiteUrl, busine
           {result.upgradeNeeded && result.upgradeRecommendation && (
             <div style={{ border:"0.5px solid #10D9A040", borderRadius:10, overflow:"hidden" }}>
               <div style={{ padding:"8px 14px", background:"#10D9A010", borderBottom:"0.5px solid #10D9A030", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                <span style={{ fontSize:11, fontWeight:500, color:"var(--color-text-primary)" }}>Upgrade Recommendation</span>
-                <span style={{ fontSize:9, padding:"2px 8px", borderRadius:4, background:"#10D9A0", color:"#0B0E16", fontWeight:500 }}>Free migration included</span>
+                <span style={{ fontSize:11, fontWeight:500, color:"var(--color-text-primary)" }}>Hosting Upgrade Available</span>
+                <span style={{ fontSize:9, padding:"2px 8px", borderRadius:4, background:"#10D9A0", color:"#0B0E16", fontWeight:500 }}>We move everything — no charge</span>
               </div>
-              <div style={{ padding:"12px 14px" }}>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:10 }}>
-                  <div>
-                    <div style={{ fontSize:14, fontWeight:500, color:"var(--color-text-primary)", marginBottom:2 }}>{result.upgradeRecommendation.host}</div>
-                    <div style={{ fontSize:11, color:"var(--color-text-secondary)", marginBottom:4 }}>{result.upgradeRecommendation.plan} · {result.upgradeRecommendation.monthlyCost}</div>
-                    <div style={{ fontSize:11, color:"#34D399", fontWeight:500 }}>TTFB: {result.upgradeRecommendation.ttfbImprovement}</div>
+              <div style={{ padding:"14px" }}>
+                <p style={{ fontSize:13, color:"var(--color-text-primary)", lineHeight:1.7, margin:"0 0 12px", fontWeight:500 }}>
+                  We recommend two of the top hosting platforms in the industry — both deliver the lowest Time to First Byte available, meeting Google&apos;s strictest speed requirements.
+                </p>
+                <p style={{ fontSize:12, color:"var(--color-text-secondary)", lineHeight:1.7, margin:"0 0 14px" }}>
+                  If you choose to switch, we will move all of your website content to either platform at absolutely no charge. Your site stays live during the move and is typically fully migrated in under two hours.
+                </p>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:12 }}>
+                  <div style={{ padding:"9px 12px", background:"var(--color-background-secondary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:8 }}>
+                    <div style={{ fontSize:9, color:"var(--color-text-secondary)", marginBottom:3 }}>Expected TTFB after move</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#34D399" }}>{result.upgradeRecommendation.ttfbImprovement}</div>
                   </div>
-                  <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
-                    <div style={{ fontSize:10, color:"var(--color-text-secondary)" }}>Speed gain: <span style={{ color:"#34D399", fontWeight:500 }}>{result.upgradeRecommendation.speedImprovement}</span></div>
-                    <div style={{ fontSize:10, color:"var(--color-text-secondary)" }}>Migration: <span style={{ color:"var(--color-text-primary)" }}>{result.upgradeRecommendation.migrationCost}</span></div>
-                    <div style={{ fontSize:10, color:"var(--color-text-secondary)" }}>Time: <span style={{ color:"var(--color-text-primary)" }}>{result.upgradeRecommendation.migrationTime}</span></div>
-                    <div style={{ fontSize:10, color:"var(--color-text-secondary)" }}>Done by: <span style={{ color:"var(--color-text-primary)" }}>{result.upgradeRecommendation.migrationHandledBy}</span></div>
+                  <div style={{ padding:"9px 12px", background:"var(--color-background-secondary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:8 }}>
+                    <div style={{ fontSize:9, color:"var(--color-text-secondary)", marginBottom:3 }}>Migration cost to you</div>
+                    <div style={{ fontSize:13, fontWeight:600, color:"#34D399" }}>{result.upgradeRecommendation.migrationCost}</div>
                   </div>
                 </div>
-                <div style={{ fontSize:11, color:"var(--color-text-secondary)", lineHeight:1.5, marginBottom:8 }}>{result.upgradeRecommendation.whyThisHost}</div>
-                <div style={{ padding:"7px 10px", background:"#FBBF2410", border:"0.5px solid #FBBF2430", borderRadius:6, fontSize:10, color:"#FBBF24" }}>{result.upgradeRecommendation.affiliateNote}</div>
+                <div style={{ padding:"10px 14px", background:"#60A5FA10", border:"0.5px solid #60A5FA30", borderRadius:8, fontSize:11, color:"var(--color-text-secondary)", lineHeight:1.6 }}>
+                  <span style={{ color:"#60A5FA", fontWeight:600 }}>Ready to switch? </span>
+                  Contact us and we will walk you through both options, explain the difference, and handle everything from start to finish — including pointing your domain to the new server when the move is complete.
+                </div>
               </div>
             </div>
           )}
@@ -266,9 +323,15 @@ export default function HostingIntelligence({ industry, city, websiteUrl, busine
         </div>
       )}
 
-      {!result && !running && (
+      {fetchError && (
+        <div style={{ padding:"12px 16px", background:"#F8717110", border:"0.5px solid #F8717130", borderRadius:8, color:"#F87171", fontSize:12 }}>
+          Could not reach {websiteUrl} — {fetchError}. Make sure the URL is correct and the site is live.
+        </div>
+      )}
+
+      {!result && !running && !fetchError && (
         <div style={{ textAlign:"center", padding:"36px 20px", background:"var(--color-background-secondary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:10, color:"var(--color-text-secondary)", fontSize:12 }}>
-          Detects hosting provider, TTFB benchmark, Cloudflare status, and whether an upgrade would improve rankings
+          Detects your real hosting provider, Cloudflare status, HTTP protocol, and web server by reading your site&apos;s live response headers — no guessing.
         </div>
       )}
     </div>

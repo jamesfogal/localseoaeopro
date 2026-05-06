@@ -84,20 +84,20 @@ const STATUS = {
 
 // ── Demo fix queue (in production, populated from all module findings) ─────────
 const buildDemoQueue = (businessName, city, websiteUrl) => [
-  { id: "f01", category: "canonical", priority: 1, impact: "critical", page: `${websiteUrl || "https://citywidealarms.com"}/st-charles-fire-alarm-monitoring/`, issue: "City page canonicalizes to parent service page", fix: "Inject self-referencing canonical tag", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
-  { id: "f02", category: "canonical", priority: 2, impact: "critical", page: `${websiteUrl || "https://citywidealarms.com"}/alarm-monitoring/`, issue: "Canonical points to homepage instead of this page", fix: "Inject correct self-referencing canonical", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
-  { id: "f03", category: "security",  priority: 3, impact: "critical", page: "Sitewide", issue: "12 images loading over HTTP on HTTPS site (mixed content)", fix: "Convert all HTTP src attributes to HTTPS", autoFix: true, status: "pending", estimatedTime: "~30 sec" },
-  { id: "f04", category: "schema",    priority: 4, impact: "high",     page: "Homepage", issue: "LocalBusiness schema missing phone and service area", fix: "Update schema with complete NAP + serviceArea", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
-  { id: "f05", category: "images",    priority: 5, impact: "high",     page: "Sitewide", issue: "31 JPEG images above fold and below — old format", fix: "Convert to AVIF/WebP, rename for SEO, replace all src refs", autoFix: true, status: "pending", estimatedTime: "~4 min" },
-  { id: "f06", category: "meta",      priority: 6, impact: "high",     page: "/security-cameras/", issue: "Meta description missing", fix: "Inject AI-generated meta description with city + service keywords", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
-  { id: "f07", category: "gbp",       priority: 7, impact: "high",     page: "Google Business Profile", issue: "No posts in 90 days", fix: "Publish first 4 posts from GBP Post Calendar", autoFix: true, status: "pending", estimatedTime: "~20 sec" },
-  { id: "f08", category: "gbp",       priority: 8, impact: "high",     page: "Google Business Profile", issue: "3 unanswered reviews", fix: "Post AI-generated responses to all 3 reviews", autoFix: true, status: "pending", estimatedTime: "~15 sec" },
-  { id: "f09", category: "schema",    priority: 9, impact: "high",     page: "/questions/", issue: "AEO page has no FAQPage schema", fix: "Inject complete FAQPage JSON-LD schema", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
-  { id: "f10", category: "robots",    priority: 10, impact: "medium",  page: "/robots.txt", issue: "Staging subdomain not blocked from indexing", fix: "Add 'Disallow: /staging/' to robots.txt", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
-  { id: "f11", category: "redirects", priority: 11, impact: "medium",  page: "Sitewide", issue: "31 old image URLs need 301 redirects to new AVIF/WebP paths", fix: "Add 301 redirect rules for all renamed image files", autoFix: true, status: "pending", estimatedTime: "~30 sec" },
-  { id: "f12", category: "sitemap",   priority: 12, impact: "medium",  page: "sitemap.xml", issue: "3 city pages missing from sitemap", fix: "Regenerate sitemap and resubmit to Search Console", autoFix: true, status: "pending", estimatedTime: "~15 sec" },
-  { id: "f13", category: "content",   priority: 13, impact: "high",    page: "New page", issue: "No AEO Q&A page exists on site", fix: "Publish generated Q&A page to /st-charles-alarm-faq/", autoFix: false, status: "approved", estimatedTime: "~10 sec after approval" },
-  { id: "f14", category: "content",   priority: 14, impact: "high",    page: "New page", issue: "City page for O'Fallon missing", fix: "Publish generated O'Fallon city page", autoFix: false, status: "approved", estimatedTime: "~10 sec after approval" },
+  { id: "f01", category: "canonical", priority: 1, impact: "critical", page: `${websiteUrl || "https://citywidealarms.com"}/${(city||"st-charles").toLowerCase().replace(/\s+/g,"-")}-service/`, issue: `Your ${city||"city"} page is telling Google to ignore it — costing you local rankings`, fix: "Tell Google this page is the one it should rank for your city", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
+  { id: "f02", category: "canonical", priority: 2, impact: "critical", page: `${websiteUrl || "https://citywidealarms.com"}/services/`, issue: "Your services page is pointing Google to your homepage instead of itself", fix: "Fix the signal so Google treats your services page as its own page", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
+  { id: "f03", category: "security",  priority: 3, impact: "critical", page: "Entire website", issue: "12 photos on your site load over an old insecure connection — browsers warn visitors about this", fix: "Switch all 12 photos to the secure connection automatically", autoFix: true, status: "pending", estimatedTime: "~30 sec" },
+  { id: "f04", category: "schema",    priority: 4, impact: "high",     page: "Homepage", issue: "Google's data about your business is missing your phone number and service area", fix: "Add your complete business info so Google shows it correctly in search results", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
+  { id: "f05", category: "images",    priority: 5, impact: "high",     page: "Entire website", issue: "31 photos are in an old format that makes your site slow — slow sites rank lower and lose customers", fix: "Convert all 31 photos to a modern format that loads 5× faster", autoFix: true, status: "pending", estimatedTime: "~4 min" },
+  { id: "f06", category: "meta",      priority: 6, impact: "high",     page: "Security cameras page", issue: "Your security cameras page has no description in Google search results — people skip past blank listings", fix: "Write a description that shows up under your link in Google", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
+  { id: "f07", category: "gbp",       priority: 7, impact: "high",     page: "Google Business Profile", issue: "You haven't posted to your Google listing in 90 days — Google ranks active businesses higher", fix: "Publish 4 posts to your Google listing right now", autoFix: true, status: "pending", estimatedTime: "~20 sec" },
+  { id: "f08", category: "gbp",       priority: 8, impact: "high",     page: "Google Business Profile", issue: "3 customer reviews have no reply from you — responding to reviews boosts your ranking", fix: "Send a personal reply to each of the 3 unanswered reviews", autoFix: true, status: "pending", estimatedTime: "~15 sec" },
+  { id: "f09", category: "schema",    priority: 9, impact: "high",     page: "Q&A page", issue: "Your Q&A page isn't set up to appear in Google's featured answer boxes or AI answers", fix: "Add the behind-the-scenes code that gets your answers featured in Google", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
+  { id: "f10", category: "robots",    priority: 10, impact: "medium",  page: "Entire website", issue: "Your test/staging website is showing up in Google search results and competing with your real site", fix: "Hide the test site from Google so only your real site ranks", autoFix: true, status: "pending", estimatedTime: "< 5 sec" },
+  { id: "f11", category: "redirects", priority: 11, impact: "medium",  page: "Entire website", issue: "31 old photo links now lead to a broken dead-end page — bad for visitors and Google", fix: "Automatically send old photo links to the correct new photos", autoFix: true, status: "pending", estimatedTime: "~30 sec" },
+  { id: "f12", category: "sitemap",   priority: 12, impact: "medium",  page: "Site map", issue: "3 of your city pages aren't on the list you gave Google — so Google may never find them", fix: "Add the missing pages to your list and tell Google to re-check your site", autoFix: true, status: "pending", estimatedTime: "~15 sec" },
+  { id: "f13", category: "content",   priority: 13, impact: "high",    page: "New page needed", issue: "You have no Q&A page — Google and Siri use these to answer questions and feature local businesses", fix: `Publish a Q&A page written for ${city||"your city"} that gets you into AI answers`, autoFix: false, status: "approved", estimatedTime: "~10 sec after you approve" },
+  { id: "f14", category: "content",   priority: 14, impact: "high",    page: "New page needed", issue: `You have no page targeting nearby cities — you're invisible to customers searching there`, fix: "Publish a page for a nearby city so you show up in those searches too", autoFix: false, status: "approved", estimatedTime: "~10 sec after you approve" },
 ];
 
 export default function AutoFixEngine({
@@ -170,6 +170,7 @@ export default function AutoFixEngine({
   });
 
   const IMPACT_COLOR = { critical: "#F87171", high: "#FBBF24", medium: "#60A5FA", low: "#94A3B8" };
+  const IMPACT_LABEL = { critical: "Urgent", high: "High", medium: "Medium", low: "Low" };
 
   return (
     <div style={{ maxWidth: 640, fontFamily: "var(--font-sans)" }}>
@@ -182,19 +183,19 @@ export default function AutoFixEngine({
           <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "#10D9A020", color: MODULE_COLOR, border: "0.5px solid #10D9A040" }}>Automation Platform</span>
         </div>
         <p style={{ fontSize: 11, color: "#94A3B8", margin: "0 0 12px", lineHeight: 1.6 }}>
-          Collects every finding from every module and fixes them automatically on the live site. No manual website access. No file editing. No code writing. Technical fixes run in seconds. Content fixes run after one-click approval.
+          We scan your whole website, find every problem hurting your Google ranking, and fix them automatically — no tech skills needed. Most fixes happen in seconds. Anything that changes your content gets your approval first.
         </p>
 
         {/* Access connection */}
         {!accessConnected ? (
           <div>
-            <div style={{ fontSize: 9, color: "#64748B", marginBottom: 6, letterSpacing: "0.8px" }}>CONNECT SITE ACCESS — ONE TIME SETUP</div>
+            <div style={{ fontSize: 9, color: "#64748B", marginBottom: 6, letterSpacing: "0.8px" }}>STEP 1 — HOW IS YOUR WEBSITE BUILT? (ONE TIME SETUP)</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 5 }}>
               {[
-                { id: "wp",     label: "WordPress Plugin", desc: "Install free plugin" },
-                { id: "shopify",label: "Shopify OAuth",    desc: "Click approve" },
-                { id: "cpanel", label: "cPanel Login",     desc: "Hosting credentials" },
-                { id: "sftp",   label: "SFTP / SSH",       desc: "Server credentials" },
+                { id: "wp",     label: "WordPress",        desc: "Most common — install our free plugin" },
+                { id: "shopify",label: "Shopify",          desc: "Click approve in your Shopify admin" },
+                { id: "cpanel", label: "Web Hosting Login",desc: "Use your hosting username & password" },
+                { id: "sftp",   label: "Other / Custom",   desc: "We'll walk you through it" },
               ].map(m => (
                 <button key={m.id} onClick={() => { setAccessMethod(m.id); setAccessConnected(true); initQueue(); }} style={{ padding: "8px 6px", background: "#1E293B", border: "0.5px solid #334155", borderRadius: 7, color: "#94A3B8", cursor: "pointer", textAlign: "center" }}>
                   <div style={{ fontSize: 10, fontWeight: 500, color: "#E2E8F0", marginBottom: 2 }}>{m.label}</div>
@@ -218,11 +219,11 @@ export default function AutoFixEngine({
           {/* Stats */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5,minmax(0,1fr))", gap: 6, marginBottom: 10 }}>
             {[
-              { label: "Total fixes",      value: stats.total,    color: "var(--color-text-primary)" },
-              { label: "Auto-fixable",     value: stats.auto,     color: MODULE_COLOR },
-              { label: "Need approval",    value: stats.approval, color: "#FBBF24" },
-              { label: "Critical",         value: stats.critical, color: "#F87171" },
-              { label: "Completed",        value: stats.done,     color: "#34D399" },
+              { label: "Issues found",       value: stats.total,    color: "var(--color-text-primary)" },
+              { label: "We fix for you",     value: stats.auto,     color: MODULE_COLOR },
+              { label: "You approve first",  value: stats.approval, color: "#FBBF24" },
+              { label: "Urgent",             value: stats.critical, color: "#F87171" },
+              { label: "Fixed",              value: stats.done,     color: "#34D399" },
             ].map(({ label, value, color }) => (
               <div key={label} style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 7, padding: "9px 8px", textAlign: "center" }}>
                 <div style={{ fontSize: 9, color: "var(--color-text-secondary)", marginBottom: 3 }}>{label}</div>
@@ -238,12 +239,12 @@ export default function AutoFixEngine({
               disabled={running || plan === "free"}
               style={{ flex: 1, padding: "10px", background: plan === "free" ? "var(--color-background-secondary)" : running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 7, color: plan === "free" ? "var(--color-text-secondary)" : running ? MODULE_COLOR : "#0B0E16", fontSize: 12, fontWeight: 500, cursor: plan === "free" || running ? "not-allowed" : "pointer" }}
             >
-              {plan === "free" ? "Upgrade to Run AutoFix Engine" : running ? `Fixing... (${stats.done}/${stats.auto} done)` : `Run All ${stats.auto} Auto-Fixes Now →`}
+              {plan === "free" ? "Upgrade to Fix Everything Automatically" : running ? `Fixing… (${stats.done} of ${stats.auto} done)` : `Fix All ${stats.auto} Issues Automatically →`}
             </button>
             <div style={{ display: "flex", gap: 4 }}>
               {["all","auto","approval","done"].map(f => (
                 <button key={f} onClick={() => setFilter(f)} style={{ fontSize: 9, padding: "4px 8px", borderRadius: 4, border: "0.5px solid var(--color-border-secondary)", background: filter === f ? "var(--color-background-secondary)" : "transparent", color: "var(--color-text-secondary)", cursor: "pointer" }}>
-                  {f === "all" ? "All" : f === "auto" ? "Auto" : f === "approval" ? "Approval" : "Done"}
+                  {f === "all" ? "All" : f === "auto" ? "Auto-fix" : f === "approval" ? "Need approval" : "Fixed"}
                 </button>
               ))}
             </div>
@@ -252,7 +253,7 @@ export default function AutoFixEngine({
           {/* Fix queue */}
           <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, overflow: "hidden", marginBottom: 10 }}>
             <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", display: "grid", gridTemplateColumns: "28px 1fr 80px 60px 70px", gap: 8, alignItems: "center" }}>
-              {["#","Issue + Fix","Category","Impact","Action"].map(h => (
+              {["#","What's wrong + what we'll do","Type","Priority",""].map(h => (
                 <div key={h} style={{ fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.6px" }}>{h}</div>
               ))}
             </div>
@@ -277,7 +278,7 @@ export default function AutoFixEngine({
                   </div>
 
                   <div>
-                    <span style={{ fontSize: 8, padding: "2px 5px", borderRadius: 3, background: IMPACT_COLOR[fix.impact] + "18", color: IMPACT_COLOR[fix.impact] }}>{fix.impact}</span>
+                    <span style={{ fontSize: 8, padding: "2px 5px", borderRadius: 3, background: IMPACT_COLOR[fix.impact] + "18", color: IMPACT_COLOR[fix.impact] }}>{IMPACT_LABEL[fix.impact] || fix.impact}</span>
                   </div>
 
                   <div>
@@ -321,9 +322,9 @@ export default function AutoFixEngine({
       {/* Not connected state */}
       {!queue && !accessConnected && (
         <div style={{ textAlign: "center", padding: "36px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10 }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)", marginBottom: 6 }}>Connect your site to activate AutoFix</div>
+          <div style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)", marginBottom: 6 }}>Choose how your website is built above to get started</div>
           <div style={{ fontSize: 11, color: "var(--color-text-secondary)", maxWidth: 380, margin: "0 auto", lineHeight: 1.6 }}>
-            Choose an access method above. Credentials are encrypted and stored in the LocalRank Pro vault. You can revoke access at any time.
+            We connect securely to your website one time. Your login is encrypted and stored safely. You can disconnect any time.
           </div>
         </div>
       )}

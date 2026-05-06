@@ -198,7 +198,7 @@ const buildFallback = (businessName, city, industry) => ({
     `Price ranges specific to local market`,
     `Contact CTA in multiple answers drives local calls`,
   ],
-  publishInstructions: `Create a new page at /${city.toLowerCase().replace(/\s+/g,'-').replace(/,.*$,'')}-alarm-faq/ or /questions/. Add to main navigation under "Resources" or link from every service page footer. Add the FAQPage schema to the <head> of this page only.`,
+  publishInstructions: `Create a new page at /${city.toLowerCase().replace(/\s+/g,'-').replace(/,.*$/, '')}-alarm-faq/ or /questions/. Add to main navigation under "Resources" or link from every service page footer. Add the FAQPage schema to the <head> of this page only.`,
   expectedAiQueries: [
     `best alarm company in ${city}`,
     `how much does home security cost in ${city}`,
