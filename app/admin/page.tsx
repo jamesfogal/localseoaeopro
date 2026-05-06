@@ -26,6 +26,10 @@ export default function AdminPage() {
   async function handleAuth(ev: React.FormEvent) {
     ev.preventDefault();
     setAuthErr("");
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      setAuthErr("Missing NEXT_PUBLIC_SUPABASE_URL in client environment.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/admin-auth", {
@@ -54,7 +58,7 @@ export default function AdminPage() {
         return;
       }
       if (!dd.ok) {
-        setAuthErr(dd.error || "Could not load admin data. Check SUPABASE_SERVICE_ROLE_KEY and database tables.");
+        setAuthErr(dd.error || "Could not load admin data. Check server configuration and database tables.");
         return;
       }
       setProfiles(dd.profiles ?? []);
