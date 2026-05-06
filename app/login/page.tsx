@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Login() {
+  const router = useRouter();
   const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [error, setError]       = useState("");
@@ -18,12 +20,16 @@ export default function Login() {
     setError("");
     setLoading(true);
     const supabase = createClient();
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    const { error: err, data } = await supabase.auth.signInWithPassword({ email, password });
     if (err) {
       setError(err.message);
       setLoading(false);
+    } else if (data.session) {
+      router.push("/dashboard");
+      router.refresh();
     } else {
-      window.location.href = "/dashboard";
+      setError("Could not create a session. Try again.");
+      setLoading(false);
     }
   }
 
