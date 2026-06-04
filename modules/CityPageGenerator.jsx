@@ -1,11 +1,9 @@
 /**
- * LocalRank Pro — Content Generation Modules
- * CityPageGenerator, BlogPlanner, FAQGenerator,
- * PricingPageGenerator, ComparisonPageGenerator
+ * City Page Generator
+ * Tag: CPG | Group: Content
  */
 import { useState } from "react";
 
-// ─── Shared generator component ───────────────────────────────────────────────
 function ContentModule({ tag, label, description, color, systemPrompt, userPrompt, outputLabel, plan = "free" }) {
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState(null);
@@ -47,7 +45,6 @@ function ContentModule({ tag, label, description, color, systemPrompt, userPromp
           {running ? "Generating..." : result ? "Regenerate →" : `Generate ${outputLabel} →`}
         </button>
       </div>
-
       {result && (
         <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, overflow: "hidden" }}>
           <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -82,58 +79,16 @@ function ContentModule({ tag, label, description, color, systemPrompt, userPromp
           </div>
         </div>
       )}
-
       {!result && !running && <div style={{ textAlign: "center", padding: "36px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, color: "var(--color-text-secondary)", fontSize: 12 }}>{description}</div>}
     </div>
   );
 }
 
-// ─── City Page Generator ──────────────────────────────────────────────────────
-export function CityPageGenerator({ industry, city, websiteUrl, businessName, mode, plan = "free" }) {
+export default function CityPageGenerator({ industry, city, websiteUrl, businessName, mode, plan = "free" }) {
   return <ContentModule
     tag="CPG" label="City Page Generator" color="#FBBF24" outputLabel="City Page" plan={plan}
     description="Generates a complete, publish-ready city landing page with LocalBusiness schema, NAP block, service sections, local trust signals, FAQ, and conversion CTAs."
     systemPrompt={`You are a local SEO city page specialist. Generate a complete, publish-ready city landing page. Return ONLY valid JSON: {"title":"page title","metaDescription":"meta desc","h1":"main H1","wordCount":number,"score":0-100,"content":"full page HTML or structured text","schema":"LocalBusiness JSON-LD as string","sections":["section names included"],"publishUrl":"recommended URL slug"}`}
     userPrompt={`Generate a city landing page:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}\n\nInclude: optimized H1 with city+service, 3 service sections with local detail, NAP block, FAQ section with 5 questions, LocalBusiness schema, conversion CTA, 600+ words.`}
-  />;
-}
-
-// ─── Blog Planner ─────────────────────────────────────────────────────────────
-export function BlogPlanner({ industry, city, businessName, mode, plan = "free" }) {
-  return <ContentModule
-    tag="BLG" label="Blog Planner" color="#FBBF24" outputLabel="12-Month Calendar" plan={plan}
-    description="Generates a 12-month local SEO content calendar with post titles, target keywords, word count targets, internal linking strategy, and topic clusters built around local search intent."
-    systemPrompt={`You are a local SEO content strategist. Generate a 12-month blog content calendar. Return ONLY valid JSON: {"calendarTitle":"string","posts":[{"month":"Month Year","title":"post title","targetKeyword":"local keyword","wordCount":number,"topicCluster":"cluster name","internalLinks":["pages to link from/to"],"intent":"informational|transactional","seasonalRelevance":"why this month"}],"topicClusters":["cluster 1","cluster 2"]}`}
-    userPrompt={`Generate 12-month blog calendar for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\n\n12 posts, one per month. All local intent. Mix of educational, seasonal, and comparison content. Include seasonal relevance for each month.`}
-  />;
-}
-
-// ─── FAQ Generator ────────────────────────────────────────────────────────────
-export function FAQGenerator({ industry, city, businessName, mode, plan = "free" }) {
-  return <ContentModule
-    tag="FAQ" label="FAQ Generator" color="#FBBF24" outputLabel="FAQ + Schema" plan={plan}
-    description="Generates 15 schema-ready FAQ pairs targeting People Also Ask, voice search, and AI Overviews. Outputs FAQPage JSON-LD ready to paste into the site head."
-    systemPrompt={`You are a local SEO FAQ specialist. Generate FAQ pairs for a local business optimized for featured snippets, People Also Ask, and voice search. Return ONLY valid JSON: {"faqs":[{"question":"exact question as asked by voice/AI","answer":"direct 60-150 word answer with city and business name woven in","schemaReady":true,"intent":"pricing|process|local|comparison|emergency"}],"schema":"FAQPage JSON-LD script tag as string","publishNote":"where to add this on the site"}`}
-    userPrompt={`Generate 15 FAQ pairs for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\n\nInclude: 3 pricing questions with real ranges, 2 city-specific questions, 2 emergency/scenario questions, 2 comparison questions. Write answers as if the business owner wrote them.`}
-  />;
-}
-
-// ─── Pricing Page Generator ───────────────────────────────────────────────────
-export function PricingPageGenerator({ industry, city, businessName, mode, plan = "free" }) {
-  return <ContentModule
-    tag="PRC" label="Pricing Page Generator" color="#FBBF24" outputLabel="Pricing Page" plan={plan}
-    description="Generates an SEO-optimized pricing page with service tiers, local trust signals, competitor price anchoring, FAQ section, and conversion CTAs. Includes LocalBusiness schema."
-    systemPrompt={`You are a local SEO pricing page specialist. Generate a complete pricing page. Return ONLY valid JSON: {"title":"page title","h1":"H1 with city+pricing","score":0-100,"tiers":[{"name":"tier name","price":"price range","description":"what's included","bestFor":"who this is for","cta":"call to action text"}],"trustSignals":["local trust signal 1","local trust signal 2"],"faq":[{"q":"question","a":"answer"}],"content":"full page narrative text","competitorAnchor":"how pricing compares to alternatives"}`}
-    userPrompt={`Generate pricing page for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\n\n3 service tiers with realistic pricing for this industry. Include local trust signals, competitor anchoring, and a FAQ section about pricing. Be specific about what's included at each level.`}
-  />;
-}
-
-// ─── Comparison Page Generator ────────────────────────────────────────────────
-export function ComparisonPageGenerator({ industry, city, businessName, mode, plan = "free" }) {
-  return <ContentModule
-    tag="CMP" label="Comparison Page Generator" color="#FBBF24" outputLabel="Comparison Page" plan={plan}
-    description="Creates '[Business] vs [Competitor]' pages targeting high-intent local comparison searches. Each page positions the business favorably with honest, specific comparisons."
-    systemPrompt={`You are a local SEO comparison page specialist. Generate a competitor comparison page. Return ONLY valid JSON: {"title":"page title","h1":"H1 with both names","targetKeyword":"exact comparison keyword","score":0-100,"intro":"opening paragraph","comparisons":[{"aspect":"what's being compared","us":"our advantage","them":"their limitation","winner":"us|them|tie"}],"conclusion":"why choose us","cta":"call to action","schema":"LocalBusiness JSON-LD"}`}
-    userPrompt={`Generate comparison page for:\nBusiness: ${businessName || "Local Business"} vs. the leading local competitor\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nMode: ${mode || "named"}\n\n8-10 comparison points. Be honest — if the competitor wins on some points, acknowledge it. Focus on genuine differentiators. Target the keyword "[business] vs [competitor] [city]".`}
   />;
 }

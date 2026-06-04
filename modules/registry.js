@@ -44,6 +44,7 @@ export const NAV_STRUCTURE = [
       { id: "GBPPostScheduler",          tag: "GPS", label: "GBP Post Scheduler",        color: "#34D399" },
       { id: "GBPListingProtection",      tag: "GLP", label: "GBP Listing Protection",    color: "#F87171" },
       { id: "CitationIntelligence",      tag: "CIT", label: "Citation Intelligence",     color: "#34D399" },
+      { id: "CitationSearchEngine",      tag: "CSE", label: "Citation Search Engine",    color: "#34D399" },
       { id: "CitationAutoSubmit",        tag: "CAS", label: "Citation Auto Submit",      color: "#34D399" },
       { id: "ReviewRequestCampaign",     tag: "RRC", label: "Review Request Campaign",   color: "#F87171" },
       { id: "MultiPlatformReviewMonitor",tag: "RPM", label: "Review Monitor",            color: "#F87171" },
@@ -56,8 +57,8 @@ export const NAV_STRUCTURE = [
       { id: "AEOQAGeneratorV2",          tag: "AQ2", label: "AEO Q&A Generator V2",      color: "#10D9A0" },
       { id: "AEOQAPageGenerator",        tag: "AEO", label: "AEO Q&A Generator V1",      color: "#10D9A0" },
       { id: "CityPageGenerator",         tag: "CPG", label: "City Page Generator",       color: "#FBBF24" },
-      { id: "BlogPlanner",               tag: "BLG", label: "Blog Planner",              color: "#FBBF24" },
-      { id: "FAQGenerator",              tag: "FAQ", label: "FAQ Generator",             color: "#FBBF24" },
+      { id: "BlogCalendarGenerator",      tag: "BCG", label: "Blog Calendar Generator",  color: "#FBBF24" },
+      { id: "FAQPageGenerator",          tag: "FAQ", label: "FAQ Page Generator",        color: "#FBBF24" },
       { id: "PricingPageGenerator",      tag: "PRC", label: "Pricing Page Generator",    color: "#FBBF24" },
       { id: "ComparisonPageGenerator",   tag: "CMP", label: "Comparison Pages",          color: "#FBBF24" },
     ]

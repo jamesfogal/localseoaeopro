@@ -35,60 +35,31 @@ const MODULE_MAP = {
   InternalLinkAuditor: dynamic(() => import("@/modules/InternalLinkAuditor"), { loading: ModuleLoading }),
   CriticalSignalsChecker: dynamic(() => import("@/modules/CriticalSignalsChecker"), { loading: ModuleLoading }),
   KeywordInspector: dynamic(() => import("@/modules/KeywordInspector"), { loading: ModuleLoading }),
-  KeywordOwnershipMap: dynamic(
-    () => import("@/modules/KeywordModules").then((m) => ({ default: m.KeywordOwnershipMap })),
-    { loading: ModuleLoading }
-  ),
-  KeywordIntelligence: dynamic(
-    () => import("@/modules/KeywordModules").then((m) => ({ default: m.KeywordIntelligence })),
-    { loading: ModuleLoading }
-  ),
+  KeywordOwnershipMap: dynamic(() => import("@/modules/KeywordOwnershipMap"), { loading: ModuleLoading }),
+  KeywordIntelligence: dynamic(() => import("@/modules/KeywordIntelligence"), { loading: ModuleLoading }),
   CompetitorIntelligence: dynamic(() => import("@/modules/CompetitorIntelligence"), { loading: ModuleLoading }),
   GeoGridTracker: dynamic(() => import("@/modules/GeoGridTracker"), { loading: ModuleLoading }),
   GBPOptimizer: dynamic(() => import("@/modules/GBPOptimizer"), { loading: ModuleLoading }),
   GBPPostScheduler: dynamic(() => import("@/modules/GBPPostScheduler"), { loading: ModuleLoading }),
   GBPListingProtection: dynamic(() => import("@/modules/GBPListingProtection"), { loading: ModuleLoading }),
   CitationIntelligence: dynamic(() => import("@/modules/CitationIntelligence"), { loading: ModuleLoading }),
+  CitationSearchEngine: dynamic(() => import("@/modules/CitationSearchEngine"), { loading: ModuleLoading }),
   CitationAutoSubmit: dynamic(() => import("@/modules/CitationAutoSubmit"), { loading: ModuleLoading }),
   ReviewRequestCampaign: dynamic(() => import("@/modules/ReviewRequestCampaign"), { loading: ModuleLoading }),
   MultiPlatformReviewMonitor: dynamic(() => import("@/modules/MultiPlatformReviewMonitor"), { loading: ModuleLoading }),
   AIVisibilityChecker: dynamic(() => import("@/modules/AIVisibilityChecker"), { loading: ModuleLoading }),
   AEOQAGeneratorV2: dynamic(() => import("@/modules/AEOQAGeneratorV2"), { loading: ModuleLoading }),
   AEOQAPageGenerator: dynamic(() => import("@/modules/AEOQAPageGenerator"), { loading: ModuleLoading }),
-  CityPageGenerator: dynamic(
-    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.CityPageGenerator })),
-    { loading: ModuleLoading }
-  ),
-  BlogPlanner: dynamic(
-    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.BlogPlanner })),
-    { loading: ModuleLoading }
-  ),
-  FAQGenerator: dynamic(
-    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.FAQGenerator })),
-    { loading: ModuleLoading }
-  ),
-  PricingPageGenerator: dynamic(
-    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.PricingPageGenerator })),
-    { loading: ModuleLoading }
-  ),
-  ComparisonPageGenerator: dynamic(
-    () => import("@/modules/ContentGenerationModules").then((m) => ({ default: m.ComparisonPageGenerator })),
-    { loading: ModuleLoading }
-  ),
+  CityPageGenerator: dynamic(() => import("@/modules/CityPageGenerator"), { loading: ModuleLoading }),
+  BlogCalendarGenerator: dynamic(() => import("@/modules/BlogCalendarGenerator"), { loading: ModuleLoading }),
+  FAQPageGenerator: dynamic(() => import("@/modules/FAQPageGenerator"), { loading: ModuleLoading }),
+  PricingPageGenerator: dynamic(() => import("@/modules/PricingPageGenerator"), { loading: ModuleLoading }),
+  ComparisonPageGenerator: dynamic(() => import("@/modules/ComparisonPageGenerator"), { loading: ModuleLoading }),
   PageSpeedIntelligence: dynamic(() => import("@/modules/PageSpeedIntelligence"), { loading: ModuleLoading }),
   HostingIntelligence: dynamic(() => import("@/modules/HostingIntelligence"), { loading: ModuleLoading }),
-  RankTracker: dynamic(
-    () => import("@/modules/TechnicalModules").then((m) => ({ default: m.RankTracker })),
-    { loading: ModuleLoading }
-  ),
-  BacklinkFinder: dynamic(
-    () => import("@/modules/TechnicalModules").then((m) => ({ default: m.BacklinkFinder })),
-    { loading: ModuleLoading }
-  ),
-  XMLSitemapBuilder: dynamic(
-    () => import("@/modules/TechnicalModules").then((m) => ({ default: m.XMLSitemapBuilder })),
-    { loading: ModuleLoading }
-  ),
+  RankTracker: dynamic(() => import("@/modules/RankTracker"), { loading: ModuleLoading }),
+  BacklinkFinder: dynamic(() => import("@/modules/BacklinkFinder"), { loading: ModuleLoading }),
+  XMLSitemapBuilder: dynamic(() => import("@/modules/XMLSitemapBuilder"), { loading: ModuleLoading }),
 } as Record<string, ComponentType<DashboardModuleProps>>;
 
 const NAV = [
@@ -118,6 +89,7 @@ const NAV = [
     { id: "GBPPostScheduler",          tag: "GPS", label: "GBP Post Scheduler",       color: "#34D399" },
     { id: "GBPListingProtection",      tag: "GLP", label: "GBP Listing Protection",   color: "#F87171" },
     { id: "CitationIntelligence",      tag: "CIT", label: "Citation Intelligence",    color: "#34D399" },
+    { id: "CitationSearchEngine",      tag: "CSE", label: "Citation Search Engine",   color: "#34D399" },
     { id: "CitationAutoSubmit",        tag: "CAS", label: "Citation Auto Submit",     color: "#34D399" },
     { id: "ReviewRequestCampaign",     tag: "RRC", label: "Review Request Campaign",  color: "#F87171" },
     { id: "MultiPlatformReviewMonitor",tag: "RPM", label: "Review Monitor",           color: "#F87171" },
@@ -127,8 +99,8 @@ const NAV = [
     { id: "AEOQAGeneratorV2",          tag: "AQ2", label: "AEO Q&A Generator V2",     color: "#10D9A0" },
     { id: "AEOQAPageGenerator",        tag: "AEO", label: "AEO Q&A Generator V1",     color: "#10D9A0" },
     { id: "CityPageGenerator",         tag: "CPG", label: "City Page Generator",      color: "#FBBF24" },
-    { id: "BlogPlanner",               tag: "BLG", label: "Blog Planner",             color: "#FBBF24" },
-    { id: "FAQGenerator",              tag: "FAQ", label: "FAQ Generator",            color: "#FBBF24" },
+    { id: "BlogCalendarGenerator",      tag: "BCG", label: "Blog Calendar Generator", color: "#FBBF24" },
+    { id: "FAQPageGenerator",          tag: "FAQ", label: "FAQ Page Generator",       color: "#FBBF24" },
     { id: "PricingPageGenerator",      tag: "PRC", label: "Pricing Page Generator",   color: "#FBBF24" },
     { id: "ComparisonPageGenerator",   tag: "CMP", label: "Comparison Pages",         color: "#FBBF24" },
   ]},
