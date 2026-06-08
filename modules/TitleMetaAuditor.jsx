@@ -15,9 +15,7 @@ export default function TitleMetaAuditor({ industry, city, websiteUrl, businessN
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local SEO title and meta description analyst. Audit title tags and meta descriptions for a local business. Return ONLY valid JSON:
+        body: JSON.stringify({ system: `You are a local SEO title and meta description analyst. Audit title tags and meta descriptions for a local business. Return ONLY valid JSON:
 {
   "overallScore": 0-100,
   "pagesAudited": number,
@@ -33,10 +31,10 @@ export default function TitleMetaAuditor({ industry, city, websiteUrl, businessN
   ],
   "summary": "one paragraph overview of the biggest issues found"
 }`,
-          messages: [{ role: "user", content: `Audit title tags and meta descriptions for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` })
+          prompt: `Audit title tags and meta descriptions for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         overallScore: 38,

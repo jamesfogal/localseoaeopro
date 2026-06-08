@@ -126,9 +126,7 @@ export default function AIVisibilityChecker({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system: SYSTEM_PROMPT,
-          max_tokens: 2500,
-          prompt: `Check AI visibility for:
+          system: SYSTEM_PROMPT, prompt: `Check AI visibility for:
 Business: ${businessName || "Local Business"}
 Industry: ${industry || "Local Services"}
 City: ${city || "their city"}

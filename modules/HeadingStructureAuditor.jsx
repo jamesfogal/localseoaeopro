@@ -17,9 +17,7 @@ export default function HeadingStructureAuditor({ industry, city, websiteUrl, bu
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local SEO heading structure analyst. Audit heading tags H1-H4 for a local business website. Return ONLY valid JSON:
+        body: JSON.stringify({ system: `You are a local SEO heading structure analyst. Audit heading tags H1-H4 for a local business website. Return ONLY valid JSON:
 {
   "overallScore": 0-100,
   "totalHeadings": number,
@@ -41,10 +39,10 @@ export default function HeadingStructureAuditor({ industry, city, websiteUrl, bu
   "topFixes": ["most impactful fix 1", "most impactful fix 2", "most impactful fix 3"]
 }
 Generate 4-5 realistic pages. Be specific to the industry and city.`,
-          messages: [{ role: "user", content: `Audit heading structure for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` })
+          prompt: `Audit heading structure for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         overallScore: 44,

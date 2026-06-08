@@ -139,13 +139,11 @@ export default function AEOQAGeneratorV2({ industry, city, websiteUrl, businessN
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: RESEARCH_SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Run full 5-step AEO research pipeline for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nWebsite: ${websiteUrl||"their site"}\nMode: ${mode||"named"}\nPlan: ${plan}\n\nGenerate 20+ questions. Include the "elderly parent monitoring" style emotional questions. Include real price ranges. Include emergency scenarios. Make competitor answers realistically vague. Our answers must be specific, priced, and locally grounded.` })
+        body: JSON.stringify({ system: RESEARCH_SYSTEM_PROMPT,
+          prompt: `Run full 5-step AEO research pipeline for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nWebsite: ${websiteUrl||"their site"}\nMode: ${mode||"named"}\nPlan: ${plan}\n\nGenerate 20+ questions. Include the "elderly parent monitoring" style emotional questions. Include real price ranges. Include emergency scenarios. Make competitor answers realistically vague. Our answers must be specific, priced, and locally grounded.` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text||"{}").replace(/```[\w]*\n?/g,"").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         researchSummary: { questionsFound: 41, competitorPagesAnalyzed: 5, unansweredGaps: 12, weaklyAnsweredGaps: 14 },

@@ -123,12 +123,10 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 2500, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Generate citation audit for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nWebsite: ${websiteUrl||"their site"}\n\nGenerate 20-25 directories. Include industry-specific ones for ${industry}. Most businesses have 40-60% of citations accurate. Include 3-4 manual submissions for major platforms requiring owner login.` })
+        body: JSON.stringify({ system: SYSTEM_PROMPT, prompt: `Generate citation audit for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nWebsite: ${websiteUrl||"their site"}\n\nGenerate 20-25 directories. Include industry-specific ones for ${industry}. Most businesses have 40-60% of citations accurate. Include 3-4 manual submissions for major platforms requiring owner login.` }),
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text||"{}").replace(/```[\w]*\n?/g,"").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         napData: {

@@ -16,9 +16,7 @@ export default function CitationIntelligence({ industry, city, websiteUrl, busin
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local SEO citation analyst. Audit NAP (Name, Address, Phone) consistency across directories for a local business. Return ONLY valid JSON:
+        body: JSON.stringify({ system: `You are a local SEO citation analyst. Audit NAP (Name, Address, Phone) consistency across directories for a local business. Return ONLY valid JSON:
 {
   "overallScore": 0-100,
   "napScore": 0-100,
@@ -40,10 +38,10 @@ export default function CitationIntelligence({ industry, city, websiteUrl, busin
   "fixes": ["fix 1", "fix 2"]
 }
 Generate 12-15 realistic directory citations. Tier 1 = Google, Yelp, Facebook, BBB. Tier 2 = Yelp, Angi, HomeAdvisor. Tier 3 = smaller directories.`,
-          messages: [{ role: "user", content: `Audit citations for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles, MO"}\nWebsite: ${websiteUrl || "their site"}` })
+          prompt: `Audit citations for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles, MO"}\nWebsite: ${websiteUrl || "their site"}` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         overallScore: 49,

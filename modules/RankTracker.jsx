@@ -14,13 +14,11 @@ export default function RankTracker({ industry, city, websiteUrl, businessName, 
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local rank tracking specialist. Generate a local keyword ranking report for a business. Track Google 3-Pack AND local organic positions. Return ONLY valid JSON: {"keywords":[{"phrase":"keyword","packPosition":"1-20 or not ranking","organicPosition":"1-20 or not ranking","movement":"up N|down N|new|stable|lost","trend":"improving|declining|stable","url":"page ranking or null","priority":"high|medium|low"}],"summary":{"rankingIn3Pack":number,"notRanking":number,"improving":number,"declining":number,"avgPackPosition":number},"topWin":"keyword gaining most","topRisk":"keyword dropping fastest","recommendation":"single most important ranking action"}`,
-          messages: [{ role: "user", content: `Generate ranking report for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry}\nCity: ${city}\nWebsite: ${websiteUrl}\n\nGenerate 15 keywords. Mix of ranking, not ranking, improving, and declining.` })
+        body: JSON.stringify({ system: `You are a local rank tracking specialist. Generate a local keyword ranking report for a business. Track Google 3-Pack AND local organic positions. Return ONLY valid JSON: {"keywords":[{"phrase":"keyword","packPosition":"1-20 or not ranking","organicPosition":"1-20 or not ranking","movement":"up N|down N|new|stable|lost","trend":"improving|declining|stable","url":"page ranking or null","priority":"high|medium|low"}],"summary":{"rankingIn3Pack":number,"notRanking":number,"improving":number,"declining":number,"avgPackPosition":number},"topWin":"keyword gaining most","topRisk":"keyword dropping fastest","recommendation":"single most important ranking action"}`,
+          prompt: `Generate ranking report for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry}\nCity: ${city}\nWebsite: ${websiteUrl}\n\nGenerate 15 keywords. Mix of ranking, not ranking, improving, and declining.` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         keywords: [

@@ -16,9 +16,7 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local SEO image audit specialist. Audit images on a local business website. Return ONLY valid JSON:
+        body: JSON.stringify({ system: `You are a local SEO image audit specialist. Audit images on a local business website. Return ONLY valid JSON:
 {
   "overallScore": 0-100,
   "totalImages": number,
@@ -46,10 +44,10 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
   ],
   "summary": "brief overview of image health"
 }`,
-          messages: [{ role: "user", content: `Audit images for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` })
+          prompt: `Audit images for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         overallScore: 31,

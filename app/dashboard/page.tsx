@@ -68,6 +68,7 @@ const MODULE_MAP = {
   SSLCertificateMonitor:     dynamic(() => import("@/modules/SSLCertificateMonitor"),     { loading: ModuleLoading }),
   RedirectChainDetector:     dynamic(() => import("@/modules/RedirectChainDetector"),     { loading: ModuleLoading }),
   ProspectQualificationScorer: dynamic(() => import("@/modules/ProspectQualificationScorer"), { loading: ModuleLoading }),
+  RedditVisibilityScanner:    dynamic(() => import("@/modules/RedditVisibilityScanner"),    { loading: ModuleLoading }),
 } as Record<string, ComponentType<DashboardModuleProps>>;
 
 const NAV = [
@@ -127,6 +128,7 @@ const NAV = [
     { id: "TrackingPixelDetector",       tag: "TPD", label: "Tracking Pixel Detector",       color: "#F59E0B" },
     { id: "NAPConsistencyChecker",       tag: "NAP", label: "NAP Consistency Checker",       color: "#34D399" },
     { id: "ProspectQualificationScorer", tag: "PQS", label: "Prospect Qualification Scorer", color: "#A78BFA" },
+    { id: "RedditVisibilityScanner",    tag: "RVS", label: "Reddit Visibility Scanner",    color: "#FF4500" },
   ]},
 ];
 

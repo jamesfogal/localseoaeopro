@@ -112,12 +112,10 @@ export default function MultiPlatformReviewMonitor({ industry, city, websiteUrl,
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 2000, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Generate review monitoring report for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nMode: ${mode||"named"}\n\nGenerate realistic data. Include 2-3 sentiment patterns (at least one negative recurring complaint). Include industry-appropriate platforms.` })
+        body: JSON.stringify({ system: SYSTEM_PROMPT, prompt: `Generate review monitoring report for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nMode: ${mode||"named"}\n\nGenerate realistic data. Include 2-3 sentiment patterns (at least one negative recurring complaint). Include industry-appropriate platforms.` }),
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text||"{}").replace(/```[\w]*\n?/g,"").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         overallReputationScore: 61, totalReviews: 147, averageRating: 4.1,

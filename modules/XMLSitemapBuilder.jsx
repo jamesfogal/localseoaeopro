@@ -15,13 +15,11 @@ export default function XMLSitemapBuilder({ industry, city, websiteUrl, business
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are an XML sitemap specialist for local business websites. Generate an optimized XML sitemap. Return ONLY valid JSON: {"totalUrls":number,"sitemapXml":"complete XML sitemap as string","pagesByType":{"homepage":number,"service":number,"city":number,"blog":number,"other":number},"priorityLogic":"explanation of priority assignments","excludedPages":["pages excluded and why"],"submissionSteps":["step 1","step 2","step 3"],"gscUrl":"Google Search Console sitemap submission URL"}`,
-          messages: [{ role: "user", content: `Generate XML sitemap for:\nBusiness: ${businessName}\nIndustry: ${industry}\nCity: ${city}\nWebsite: ${websiteUrl || "https://example.com"}\n\nGenerate realistic page structure for this local business. Prioritize: homepage (1.0), city pages (0.9), service pages (0.8), blog (0.6).` })
+        body: JSON.stringify({ system: `You are an XML sitemap specialist for local business websites. Generate an optimized XML sitemap. Return ONLY valid JSON: {"totalUrls":number,"sitemapXml":"complete XML sitemap as string","pagesByType":{"homepage":number,"service":number,"city":number,"blog":number,"other":number},"priorityLogic":"explanation of priority assignments","excludedPages":["pages excluded and why"],"submissionSteps":["step 1","step 2","step 3"],"gscUrl":"Google Search Console sitemap submission URL"}`,
+          prompt: `Generate XML sitemap for:\nBusiness: ${businessName}\nIndustry: ${industry}\nCity: ${city}\nWebsite: ${websiteUrl || "https://example.com"}\n\nGenerate realistic page structure for this local business. Prioritize: homepage (1.0), city pages (0.9), service pages (0.8), blog (0.6).` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       const base = websiteUrl?.replace(/\/$/, "") || "https://citywidealarms.com";
       setResult({

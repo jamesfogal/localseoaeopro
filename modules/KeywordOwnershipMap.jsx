@@ -14,13 +14,11 @@ export default function KeywordOwnershipMap({ industry, city, businessName, mode
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local keyword ownership analyst. Map which competitor owns each keyword cluster in the Google 3-Pack for this local market. Return ONLY valid JSON: {"clusters":[{"cluster":"keyword group name","primaryKeyword":"exact phrase","monthlySearches":number,"owner":"business name or type","ownerStrength":"dominant|competitive|weak","clientPosition":"not ranking|weak|competitive","opportunity":"high|medium|low","winStrategy":"one sentence on how to take this cluster"}],"unclaimed":["keyword cluster with no strong local owner"],"topOpportunity":"single best cluster to target"}`,
-          messages: [{ role: "user", content: `Map keyword ownership for ${businessName || "Local Business"}, ${industry || "Local Services"} in ${city || "their city"}. Mode: ${mode}. Generate 12 keyword clusters.` })
+        body: JSON.stringify({ system: `You are a local keyword ownership analyst. Map which competitor owns each keyword cluster in the Google 3-Pack for this local market. Return ONLY valid JSON: {"clusters":[{"cluster":"keyword group name","primaryKeyword":"exact phrase","monthlySearches":number,"owner":"business name or type","ownerStrength":"dominant|competitive|weak","clientPosition":"not ranking|weak|competitive","opportunity":"high|medium|low","winStrategy":"one sentence on how to take this cluster"}],"unclaimed":["keyword cluster with no strong local owner"],"topOpportunity":"single best cluster to target"}`,
+          prompt: `Map keyword ownership for ${businessName || "Local Business"}, ${industry || "Local Services"} in ${city || "their city"}. Mode: ${mode}. Generate 12 keyword clusters.` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         clusters: [

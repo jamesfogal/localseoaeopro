@@ -52,12 +52,10 @@ export default function KeywordInspector({ industry, city, websiteUrl, businessN
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 2000, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Find keyword gaps:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "their city"}\nWebsite: ${websiteUrl || "their site"}\nMode: ${mode || "named"}\n\nGenerate realistic local keyword gaps for this industry and city.` })
+        body: JSON.stringify({ system: SYSTEM_PROMPT, prompt: `Find keyword gaps:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "their city"}\nWebsite: ${websiteUrl || "their site"}\nMode: ${mode || "named"}\n\nGenerate realistic local keyword gaps for this industry and city.` }),
       });
       const data = await res.json();
-      const clean = (data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim();
+      const clean = data.result;
       setResult(JSON.parse(clean));
     } catch {
       setResult({

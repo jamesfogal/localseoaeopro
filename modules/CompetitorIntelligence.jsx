@@ -17,9 +17,7 @@ export default function CompetitorIntelligence({ industry, city, websiteUrl, bus
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local competitor intelligence analyst for LocalRank Pro. Analyze local competitors for a business in full detail.
+        body: JSON.stringify({ system: `You are a local competitor intelligence analyst for LocalRank Pro. Analyze local competitors for a business in full detail.
 
 ${mode === "anonymous" ? "ANONYMOUS MODE: Label competitors as 'Local Competitor A', 'Local Competitor B', 'Local Competitor C'. Do not use real business names." : "NAMED MODE: Use realistic local competitor business names for this industry and city."}
 
@@ -51,10 +49,10 @@ Return ONLY valid JSON:
 }
 
 Generate 3 competitors. Be specific to this industry and city.`,
-          messages: [{ role: "user", content: `Analyze competitors for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "their city"}\nMode: ${mode}` })
+          prompt: `Analyze competitors for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "their city"}\nMode: ${mode}` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       const names = mode === "anonymous"
         ? ["Local Competitor A", "Local Competitor B", "Local Competitor C"]

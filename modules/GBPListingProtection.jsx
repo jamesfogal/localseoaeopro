@@ -100,12 +100,10 @@ export default function GBPListingProtection({ industry, city, businessName, mod
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1800, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Generate GBP protection audit for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nMode: ${mode||"named"}\n\nMake it realistic. Most businesses have at least 1-2 vulnerabilities. Competitive service industries (alarm, plumbing, HVAC) have higher competitor edit risk.` })
+        body: JSON.stringify({ system: SYSTEM_PROMPT, prompt: `Generate GBP protection audit for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nMode: ${mode||"named"}\n\nMake it realistic. Most businesses have at least 1-2 vulnerabilities. Competitive service industries (alarm, plumbing, HVAC) have higher competitor edit risk.` }),
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text||"{}").replace(/```[\w]*\n?/g,"").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         protectionScore: 45, protectionStatus: "Vulnerable",

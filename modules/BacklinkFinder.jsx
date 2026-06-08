@@ -14,13 +14,11 @@ export default function BacklinkFinder({ industry, city, websiteUrl, businessNam
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local link building specialist. Find local link opportunities for a business. Return ONLY valid JSON: {"opportunities":[{"source":"source name","type":"chamber|press|association|sponsor|directory|supplier","domainAuthority":number,"linkType":"do-follow|no-follow","submissionUrl":"URL or description","effort":"easy|medium|hard","localRelevance":"high|medium","pitch":"one sentence pitch for getting this link"}],"totalOpportunities":number,"estimatedDaGain":"DA range gain if all built","topPick":"easiest highest-value link to get first"}`,
-          messages: [{ role: "user", content: `Find local link opportunities for:\nBusiness: ${businessName}\nIndustry: ${industry}\nCity: ${city}\n\nGenerate 12 local link opportunities specific to this industry and city.` })
+        body: JSON.stringify({ system: `You are a local link building specialist. Find local link opportunities for a business. Return ONLY valid JSON: {"opportunities":[{"source":"source name","type":"chamber|press|association|sponsor|directory|supplier","domainAuthority":number,"linkType":"do-follow|no-follow","submissionUrl":"URL or description","effort":"easy|medium|hard","localRelevance":"high|medium","pitch":"one sentence pitch for getting this link"}],"totalOpportunities":number,"estimatedDaGain":"DA range gain if all built","topPick":"easiest highest-value link to get first"}`,
+          prompt: `Find local link opportunities for:\nBusiness: ${businessName}\nIndustry: ${industry}\nCity: ${city}\n\nGenerate 12 local link opportunities specific to this industry and city.` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         totalOpportunities: 12,

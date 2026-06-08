@@ -128,7 +128,7 @@ Score all 15 factors. Be specific to this industry and city.`
           })
       });
       const data = await response.json();
-      const raw = data.content?.[0]?.text || "{}";
+      const raw = data.result || "{}";
       setResult(JSON.parse(raw.replace(/```[\w]*\n?/g, "").trim()));
     } catch {
       setResult({
@@ -168,7 +168,7 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
           })
       });
       const data = await response.json();
-      const raw = data.content?.[0]?.text || "{}";
+      const raw = data.result || "{}";
       const parsed = JSON.parse(raw.replace(/```[\w]*\n?/g, "").trim());
       setResponses(parsed.responses);
     } catch {

@@ -14,10 +14,10 @@ function ContentModule({ tag, label, description, color, systemPrompt, userPromp
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 3000, system: systemPrompt, messages: [{ role: "user", content: userPrompt })
+        body: JSON.stringify({ system: systemPrompt, prompt: userPrompt })
       });
       const data = await res.json();
-      const raw = (data.content?.[0]?.text || "").replace(/```[\w]*\n?/g, "").trim();
+      const raw = (data.result || "").replace(/```[\w]*\n?/g, "").trim();
       try { setResult(JSON.parse(raw)); } catch { setResult({ content: raw, score: 88, wordCount: raw.split(" ").length }); }
     } catch { setResult({ content: `[${label} content would appear here â€” Claude API generated full ${label.toLowerCase()} for ${userPrompt.slice(0,40)}...]`, score: 85, wordCount: 650 }); }
     setRunning(false);

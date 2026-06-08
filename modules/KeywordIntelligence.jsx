@@ -14,13 +14,11 @@ export default function KeywordIntelligence({ industry, city, businessName, mode
     try {
       const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          system: `You are a local keyword intelligence analyst. Generate deep keyword research for a local business including volume estimates, difficulty, seasonal trends, and content type recommendations. Return ONLY valid JSON: {"keywords":[{"phrase":"exact keyword","monthlySearches":number,"difficulty":1-100,"localIntent":"high|medium","seasonality":"year-round|seasonal","peakMonths":["month"],"contentType":"service page|city page|faq|blog|comparison","currentOpportunity":"immediate|short-term|long-term","schema":"LocalBusiness|FAQPage|Service|HowTo"}],"contentPriority":"which content type to create first and why","seasonalAlert":"any seasonal opportunity coming up"}`,
-          messages: [{ role: "user", content: `Generate keyword intelligence for ${businessName || "Local Business"}, ${industry} in ${city}. Generate 15 keywords.` })
+        body: JSON.stringify({ system: `You are a local keyword intelligence analyst. Generate deep keyword research for a local business including volume estimates, difficulty, seasonal trends, and content type recommendations. Return ONLY valid JSON: {"keywords":[{"phrase":"exact keyword","monthlySearches":number,"difficulty":1-100,"localIntent":"high|medium","seasonality":"year-round|seasonal","peakMonths":["month"],"contentType":"service page|city page|faq|blog|comparison","currentOpportunity":"immediate|short-term|long-term","schema":"LocalBusiness|FAQPage|Service|HowTo"}],"contentPriority":"which content type to create first and why","seasonalAlert":"any seasonal opportunity coming up"}`,
+          prompt: `Generate keyword intelligence for ${businessName || "Local Business"}, ${industry} in ${city}. Generate 15 keywords.` })
       });
       const data = await res.json();
-      setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
+      setResult(JSON.parse(data.result));
     } catch {
       setResult({
         keywords: [
