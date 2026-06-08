@@ -60,6 +60,14 @@ const MODULE_MAP = {
   RankTracker: dynamic(() => import("@/modules/RankTracker"), { loading: ModuleLoading }),
   BacklinkFinder: dynamic(() => import("@/modules/BacklinkFinder"), { loading: ModuleLoading }),
   XMLSitemapBuilder: dynamic(() => import("@/modules/XMLSitemapBuilder"), { loading: ModuleLoading }),
+  // ── 7 New Intelligence Agents ────────────────────────────────────────────
+  SocialPresenceScanner:     dynamic(() => import("@/modules/SocialPresenceScanner"),     { loading: ModuleLoading }),
+  TrackingPixelDetector:     dynamic(() => import("@/modules/TrackingPixelDetector"),     { loading: ModuleLoading }),
+  TechStackIdentifier:       dynamic(() => import("@/modules/TechStackIdentifier"),       { loading: ModuleLoading }),
+  NAPConsistencyChecker:     dynamic(() => import("@/modules/NAPConsistencyChecker"),     { loading: ModuleLoading }),
+  SSLCertificateMonitor:     dynamic(() => import("@/modules/SSLCertificateMonitor"),     { loading: ModuleLoading }),
+  RedirectChainDetector:     dynamic(() => import("@/modules/RedirectChainDetector"),     { loading: ModuleLoading }),
+  ProspectQualificationScorer: dynamic(() => import("@/modules/ProspectQualificationScorer"), { loading: ModuleLoading }),
 } as Record<string, ComponentType<DashboardModuleProps>>;
 
 const NAV = [
@@ -109,7 +117,16 @@ const NAV = [
     { id: "HostingIntelligence",       tag: "HST", label: "Hosting Intelligence",     color: "#60A5FA" },
     { id: "RankTracker",               tag: "RNK", label: "Rank Tracker",             color: "#94A3B8" },
     { id: "BacklinkFinder",            tag: "BKL", label: "Backlink Finder",          color: "#94A3B8" },
-    { id: "XMLSitemapBuilder",         tag: "XML", label: "XML Sitemap Builder",       color: "#94A3B8" },
+    { id: "XMLSitemapBuilder",         tag: "XML", label: "XML Sitemap Builder",      color: "#94A3B8" },
+    { id: "SSLCertificateMonitor",     tag: "SSL", label: "SSL Certificate Monitor",  color: "#10D9A0" },
+    { id: "RedirectChainDetector",     tag: "RCD", label: "Redirect Chain Detector",  color: "#F87171" },
+    { id: "TechStackIdentifier",       tag: "TSI", label: "Tech Stack Identifier",    color: "#60A5FA" },
+  ]},
+  { group: "Intelligence Agents", modules: [
+    { id: "SocialPresenceScanner",       tag: "SPS", label: "Social Presence Scanner",       color: "#A78BFA" },
+    { id: "TrackingPixelDetector",       tag: "TPD", label: "Tracking Pixel Detector",       color: "#F59E0B" },
+    { id: "NAPConsistencyChecker",       tag: "NAP", label: "NAP Consistency Checker",       color: "#34D399" },
+    { id: "ProspectQualificationScorer", tag: "PQS", label: "Prospect Qualification Scorer", color: "#A78BFA" },
   ]},
 ];
 
