@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — Multi-Platform Review Monitor
+﻿/**
+ * LocalRank Pro â€” Multi-Platform Review Monitor
  * Tag: RPM | Group: Local Presence
  *
  * Monitors reviews across all major platforms:
@@ -32,11 +32,11 @@ Generate a realistic review monitoring report. Most local businesses have:
 - Angi/HomeAdvisor if service business
 - Several unanswered negative reviews across platforms
 
-SENTIMENT PATTERN ANALYSIS — THE KEY DIFFERENTIATOR:
+SENTIMENT PATTERN ANALYSIS â€” THE KEY DIFFERENTIATOR:
 Look across ALL platforms and find recurring themes in negative reviews.
 A business with "slow response time" on Google, "hard to reach" on Yelp, and
 "didn't return calls" on Facebook has an operational phone/communication problem.
-Surface this pattern — it tells the owner what to actually fix, not just that they have bad reviews.
+Surface this pattern â€” it tells the owner what to actually fix, not just that they have bad reviews.
 
 Return ONLY valid JSON:
 {
@@ -110,12 +110,11 @@ export default function MultiPlatformReviewMonitor({ industry, city, websiteUrl,
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514", max_tokens: 2000, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Generate review monitoring report for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nMode: ${mode||"named"}\n\nGenerate realistic data. Include 2-3 sentiment patterns (at least one negative recurring complaint). Include industry-appropriate platforms.` }]
-        })
+          messages: [{ role: "user", content: `Generate review monitoring report for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nMode: ${mode||"named"}\n\nGenerate realistic data. Include 2-3 sentiment patterns (at least one negative recurring complaint). Include industry-appropriate platforms.` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text||"{}").replace(/```[\w]*\n?/g,"").trim()));
@@ -125,24 +124,24 @@ export default function MultiPlatformReviewMonitor({ industry, city, websiteUrl,
         unansweredReviews: 14,
         platforms: [
           { platform: "Google", reviews: 94, rating: 4.6, lastReview: "2 days ago", unanswered: 3, trend: "improving", status: "active", industryImportance: "critical", topPositive: "Fast response time and professional technicians", topNegative: "Pricing not explained upfront before job" },
-          { platform: "Yelp", reviews: 22, rating: 3.8, lastReview: "3 weeks ago", unanswered: 8, trend: "declining", status: "stale", industryImportance: "high", topPositive: "Good installation quality", topNegative: "Slow to answer calls and emails — hard to reach" },
+          { platform: "Yelp", reviews: 22, rating: 3.8, lastReview: "3 weeks ago", unanswered: 8, trend: "declining", status: "stale", industryImportance: "high", topPositive: "Good installation quality", topNegative: "Slow to answer calls and emails â€” hard to reach" },
           { platform: "Facebook", reviews: 18, rating: 4.2, lastReview: "1 month ago", unanswered: 3, trend: "stable", status: "active", industryImportance: "medium", topPositive: "Friendly and local", topNegative: "Didn't get a callback for 3 days" },
           { platform: "BBB", reviews: 8, rating: 3.9, lastReview: "2 months ago", unanswered: 0, trend: "stable", status: "active", industryImportance: "medium", topPositive: "Resolved complaint professionally", topNegative: "One unresolved complaint about billing" },
           { platform: "Angi", reviews: 5, rating: 4.4, lastReview: "6 weeks ago", unanswered: 0, trend: "stable", status: "stale", industryImportance: "high", topPositive: "Great work", topNegative: null },
           { platform: "Nextdoor", reviews: 0, rating: null, lastReview: null, unanswered: 0, trend: "stable", status: "missing", industryImportance: "medium", topPositive: null, topNegative: null },
         ],
         sentimentPatterns: [
-          { pattern: "Communication and responsiveness issues", type: "negative", appearsOn: ["Yelp", "Facebook", "Google"], frequency: "8 of last 30 reviews", operationalCause: "The business likely has one person handling phones while also doing field work — calls go unanswered during service hours", fix: "Set up a dedicated answering service or at minimum a voicemail that promises a same-day callback. Respond to all reviews within 24 hours showing accountability." },
-          { pattern: "Pricing transparency complaints", type: "negative", appearsOn: ["Google", "BBB"], frequency: "4 of last 20 reviews", operationalCause: "Technicians are not consistently providing written estimates before starting work — price is a surprise at the end", fix: "Implement a mandatory written quote before any work begins. Add a pricing page to the website showing typical ranges." },
-          { pattern: "Technician professionalism praised", type: "positive", appearsOn: ["Google", "Angi", "Facebook"], frequency: "31 of last 40 reviews", operationalCause: "Strong technical team — this is the business's core differentiator", fix: "Feature technicians by name in GBP posts and on the website. Ask for reviews that mention specific technician names — Google rewards entity mentions." },
+          { pattern: "Communication and responsiveness issues", type: "negative", appearsOn: ["Yelp", "Facebook", "Google"], frequency: "8 of last 30 reviews", operationalCause: "The business likely has one person handling phones while also doing field work â€” calls go unanswered during service hours", fix: "Set up a dedicated answering service or at minimum a voicemail that promises a same-day callback. Respond to all reviews within 24 hours showing accountability." },
+          { pattern: "Pricing transparency complaints", type: "negative", appearsOn: ["Google", "BBB"], frequency: "4 of last 20 reviews", operationalCause: "Technicians are not consistently providing written estimates before starting work â€” price is a surprise at the end", fix: "Implement a mandatory written quote before any work begins. Add a pricing page to the website showing typical ranges." },
+          { pattern: "Technician professionalism praised", type: "positive", appearsOn: ["Google", "Angi", "Facebook"], frequency: "31 of last 40 reviews", operationalCause: "Strong technical team â€” this is the business's core differentiator", fix: "Feature technicians by name in GBP posts and on the website. Ask for reviews that mention specific technician names â€” Google rewards entity mentions." },
         ],
         criticalAlerts: [
-          { alert: "8 unanswered Yelp reviews — some over 3 months old. Yelp shows response rate publicly and this business shows 0%", platform: "Yelp", urgency: "critical" },
-          { alert: "Nextdoor presence is missing entirely — for a local service business this is a significant gap. Neighbors recommend local services here constantly.", platform: "Nextdoor", urgency: "high" },
-          { alert: "3.8 star Yelp rating is below the 4.0 threshold — Yelp filters reviews below 4.0 more aggressively in search", platform: "Yelp", urgency: "high" },
+          { alert: "8 unanswered Yelp reviews â€” some over 3 months old. Yelp shows response rate publicly and this business shows 0%", platform: "Yelp", urgency: "critical" },
+          { alert: "Nextdoor presence is missing entirely â€” for a local service business this is a significant gap. Neighbors recommend local services here constantly.", platform: "Nextdoor", urgency: "high" },
+          { alert: "3.8 star Yelp rating is below the 4.0 threshold â€” Yelp filters reviews below 4.0 more aggressively in search", platform: "Yelp", urgency: "high" },
         ],
-        competitorReviewGap: "Top local competitor has 94 Google reviews vs your 94 — tied on Google but they have 67 Yelp reviews vs your 22. Yelp gap is costing referrals.",
-        topRecommendation: "Answer the 8 unanswered Yelp reviews immediately and claim the Nextdoor business page this week — both can be done in under an hour and will have immediate reputation impact."
+        competitorReviewGap: "Top local competitor has 94 Google reviews vs your 94 â€” tied on Google but they have 67 Yelp reviews vs your 22. Yelp gap is costing referrals.",
+        topRecommendation: "Answer the 8 unanswered Yelp reviews immediately and claim the Nextdoor business page this week â€” both can be done in under an hour and will have immediate reputation impact."
       });
     }
     setRunning(false);
@@ -161,7 +160,7 @@ export default function MultiPlatformReviewMonitor({ industry, city, websiteUrl,
           <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:0, lineHeight:1.5 }}>Monitors reviews across Google, Yelp, Facebook, BBB, Angi, and more. Analyzes sentiment patterns across platforms to find the actual operational problems behind negative reviews.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding:"8px 14px", background:running?"transparent":MODULE_COLOR, border:`0.5px solid ${MODULE_COLOR}`, borderRadius:6, color:running?MODULE_COLOR:"#fff", fontSize:12, fontWeight:500, cursor:running?"not-allowed":"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
-          {running?"Monitoring...":result?"Re-check →":"Monitor Reviews →"}
+          {running?"Monitoring...":result?"Re-check â†’":"Monitor Reviews â†’"}
         </button>
       </div>
 
@@ -171,7 +170,7 @@ export default function MultiPlatformReviewMonitor({ industry, city, websiteUrl,
             {[
               { label:"Reputation score", value:result.overallReputationScore, color:sc(result.overallReputationScore) },
               { label:"Total reviews", value:result.totalReviews, color:"var(--color-text-primary)" },
-              { label:"Avg rating", value:`★${result.averageRating}`, color:"#FBBF24" },
+              { label:"Avg rating", value:`â˜…${result.averageRating}`, color:"#FBBF24" },
               { label:"Unanswered", value:result.unansweredReviews, color:result.unansweredReviews>5?"#F87171":"#FBBF24" },
             ].map(({ label, value, color }) => (
               <div key={label} style={{ background:"var(--color-background-secondary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:8, padding:"9px", textAlign:"center" }}>
@@ -209,7 +208,7 @@ export default function MultiPlatformReviewMonitor({ industry, city, websiteUrl,
                       {p.lastReview && <div style={{ fontSize:9, color:"var(--color-text-secondary)" }}>Last review: {p.lastReview}</div>}
                     </div>
                     <div style={{ textAlign:"center" }}>
-                      {p.rating ? <div style={{ fontSize:12, fontWeight:500, color:p.rating>=4?"#34D399":p.rating>=3.5?"#FBBF24":"#F87171" }}>★{p.rating}</div> : <div style={{ fontSize:10, color:"var(--color-text-secondary)" }}>—</div>}
+                      {p.rating ? <div style={{ fontSize:12, fontWeight:500, color:p.rating>=4?"#34D399":p.rating>=3.5?"#FBBF24":"#F87171" }}>â˜…{p.rating}</div> : <div style={{ fontSize:10, color:"var(--color-text-secondary)" }}>â€”</div>}
                       <div style={{ fontSize:9, color:"var(--color-text-secondary)" }}>{p.reviews||0} reviews</div>
                     </div>
                     <div style={{ textAlign:"center" }}>
@@ -232,7 +231,7 @@ export default function MultiPlatformReviewMonitor({ industry, city, websiteUrl,
                     <span style={{ fontSize:8, padding:"2px 6px", borderRadius:3, background:p.type==="negative"?"#F8717118":"#34D39918", color:p.type==="negative"?"#F87171":"#34D399", flexShrink:0 }}>{p.type.toUpperCase()}</span>
                     <div style={{ fontSize:12, fontWeight:500, color:"var(--color-text-primary)" }}>{p.pattern}</div>
                   </div>
-                  <div style={{ fontSize:10, color:"var(--color-text-secondary)", marginBottom:4 }}>Appears on: {p.appearsOn.join(", ")} · {p.frequency}</div>
+                  <div style={{ fontSize:10, color:"var(--color-text-secondary)", marginBottom:4 }}>Appears on: {p.appearsOn.join(", ")} Â· {p.frequency}</div>
                   <div style={{ fontSize:11, color:"var(--color-text-secondary)", marginBottom:5, lineHeight:1.5 }}>Root cause: {p.operationalCause}</div>
                   <div style={{ fontSize:11, color:"#34D399", lineHeight:1.5 }}>Fix: {p.fix}</div>
                 </div>
@@ -272,3 +271,4 @@ export default function MultiPlatformReviewMonitor({ industry, city, websiteUrl,
     </div>
   );
 }
+

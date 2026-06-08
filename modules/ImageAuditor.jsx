@@ -1,5 +1,5 @@
-/**
- * Local SEO & AEO Pro — Image Auditor
+﻿/**
+ * Local SEO & AEO Pro â€” Image Auditor
  * Tag: IMG | Group: On-Page Audit
  * Checks compression format, above-fold images, duplicates, alt text
  */
@@ -14,10 +14,10 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 2000,
+          model: "claude-sonnet-4-20250514",
           system: `You are a local SEO image audit specialist. Audit images on a local business website. Return ONLY valid JSON:
 {
   "overallScore": 0-100,
@@ -46,8 +46,7 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
   ],
   "summary": "brief overview of image health"
 }`,
-          messages: [{ role: "user", content: `Audit images for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` }]
-        })
+          messages: [{ role: "user", content: `Audit images for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
@@ -60,13 +59,13 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
         duplicateImages: 5,
         estimatedSavingsKB: 4200,
         images: [
-          { filename: "hero-banner.jpg", page: "/", format: "JPEG", sizeKB: 1840, isAboveFold: true, altText: "", issues: ["CRITICAL: 1.84MB JPEG above fold — kills LCP score", "No alt text", "Generic filename"], targetFormat: "AVIF", estimatedNewSizeKB: 210, suggestedAlt: `${businessName || "Citywide Alarms"} — fire alarm and security systems in ${city || "St. Charles"}, MO`, suggestedFilename: `fire-alarm-security-${(city || "st-charles").toLowerCase().replace(/\s/g, "-")}.avif` },
-          { filename: "DSC_0042.jpg", page: "/about", format: "JPEG", sizeKB: 640, isAboveFold: false, altText: "photo", issues: ["Generic filename (DSC_0042)", "Non-descriptive alt text", "Should be AVIF"], targetFormat: "AVIF", estimatedNewSizeKB: 95, suggestedAlt: `${businessName || "Citywide Alarms"} team — local alarm technicians in ${city || "St. Charles"}`, suggestedFilename: `alarm-technicians-${(city || "st-charles").toLowerCase().replace(/\s/g, "-")}.avif` },
+          { filename: "hero-banner.jpg", page: "/", format: "JPEG", sizeKB: 1840, isAboveFold: true, altText: "", issues: ["CRITICAL: 1.84MB JPEG above fold â€” kills LCP score", "No alt text", "Generic filename"], targetFormat: "AVIF", estimatedNewSizeKB: 210, suggestedAlt: `${businessName || "Citywide Alarms"} â€” fire alarm and security systems in ${city || "St. Charles"}, MO`, suggestedFilename: `fire-alarm-security-${(city || "st-charles").toLowerCase().replace(/\s/g, "-")}.avif` },
+          { filename: "DSC_0042.jpg", page: "/about", format: "JPEG", sizeKB: 640, isAboveFold: false, altText: "photo", issues: ["Generic filename (DSC_0042)", "Non-descriptive alt text", "Should be AVIF"], targetFormat: "AVIF", estimatedNewSizeKB: 95, suggestedAlt: `${businessName || "Citywide Alarms"} team â€” local alarm technicians in ${city || "St. Charles"}`, suggestedFilename: `alarm-technicians-${(city || "st-charles").toLowerCase().replace(/\s/g, "-")}.avif` },
           { filename: "service-img.png", page: "/services", format: "PNG", sizeKB: 920, isAboveFold: false, altText: "service image", issues: ["PNG should be WebP or AVIF", "Generic alt text", "Generic filename"], targetFormat: "AVIF", estimatedNewSizeKB: 130, suggestedAlt: `Fire alarm installation service in ${city || "St. Charles"}, MO`, suggestedFilename: `fire-alarm-installation-service.avif` },
         ],
         duplicateGroups: [
-          { filename: "logo.png", usedOnPages: ["/", "/about", "/contact", "/services", "/fire-alarm"], fix: "Logo reuse is fine — ensure it is WebP format and under 20KB" },
-          { filename: "service-img.png", usedOnPages: ["/services", "/fire-alarm-monitoring"], fix: "Create a unique image for each page — duplicate images signal templated content to Google" },
+          { filename: "logo.png", usedOnPages: ["/", "/about", "/contact", "/services", "/fire-alarm"], fix: "Logo reuse is fine â€” ensure it is WebP format and under 20KB" },
+          { filename: "service-img.png", usedOnPages: ["/services", "/fire-alarm-monitoring"], fix: "Create a unique image for each page â€” duplicate images signal templated content to Google" },
         ],
         summary: "3 above-fold images are in JPEG format and are causing LCP failures. Total potential savings of 4.2MB across 24 images. 5 images are duplicated across multiple pages."
       });
@@ -85,11 +84,11 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
             <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)" }}>Image Auditor</span>
           </div>
           <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>
-            Detects outdated image formats (JPEG/PNG), above-fold images killing page speed, missing alt text, generic filenames, and duplicate images used across multiple pages. Free plan shows error count — paid plan converts and replaces all images automatically.
+            Detects outdated image formats (JPEG/PNG), above-fold images killing page speed, missing alt text, generic filenames, and duplicate images used across multiple pages. Free plan shows error count â€” paid plan converts and replaces all images automatically.
           </p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#0B0E16", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-          {running ? "Scanning..." : result ? "Re-run →" : "Audit Images →"}
+          {running ? "Scanning..." : result ? "Re-run â†’" : "Audit Images â†’"}
         </button>
       </div>
 
@@ -98,7 +97,7 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 6, marginBottom: 10 }}>
             {[
               { label: "Score", value: `${result.overallScore}/100`, color: result.overallScore > 60 ? "#34D399" : "#F87171" },
-              { label: "Above Fold ⚠", value: result.aboveFoldProblems, color: "#F87171" },
+              { label: "Above Fold âš ", value: result.aboveFoldProblems, color: "#F87171" },
               { label: "Duplicates", value: result.duplicateImages, color: "#FBBF24" },
               { label: "Potential Savings", value: `${Math.round(result.estimatedSavingsKB / 1024 * 10) / 10}MB`, color: "#34D399" },
             ].map((s, i) => (
@@ -111,8 +110,8 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
 
           {result.aboveFoldProblems > 0 && (
             <div style={{ background: "#F8717110", border: "0.5px solid #F87171", borderRadius: 8, padding: "9px 12px", marginBottom: 10 }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: "#F87171", marginBottom: 3 }}>🚨 ABOVE-FOLD CRITICAL: {result.aboveFoldProblems} heavy image{result.aboveFoldProblems > 1 ? "s" : ""} are breaking the 1-second load rule</div>
-              <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>Images above the fold on mobile must be under 100KB in AVIF format. Any heavier and LCP fails — Google penalizes the ranking directly.</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: "#F87171", marginBottom: 3 }}>ðŸš¨ ABOVE-FOLD CRITICAL: {result.aboveFoldProblems} heavy image{result.aboveFoldProblems > 1 ? "s" : ""} are breaking the 1-second load rule</div>
+              <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>Images above the fold on mobile must be under 100KB in AVIF format. Any heavier and LCP fails â€” Google penalizes the ranking directly.</div>
             </div>
           )}
 
@@ -137,12 +136,12 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
                     <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                       <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 3, background: formatColor(img.format) + "20", color: formatColor(img.format) }}>{img.format}</span>
                       <span style={{ fontSize: 11, color: "#F87171" }}>{img.sizeKB}KB</span>
-                      <span style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>→</span>
+                      <span style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>â†’</span>
                       <span style={{ fontSize: 11, color: "#34D399" }}>{img.estimatedNewSizeKB}KB {img.targetFormat}</span>
                     </div>
                   </div>
                   {(img.issues || []).map((issue, j) => (
-                    <div key={j} style={{ fontSize: 10, color: "#FBBF24", marginBottom: 2 }}>⚠ {issue}</div>
+                    <div key={j} style={{ fontSize: 10, color: "#FBBF24", marginBottom: 2 }}>âš  {issue}</div>
                   ))}
                   {plan !== "free" && (
                     <div style={{ marginTop: 6, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
@@ -183,9 +182,10 @@ export default function ImageAuditor({ industry, city, websiteUrl, businessName,
 
       {!result && !running && (
         <div style={{ textAlign: "center", padding: "36px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, color: "var(--color-text-secondary)", fontSize: 12 }}>
-          Scans every image for format, size, alt text, and duplication — shows how many are slowing your site
+          Scans every image for format, size, alt text, and duplication â€” shows how many are slowing your site
         </div>
       )}
     </div>
   );
 }
+

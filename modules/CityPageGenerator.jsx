@@ -1,4 +1,4 @@
-/**
+﻿/**
  * City Page Generator
  * Tag: CPG | Group: Content
  */
@@ -12,14 +12,14 @@ function ContentModule({ tag, label, description, color, systemPrompt, userPromp
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 3000, system: systemPrompt, messages: [{ role: "user", content: userPrompt }] })
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 3000, system: systemPrompt, messages: [{ role: "user", content: userPrompt })
       });
       const data = await res.json();
       const raw = (data.content?.[0]?.text || "").replace(/```[\w]*\n?/g, "").trim();
       try { setResult(JSON.parse(raw)); } catch { setResult({ content: raw, score: 88, wordCount: raw.split(" ").length }); }
-    } catch { setResult({ content: `[${label} content would appear here — Claude API generated full ${label.toLowerCase()} for ${userPrompt.slice(0,40)}...]`, score: 85, wordCount: 650 }); }
+    } catch { setResult({ content: `[${label} content would appear here â€” Claude API generated full ${label.toLowerCase()} for ${userPrompt.slice(0,40)}...]`, score: 85, wordCount: 650 }); }
     setRunning(false);
   };
 
@@ -42,7 +42,7 @@ function ContentModule({ tag, label, description, color, systemPrompt, userPromp
           <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>{description}</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : color, border: `0.5px solid ${color}`, borderRadius: 6, color: running ? color : plan === "free" ? "#0B0E16" : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-          {running ? "Generating..." : result ? "Regenerate →" : `Generate ${outputLabel} →`}
+          {running ? "Generating..." : result ? "Regenerate â†’" : `Generate ${outputLabel} â†’`}
         </button>
       </div>
       {result && (
@@ -55,7 +55,7 @@ function ContentModule({ tag, label, description, color, systemPrompt, userPromp
             </div>
             {plan !== "free" && (
               <button onClick={copy} style={{ fontSize: 9, padding: "2px 8px", border: "0.5px solid var(--color-border-secondary)", borderRadius: 4, background: copied ? "#34D39920" : "transparent", color: copied ? "#34D399" : "var(--color-text-secondary)", cursor: "pointer" }}>
-                {copied ? "Copied!" : "Copy all →"}
+                {copied ? "Copied!" : "Copy all â†’"}
               </button>
             )}
           </div>
@@ -66,7 +66,7 @@ function ContentModule({ tag, label, description, color, systemPrompt, userPromp
               <div style={{ fontSize: 11, color: "var(--color-text-secondary)", lineHeight: 1.7 }}>
                 {result.posts && <div>{(result.posts || []).slice(0, plan === "free" ? 2 : 10).map((p, i) => <div key={i} style={{ marginBottom: 10, padding: "8px 10px", background: "var(--color-background-secondary)", borderRadius: 6 }}><div style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)", marginBottom: 2 }}>{p.title || p.headline}</div><div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>{p.keyword || p.scheduledDate}</div></div>)}</div>}
                 {result.faqs && <div>{(result.faqs || []).slice(0, plan === "free" ? 3 : 20).map((f, i) => <div key={i} style={{ marginBottom: 8 }}><div style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)", marginBottom: 2 }}>Q: {f.question}</div><div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>A: {f.answer}</div></div>)}</div>}
-                {result.tiers && <div>{(result.tiers || []).map((t, i) => <div key={i} style={{ marginBottom: 8, padding: "8px 10px", background: "var(--color-background-secondary)", borderRadius: 6 }}><div style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)" }}>{t.name} — {t.price}</div><div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>{t.description}</div></div>)}</div>}
+                {result.tiers && <div>{(result.tiers || []).map((t, i) => <div key={i} style={{ marginBottom: 8, padding: "8px 10px", background: "var(--color-background-secondary)", borderRadius: 6 }}><div style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)" }}>{t.name} â€” {t.price}</div><div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>{t.description}</div></div>)}</div>}
                 {result.comparisons && <div>{(result.comparisons || []).map((c, i) => <div key={i} style={{ marginBottom: 8 }}><div style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)", marginBottom: 2 }}>{c.aspect}</div><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}><div style={{ fontSize: 10, color: "#34D399" }}>Us: {c.us}</div><div style={{ fontSize: 10, color: "#F87171" }}>Them: {c.them}</div></div></div>)}</div>}
               </div>
             )}
@@ -92,3 +92,4 @@ export default function CityPageGenerator({ industry, city, websiteUrl, business
     userPrompt={`Generate a city landing page:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}\n\nInclude: optimized H1 with city+service, 3 service sections with local detail, NAP block, FAQ section with 5 questions, LocalBusiness schema, conversion CTA, 600+ words.`}
   />;
 }
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * XML Sitemap Builder
  * Tag: XML | Group: Technical
  */
@@ -13,13 +13,12 @@ export default function XMLSitemapBuilder({ industry, city, websiteUrl, business
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 2000,
+          model: "claude-sonnet-4-20250514",
           system: `You are an XML sitemap specialist for local business websites. Generate an optimized XML sitemap. Return ONLY valid JSON: {"totalUrls":number,"sitemapXml":"complete XML sitemap as string","pagesByType":{"homepage":number,"service":number,"city":number,"blog":number,"other":number},"priorityLogic":"explanation of priority assignments","excludedPages":["pages excluded and why"],"submissionSteps":["step 1","step 2","step 3"],"gscUrl":"Google Search Console sitemap submission URL"}`,
-          messages: [{ role: "user", content: `Generate XML sitemap for:\nBusiness: ${businessName}\nIndustry: ${industry}\nCity: ${city}\nWebsite: ${websiteUrl || "https://example.com"}\n\nGenerate realistic page structure for this local business. Prioritize: homepage (1.0), city pages (0.9), service pages (0.8), blog (0.6).` }]
-        })
+          messages: [{ role: "user", content: `Generate XML sitemap for:\nBusiness: ${businessName}\nIndustry: ${industry}\nCity: ${city}\nWebsite: ${websiteUrl || "https://example.com"}\n\nGenerate realistic page structure for this local business. Prioritize: homepage (1.0), city pages (0.9), service pages (0.8), blog (0.6).` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
@@ -64,7 +63,7 @@ export default function XMLSitemapBuilder({ industry, city, websiteUrl, business
           <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Generates and validates an XML sitemap with city page prioritization for Googlebot. Includes Search Console submission steps.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-          {running ? "Building..." : result ? "Rebuild →" : "Build Sitemap →"}
+          {running ? "Building..." : result ? "Rebuild â†’" : "Build Sitemap â†’"}
         </button>
       </div>
       {result && (
@@ -79,8 +78,8 @@ export default function XMLSitemapBuilder({ industry, city, websiteUrl, business
           </div>
           <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, overflow: "hidden", marginBottom: 10 }}>
             <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>SITEMAP XML — {result.totalUrls} URLs</span>
-              {plan !== "free" && <button onClick={copy} style={{ fontSize: 9, padding: "2px 7px", border: "0.5px solid var(--color-border-secondary)", borderRadius: 4, background: copied ? "#34D39920" : "transparent", color: copied ? "#34D399" : "var(--color-text-secondary)", cursor: "pointer" }}>{copied ? "Copied!" : "Copy XML →"}</button>}
+              <span style={{ fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>SITEMAP XML â€” {result.totalUrls} URLs</span>
+              {plan !== "free" && <button onClick={copy} style={{ fontSize: 9, padding: "2px 7px", border: "0.5px solid var(--color-border-secondary)", borderRadius: 4, background: copied ? "#34D39920" : "transparent", color: copied ? "#34D399" : "var(--color-text-secondary)", cursor: "pointer" }}>{copied ? "Copied!" : "Copy XML â†’"}</button>}
             </div>
             <div style={{ padding: "10px 12px", maxHeight: 200, overflowY: "auto" }}>
               <pre style={{ fontSize: 10, fontFamily: "var(--font-mono)", color: "var(--color-text-secondary)", lineHeight: 1.6, margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>
@@ -105,3 +104,4 @@ export default function XMLSitemapBuilder({ industry, city, websiteUrl, business
     </div>
   );
 }
+

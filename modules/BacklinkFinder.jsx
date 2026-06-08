@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Backlink Finder
  * Tag: BKL | Group: Technical
  */
@@ -12,26 +12,25 @@ export default function BacklinkFinder({ industry, city, websiteUrl, businessNam
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1500,
+          model: "claude-sonnet-4-20250514",
           system: `You are a local link building specialist. Find local link opportunities for a business. Return ONLY valid JSON: {"opportunities":[{"source":"source name","type":"chamber|press|association|sponsor|directory|supplier","domainAuthority":number,"linkType":"do-follow|no-follow","submissionUrl":"URL or description","effort":"easy|medium|hard","localRelevance":"high|medium","pitch":"one sentence pitch for getting this link"}],"totalOpportunities":number,"estimatedDaGain":"DA range gain if all built","topPick":"easiest highest-value link to get first"}`,
-          messages: [{ role: "user", content: `Find local link opportunities for:\nBusiness: ${businessName}\nIndustry: ${industry}\nCity: ${city}\n\nGenerate 12 local link opportunities specific to this industry and city.` }]
-        })
+          messages: [{ role: "user", content: `Find local link opportunities for:\nBusiness: ${businessName}\nIndustry: ${industry}\nCity: ${city}\n\nGenerate 12 local link opportunities specific to this industry and city.` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
     } catch {
       setResult({
         totalOpportunities: 12,
-        estimatedDaGain: "DA 18 → 28 if all built",
-        topPick: `${city || "St. Charles"} Chamber of Commerce — free member listing with do-follow link, takes 10 minutes to claim.`,
+        estimatedDaGain: "DA 18 â†’ 28 if all built",
+        topPick: `${city || "St. Charles"} Chamber of Commerce â€” free member listing with do-follow link, takes 10 minutes to claim.`,
         opportunities: [
-          { source: `${city||"St. Charles"} Chamber of Commerce`, type: "chamber", domainAuthority: 52, linkType: "do-follow", submissionUrl: `stcharleschamber.com/members`, effort: "easy", localRelevance: "high", pitch: "Member listing — join as a business member and get a do-follow profile link from a DA52 local authority site." },
-          { source: `${city||"St. Charles"} Business Journal`, type: "press", domainAuthority: 44, linkType: "do-follow", submissionUrl: "Local press — pitch a story", effort: "medium", localRelevance: "high", pitch: "Pitch a fire safety awareness story around a local event — offer as expert source for a free editorial mention." },
-          { source: "Missouri Fire Safety Association", type: "association", domainAuthority: 38, linkType: "do-follow", submissionUrl: "mofiresafety.org/members", effort: "easy", localRelevance: "high", pitch: "Industry member listing — direct application, typically approved within 2 weeks." },
-          { source: "Local School District Safety Sponsor", type: "sponsor", domainAuthority: 41, linkType: "do-follow", submissionUrl: "Contact district communications office", effort: "medium", localRelevance: "high", pitch: "Sponsor a fire safety assembly — typically costs $200-500 and earns a sponsor page link from a trusted .edu or .k12 domain." },
+          { source: `${city||"St. Charles"} Chamber of Commerce`, type: "chamber", domainAuthority: 52, linkType: "do-follow", submissionUrl: `stcharleschamber.com/members`, effort: "easy", localRelevance: "high", pitch: "Member listing â€” join as a business member and get a do-follow profile link from a DA52 local authority site." },
+          { source: `${city||"St. Charles"} Business Journal`, type: "press", domainAuthority: 44, linkType: "do-follow", submissionUrl: "Local press â€” pitch a story", effort: "medium", localRelevance: "high", pitch: "Pitch a fire safety awareness story around a local event â€” offer as expert source for a free editorial mention." },
+          { source: "Missouri Fire Safety Association", type: "association", domainAuthority: 38, linkType: "do-follow", submissionUrl: "mofiresafety.org/members", effort: "easy", localRelevance: "high", pitch: "Industry member listing â€” direct application, typically approved within 2 weeks." },
+          { source: "Local School District Safety Sponsor", type: "sponsor", domainAuthority: 41, linkType: "do-follow", submissionUrl: "Contact district communications office", effort: "medium", localRelevance: "high", pitch: "Sponsor a fire safety assembly â€” typically costs $200-500 and earns a sponsor page link from a trusted .edu or .k12 domain." },
         ]
       });
     }
@@ -49,10 +48,10 @@ export default function BacklinkFinder({ industry, city, websiteUrl, businessNam
             <span style={{ fontSize: 9, fontWeight: 500, color: MODULE_COLOR, background: MODULE_COLOR + "18", padding: "2px 6px", borderRadius: 3 }}>BKL</span>
             <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)" }}>Backlink Finder</span>
           </div>
-          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Finds local link opportunities — chamber listings, press, industry associations, event sponsorships, and local directories. All do-follow, all locally relevant.</p>
+          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Finds local link opportunities â€” chamber listings, press, industry associations, event sponsorships, and local directories. All do-follow, all locally relevant.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-          {running ? "Finding..." : result ? "Re-find →" : "Find Links →"}
+          {running ? "Finding..." : result ? "Re-find â†’" : "Find Links â†’"}
         </button>
       </div>
       {result && (
@@ -76,7 +75,7 @@ export default function BacklinkFinder({ industry, city, websiteUrl, businessNam
                   </div>
                 </div>
                 <div style={{ fontSize: 10, color: "#34D399", marginBottom: 2 }}>Pitch: {opp.pitch}</div>
-                <div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>{opp.linkType} · {opp.submissionUrl}</div>
+                <div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>{opp.linkType} Â· {opp.submissionUrl}</div>
               </div>
             ))}
           </div>
@@ -86,3 +85,4 @@ export default function BacklinkFinder({ industry, city, websiteUrl, businessNam
     </div>
   );
 }
+

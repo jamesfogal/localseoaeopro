@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — GeoGrid Map Rank Tracker
+﻿/**
+ * LocalRank Pro â€” GeoGrid Map Rank Tracker
  * Tag: GRD | Group: Local Presence
  *
  * Shows Google Maps ranking position at every geographic
@@ -27,7 +27,7 @@ Generate a realistic GeoGrid ranking report for a local business.
 
 A GeoGrid shows what position a business ranks on Google Maps when searched from
 different geographic points around their location. Each point on the grid represents
-a different GPS coordinate — a potential customer searching from that location.
+a different GPS coordinate â€” a potential customer searching from that location.
 
 GRID LOGIC FOR LOCAL SEO:
 - A business typically ranks strongest near its physical address (center of grid)
@@ -48,7 +48,7 @@ Also generate competitor data for the 3 strongest local competitors in Named Mod
 Return ONLY valid JSON:
 {
   "businessName": "string",
-  "keyword": "string — the search term tracked",
+  "keyword": "string â€” the search term tracked",
   "city": "string",
   "gridSize": 7,
   "centerRank": number,
@@ -100,16 +100,11 @@ export default function GeoGridTracker({
     const kw = keyword.trim() || `${industry || "alarm company"} ${city || "local area"}`;
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1500,
-          system: SYSTEM_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Generate GeoGrid for:
+          system: SYSTEM_PROMPT,          prompt: `Generate GeoGrid for:
 Business: ${businessName || "Local Business"}
 Industry: ${industry || "Local Services"}
 City: ${city || "their city"}
@@ -120,13 +115,11 @@ Plan: ${plan}
 Make the grid realistic for a ${industry} business in ${city}.
 Show geographic weaknesses that would make sense for this market.
 ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : "Use realistic local competitor names."}`
-          }]
-        })
+          })
       });
 
       const data  = await res.json();
-      const raw   = data.content?.[0]?.text || "{}";
-      const clean = raw.replace(/```[\w]*\n?/g, "").trim();
+      const clean = data.result || "{}";
       setResult(JSON.parse(clean));
     } catch {
       // Realistic fallback
@@ -147,16 +140,16 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
           [16,12, 9, 7,10,14,18],
           [20,17,13,11,15,19,20],
         ],
-        weakZones: ["Northeast quadrant — low ranking suggests competitor strength there","Far edges of service area drop below position 15"],
-        strongZones: ["Center and immediate surrounding cells — strong near physical address","South-central corridor performs well"],
+        weakZones: ["Northeast quadrant â€” low ranking suggests competitor strength there","Far edges of service area drop below position 15"],
+        strongZones: ["Center and immediate surrounding cells â€” strong near physical address","South-central corridor performs well"],
         competitors: [
           { name: mode === "anonymous" ? "Local Competitor A" : "Shield Security St. Charles", averageRank: 3.2, shareOfVoice: 48, threat: "high" },
           { name: mode === "anonymous" ? "Local Competitor B" : "St. Louis Alarm Pros",       averageRank: 6.8, shareOfVoice: 22, threat: "medium" },
           { name: mode === "anonymous" ? "Local Competitor C" : "Safe Home Systems MO",       averageRank: 9.1, shareOfVoice: 11, threat: "low" },
         ],
-        topInsight: "Strong near your address but ranking drops sharply in the northeast — that area likely has a competitor with more GBP reviews and photos. Adding 15 photos and 10 new reviews would likely push rankings there from 10–18 down to 4–7.",
+        topInsight: "Strong near your address but ranking drops sharply in the northeast â€” that area likely has a competitor with more GBP reviews and photos. Adding 15 photos and 10 new reviews would likely push rankings there from 10â€“18 down to 4â€“7.",
         fixes: [
-          "Add 15+ photos to GBP — specifically showing service vehicles and job sites in the northeast area",
+          "Add 15+ photos to GBP â€” specifically showing service vehicles and job sites in the northeast area",
           "Generate 10 new reviews mentioning service coverage across St. Charles County",
           "Create a service-area city page targeting the northeast zip codes",
           "Add service area pins in GBP Settings to cover the northeast quadrant",
@@ -202,7 +195,7 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
             disabled={running}
             style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#0B0E16", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
           >
-            {running ? "Scanning..." : result ? "Re-scan →" : "Scan Grid →"}
+            {running ? "Scanning..." : result ? "Re-scan â†’" : "Scan Grid â†’"}
           </button>
         </div>
       </div>
@@ -227,7 +220,7 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
           {/* Grid legend */}
           <div style={{ display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap", alignItems: "center" }}>
             <span style={{ fontSize: 9, color: "var(--color-text-secondary)" }}>Rankings:</span>
-            {[["1–3","#34D399","Dominant"],["4–7","#84CC16","Competitive"],["8–13","#F59E0B","Weak"],["14+","#F87171","Not visible"]].map(([range,color,label]) => (
+            {[["1â€“3","#34D399","Dominant"],["4â€“7","#84CC16","Competitive"],["8â€“13","#F59E0B","Weak"],["14+","#F87171","Not visible"]].map(([range,color,label]) => (
               <div key={range} style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <span style={{ width: 14, height: 14, borderRadius: 3, background: color, display: "inline-block" }}></span>
                 <span style={{ fontSize: 9, color: "var(--color-text-secondary)" }}>{range} {label}</span>
@@ -239,9 +232,9 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
           <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, overflow: "hidden", marginBottom: 10 }}>
             <div style={{ padding: "8px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>
-                {plan === "free" ? "5×5 GRID PREVIEW" : "7×7 GRID — FULL SCAN"} · {result.keyword}
+                {plan === "free" ? "5Ã—5 GRID PREVIEW" : "7Ã—7 GRID â€” FULL SCAN"} Â· {result.keyword}
               </span>
-              {plan === "free" && <span style={{ fontSize: 9, color: "#FBBF24" }}>Upgrade for 7×7 + 10 keywords</span>}
+              {plan === "free" && <span style={{ fontSize: 9, color: "#FBBF24" }}>Upgrade for 7Ã—7 + 10 keywords</span>}
             </div>
             <div style={{ padding: "16px", display: "flex", justifyContent: "center" }}>
               <div>
@@ -291,7 +284,7 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
                   <div style={{ display: "flex", alignItems: "center", fontSize: 9, color: "var(--color-text-secondary)", marginLeft: 4, writingMode: "vertical-rl" }}>E</div>
                 </div>
                 <div style={{ textAlign: "center", fontSize: 9, color: "var(--color-text-secondary)", marginTop: 4 }}>S</div>
-                <div style={{ textAlign: "center", fontSize: 9, color: "var(--color-text-secondary)", marginTop: 2 }}>● = your address</div>
+                <div style={{ textAlign: "center", fontSize: 9, color: "var(--color-text-secondary)", marginTop: 2 }}>â— = your address</div>
               </div>
             </div>
           </div>
@@ -308,7 +301,7 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
               <div style={{ padding: "6px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>FIXES TO EXPAND YOUR GREEN ZONE</div>
               {(result.fixes || []).map((f, i) => (
                 <div key={i} style={{ display: "flex", gap: 7, padding: "7px 12px", borderBottom: i < result.fixes.length - 1 ? "0.5px solid var(--color-border-tertiary)" : "none" }}>
-                  <span style={{ color: MODULE_COLOR, fontSize: 11, flexShrink: 0 }}>→</span>
+                  <span style={{ color: MODULE_COLOR, fontSize: 11, flexShrink: 0 }}>â†’</span>
                   <span style={{ fontSize: 10, color: "var(--color-text-secondary)", lineHeight: 1.45 }}>{f}</span>
                 </div>
               ))}
@@ -321,7 +314,7 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
                     <div style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)" }}>{c.name}</div>
                     <span style={{ fontSize: 8, padding: "1px 5px", borderRadius: 3, background: c.threat === "high" ? "#F8717116" : c.threat === "medium" ? "#FBBF2416" : "#34D39916", color: c.threat === "high" ? "#F87171" : c.threat === "medium" ? "#FBBF24" : "#34D399" }}>{c.threat}</span>
                   </div>
-                  <div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>Avg rank #{c.averageRank} · {c.shareOfVoice}% share of voice</div>
+                  <div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>Avg rank #{c.averageRank} Â· {c.shareOfVoice}% share of voice</div>
                 </div>
               ))}
             </div>
@@ -329,7 +322,7 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
 
           {plan === "free" && (
             <div style={{ padding: "10px 14px", background: "#FBBF2408", border: "0.5px solid #FBBF2430", borderRadius: 8, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-              <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>Free plan shows a 5×5 preview. Upgrade for the full 7×7 grid, 10 keywords, weekly tracking, and competitor overlay.</div>
+              <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>Free plan shows a 5Ã—5 preview. Upgrade for the full 7Ã—7 grid, 10 keywords, weekly tracking, and competitor overlay.</div>
               <span style={{ fontSize: 9, padding: "3px 8px", background: "#FBBF24", color: "#412402", borderRadius: 4, whiteSpace: "nowrap", fontWeight: 500 }}>Upgrade</span>
             </div>
           )}
@@ -338,9 +331,10 @@ ${mode === "anonymous" ? "Use 'Local Competitor A/B/C' for competitor names." : 
 
       {!result && !running && (
         <div style={{ textAlign: "center", padding: "40px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, color: "var(--color-text-secondary)", fontSize: 12 }}>
-          Enter a keyword and scan — see exactly where you're winning and losing on Google Maps
+          Enter a keyword and scan â€” see exactly where you're winning and losing on Google Maps
         </div>
       )}
     </div>
   );
 }
+

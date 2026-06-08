@@ -122,16 +122,13 @@ export default function AIVisibilityChecker({
     setExpanded(null);
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 2500,
           system: SYSTEM_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Check AI visibility for:
+          max_tokens: 2500,
+          prompt: `Check AI visibility for:
 Business: ${businessName || "Local Business"}
 Industry: ${industry || "Local Services"}
 City: ${city || "their city"}
@@ -151,13 +148,11 @@ Include:
 
 Be brutally honest about whether a typical ${industry || "local service"} business with no AEO optimization would appear.
 Most local businesses score 15-30 on AI visibility — that is realistic.`
-          }]
         })
       });
 
       const data  = await res.json();
-      const raw   = data.content?.[0]?.text || "{}";
-      const clean = raw.replace(/```[\w]*\n?/g, "").trim();
+      const clean = data.result || "{}";
       setResult(JSON.parse(clean));
 
     } catch {

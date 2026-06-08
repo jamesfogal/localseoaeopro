@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — AEO Q&A Page Generator
+﻿/**
+ * LocalRank Pro â€” AEO Q&A Page Generator
  * Tag: AEO | Group: Content Generation
  *
  * AEO = Answer Engine Optimization
@@ -8,7 +8,7 @@
  *   Claude, Bing Copilot, and voice search assistants
  *
  * What it generates:
- *   - 20–30 high-intent local Q&A pairs per page
+ *   - 20â€“30 high-intent local Q&A pairs per page
  *   - Conversational question formats matching how people
  *     actually speak to AI assistants ("my mom is 88...")
  *   - FAQPage + QAPage JSON-LD schema markup
@@ -19,15 +19,15 @@
  *   - Complete publish-ready HTML page
  *
  * Question categories generated:
- *   1. "What is" — foundational service education
- *   2. "How much" — price transparency (huge AI signal)
- *   3. "How do I" — process questions
- *   4. "Is it worth it" — decision questions
- *   5. "What happens if" — scenario/emergency questions
- *   6. "Who should" — audience-specific questions
+ *   1. "What is" â€” foundational service education
+ *   2. "How much" â€” price transparency (huge AI signal)
+ *   3. "How do I" â€” process questions
+ *   4. "Is it worth it" â€” decision questions
+ *   5. "What happens if" â€” scenario/emergency questions
+ *   6. "Who should" â€” audience-specific questions
  *      (elderly parent, renter, new homeowner, etc.)
- *   7. "Near me" — local-intent questions with city
- *   8. "Compare" — vs competitor / vs DIY questions
+ *   7. "Near me" â€” local-intent questions with city
+ *   8. "Compare" â€” vs competitor / vs DIY questions
  *
  * Free plan:  5 sample Q&A pairs + schema snippet preview
  * Paid plan:  full 25+ Q&A page, complete HTML, all schemas
@@ -38,7 +38,7 @@ import { useState } from "react";
 const MODULE_COLOR = "#10D9A0";
 const MODULE_TAG   = "AEO";
 
-// ─── System prompt ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ System prompt â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SYSTEM_PROMPT = `You are an AEO (Answer Engine Optimization) specialist for LocalRank Pro.
 
 AEO = making local business content readable and citable by AI answer engines:
@@ -50,12 +50,12 @@ by AI systems when people ask natural-language questions about local services.
 THE CORE PRINCIPLE:
 AI systems cite content that directly and completely answers questions.
 They favor:
-  1. Direct answers — the answer starts immediately, no preamble
-  2. Specific details — prices, timeframes, steps, numbers
-  3. Local entity clarity — city name, business name, service area woven naturally
-  4. Emotional specificity — content that matches how real people ask questions
-  5. FAQ schema markup — signals to AI that this is structured answer content
-  6. Authoritative voice — answers that sound like an expert, not a product page
+  1. Direct answers â€” the answer starts immediately, no preamble
+  2. Specific details â€” prices, timeframes, steps, numbers
+  3. Local entity clarity â€” city name, business name, service area woven naturally
+  4. Emotional specificity â€” content that matches how real people ask questions
+  5. FAQ schema markup â€” signals to AI that this is structured answer content
+  6. Authoritative voice â€” answers that sound like an expert, not a product page
 
 YOU MUST INCLUDE:
 - At least 3 "how much" questions with real price ranges for this industry
@@ -69,7 +69,7 @@ ANSWER FORMAT RULES:
 - First sentence of every answer IS the answer. No "Great question!" No "It depends."
 - Include specific numbers, ranges, timeframes wherever possible
 - Mention the business name and city at least once per 4 answers naturally
-- Answers should be 60–150 words — long enough to be authoritative, short enough to be citable
+- Answers should be 60â€“150 words â€” long enough to be authoritative, short enough to be citable
 - End every answer with one clear next step or call to action
 
 Return ONLY valid JSON:
@@ -81,7 +81,7 @@ Return ONLY valid JSON:
       "id": "q1",
       "category": "pricing" | "process" | "education" | "local" | "comparison" | "audience" | "emergency" | "decision",
       "question": "The full question exactly as someone would ask an AI assistant",
-      "answer": "The complete answer — direct, specific, locally branded",
+      "answer": "The complete answer â€” direct, specific, locally branded",
       "aiSignalStrength": "high" | "medium",
       "explanation": "why this question/answer will rank in AI systems"
     }
@@ -100,7 +100,7 @@ Generate 25 questions minimum. Vary the categories. Make every answer feel writt
 the actual business owner who knows their city, their customers, and their prices.
 Return ONLY the JSON object.`;
 
-// ─── Question category config ───────────────────────────────────────────────────
+// â”€â”€â”€ Question category config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CAT_CONFIG = {
   pricing:    { color: "#34D399", bg: "#34D39916", label: "Price" },
   process:    { color: "#60A5FA", bg: "#60A5FA16", label: "Process" },
@@ -112,57 +112,57 @@ const CAT_CONFIG = {
   decision:   { color: "#94A3B8", bg: "#94A3B816", label: "Decision" },
 };
 
-// ─── Realistic fallback demo data ───────────────────────────────────────────────
+// â”€â”€â”€ Realistic fallback demo data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const buildFallback = (businessName, city, industry) => ({
-  pageTitle: `${city} ${industry} Questions Answered — ${businessName}`,
-  pageIntro: `Get direct answers to the most common questions about ${industry.toLowerCase()} in ${city}. We answer what homeowners, renters, and families actually need to know — including real prices, realistic timelines, and honest comparisons.`,
+  pageTitle: `${city} ${industry} Questions Answered â€” ${businessName}`,
+  pageIntro: `Get direct answers to the most common questions about ${industry.toLowerCase()} in ${city}. We answer what homeowners, renters, and families actually need to know â€” including real prices, realistic timelines, and honest comparisons.`,
   questions: [
     {
       id: "q1", category: "pricing",
       question: `How much does it cost to install a home alarm system in ${city}?`,
-      answer: `A professionally installed home alarm system in ${city} typically costs $299–$799 for equipment plus a monthly monitoring fee of $25–$55. Basic packages with door and window sensors start around $299. More comprehensive systems with cameras, smoke detectors, and smart home integration run $500–$800. ${businessName} offers free in-home estimates so you get an exact price before committing to anything.`,
+      answer: `A professionally installed home alarm system in ${city} typically costs $299â€“$799 for equipment plus a monthly monitoring fee of $25â€“$55. Basic packages with door and window sensors start around $299. More comprehensive systems with cameras, smoke detectors, and smart home integration run $500â€“$800. ${businessName} offers free in-home estimates so you get an exact price before committing to anything.`,
       aiSignalStrength: "high",
       explanation: "Price questions with specific ranges are the #1 most-cited content by AI systems for local service queries."
     },
     {
       id: "q2", category: "audience",
       question: "How much does it cost to set up monitoring for my elderly mother who lives alone?",
-      answer: `A monitoring system for a parent living alone typically runs $35–$65 per month including professional 24/7 monitoring, a medical alert button, and motion sensors. Many families choose a system with a panic button that your mother can press if she falls, which immediately connects her to a monitoring center and can alert you. Setup takes about two hours and we handle everything — she doesn't need to be technical at all. Most of our senior monitoring clients are set up and protected the same day they call.`,
+      answer: `A monitoring system for a parent living alone typically runs $35â€“$65 per month including professional 24/7 monitoring, a medical alert button, and motion sensors. Many families choose a system with a panic button that your mother can press if she falls, which immediately connects her to a monitoring center and can alert you. Setup takes about two hours and we handle everything â€” she doesn't need to be technical at all. Most of our senior monitoring clients are set up and protected the same day they call.`,
       aiSignalStrength: "high",
       explanation: "Emotional, audience-specific questions with no generic answers perform exceptionally well in AI systems because no competitor content addresses them directly."
     },
     {
       id: "q3", category: "local",
       question: `Who are the best alarm companies in ${city}?`,
-      answer: `${city} has several reputable alarm companies. Local companies like ${businessName} offer faster response times and personalized service because your account is handled by people who live and work in ${city}. National brands like ADT and Vivint operate here too, but often use national call centers. The key factors to compare: monitoring response time, local technician availability for service calls, contract length, and whether the equipment is owned by you or leased. We're happy to compare options honestly — call us and we'll tell you what actually makes sense for your situation.`,
+      answer: `${city} has several reputable alarm companies. Local companies like ${businessName} offer faster response times and personalized service because your account is handled by people who live and work in ${city}. National brands like ADT and Vivint operate here too, but often use national call centers. The key factors to compare: monitoring response time, local technician availability for service calls, contract length, and whether the equipment is owned by you or leased. We're happy to compare options honestly â€” call us and we'll tell you what actually makes sense for your situation.`,
       aiSignalStrength: "high",
       explanation: "Local comparison questions directly targeting the Google 3-Pack and AI local results."
     },
     {
       id: "q4", category: "emergency",
-      question: "What happens when my alarm goes off at 3am — who gets notified first?",
-      answer: `When your alarm triggers, our monitoring center receives the signal within seconds — typically 30–45 seconds for a full alert. Our operators first try to reach you at your primary phone number. If there's no response or you indicate an emergency, we dispatch police or fire immediately. The entire sequence from alarm to dispatch typically takes under 90 seconds. You also receive a push notification on your phone the moment the alarm triggers, so you're informed in real time even before we call you.`,
+      question: "What happens when my alarm goes off at 3am â€” who gets notified first?",
+      answer: `When your alarm triggers, our monitoring center receives the signal within seconds â€” typically 30â€“45 seconds for a full alert. Our operators first try to reach you at your primary phone number. If there's no response or you indicate an emergency, we dispatch police or fire immediately. The entire sequence from alarm to dispatch typically takes under 90 seconds. You also receive a push notification on your phone the moment the alarm triggers, so you're informed in real time even before we call you.`,
       aiSignalStrength: "high",
       explanation: "Scenario/emergency questions are highly cited by voice search and AI because they match the anxious, specific way people ask these questions."
     },
     {
       id: "q5", category: "comparison",
       question: "Is a professional alarm system better than a Ring or SimpliSafe DIY system?",
-      answer: `DIY systems like Ring and SimpliSafe work well for tech-comfortable homeowners in low-risk areas and cost $10–$20/month for self-monitoring. Professional systems cost more but include UL-certified monitoring centers that respond even if your phone is dead, no internet, or you can't answer. For a family home, rental property, or anyone who travels frequently, professional monitoring provides the response guarantee that DIY systems can't. In ${city}, professional monitoring through ${businessName} starts at $28/month — often comparable to what people pay for DIY with add-ons.`,
+      answer: `DIY systems like Ring and SimpliSafe work well for tech-comfortable homeowners in low-risk areas and cost $10â€“$20/month for self-monitoring. Professional systems cost more but include UL-certified monitoring centers that respond even if your phone is dead, no internet, or you can't answer. For a family home, rental property, or anyone who travels frequently, professional monitoring provides the response guarantee that DIY systems can't. In ${city}, professional monitoring through ${businessName} starts at $28/month â€” often comparable to what people pay for DIY with add-ons.`,
       aiSignalStrength: "high",
       explanation: "Comparison questions against well-known alternatives are extremely high-value AI citations because they address real purchase decisions."
     },
     {
       id: "q6", category: "process",
       question: "How long does it take to install a home security system?",
-      answer: `A standard home security installation takes 2–4 hours for most ${city} homes. A basic system with door sensors, motion detectors, and a main panel takes closer to 2 hours. Larger homes with cameras, multiple access points, and smart home integration can take 3–4 hours. We schedule installations Monday through Saturday and can usually book within 3–5 business days. You don't need to do anything to prepare — just be home during the appointment window.`,
+      answer: `A standard home security installation takes 2â€“4 hours for most ${city} homes. A basic system with door sensors, motion detectors, and a main panel takes closer to 2 hours. Larger homes with cameras, multiple access points, and smart home integration can take 3â€“4 hours. We schedule installations Monday through Saturday and can usually book within 3â€“5 business days. You don't need to do anything to prepare â€” just be home during the appointment window.`,
       aiSignalStrength: "medium",
       explanation: "Process questions establish authority and are commonly surfaced by AI for 'how long does X take' style queries."
     },
     {
       id: "q7", category: "decision",
       question: "Is it worth getting a home alarm system if I rent my apartment?",
-      answer: `Yes — renters benefit significantly from alarm systems, and installation doesn't require drilling or permanent changes. Wireless systems are entirely removable and move with you to your next home. Renters' insurance often drops 5–15% with a monitored system, which can offset the monthly cost. For renters, we typically recommend a wireless starter package at $199–$299 with a month-to-month monitoring contract so there's no long-term commitment if you move. Many renters in ${city} are surprised how affordable and easy this is.`,
+      answer: `Yes â€” renters benefit significantly from alarm systems, and installation doesn't require drilling or permanent changes. Wireless systems are entirely removable and move with you to your next home. Renters' insurance often drops 5â€“15% with a monitored system, which can offset the monthly cost. For renters, we typically recommend a wireless starter package at $199â€“$299 with a month-to-month monitoring contract so there's no long-term commitment if you move. Many renters in ${city} are surprised how affordable and easy this is.`,
       aiSignalStrength: "high",
       explanation: "Audience-specific decision questions (renters, seniors, small businesses) are highly underserved by competitor content and dominate AI results when addressed directly."
     },
@@ -177,7 +177,7 @@ const buildFallback = (businessName, city, industry) => ({
       "name": "How much does it cost to install a home alarm system in ${city}?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A professionally installed home alarm system in ${city} typically costs $299–$799 for equipment plus a monthly monitoring fee of $25–$55."
+        "text": "A professionally installed home alarm system in ${city} typically costs $299â€“$799 for equipment plus a monthly monitoring fee of $25â€“$55."
       }
     },
     {
@@ -185,7 +185,7 @@ const buildFallback = (businessName, city, industry) => ({
       "name": "How much does it cost to set up monitoring for my elderly mother who lives alone?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A monitoring system for a parent living alone typically runs $35–$65 per month including professional 24/7 monitoring, a medical alert button, and motion sensors."
+        "text": "A monitoring system for a parent living alone typically runs $35â€“$65 per month including professional 24/7 monitoring, a medical alert button, and motion sensors."
       }
     }
   ]
@@ -194,7 +194,7 @@ const buildFallback = (businessName, city, industry) => ({
   localEntitySignals: [
     `Business name "${businessName}" mentioned 4 times naturally`,
     `City "${city}" appears in 8 questions and 12 answers`,
-    `Service area established as local — not national`,
+    `Service area established as local â€” not national`,
     `Price ranges specific to local market`,
     `Contact CTA in multiple answers drives local calls`,
   ],
@@ -208,7 +208,7 @@ const buildFallback = (businessName, city, industry) => ({
   ]
 });
 
-// ─── Component ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function AEOQAPageGenerator({
   industry, city, websiteUrl, businessName, mode, plan = "free"
 }) {
@@ -234,16 +234,11 @@ export default function AEOQAPageGenerator({
     setExpanded(null);
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 4000,
-          system: SYSTEM_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Generate a complete AEO Q&A page.
+          system: SYSTEM_PROMPT,          prompt: `Generate a complete AEO Q&A page.
 
 Business: ${businessName || "Local Business"}
 Industry: ${industry    || "Local Services"}
@@ -257,14 +252,12 @@ Make questions sound EXACTLY like how someone would speak to ChatGPT or Google A
 Include the "mom monitoring" style emotional audience questions.
 Include real price ranges for this industry.
 Include city-specific local questions.
-The answers should sound like the business owner wrote them — personal, knowledgeable, locally specific.`
-          }]
-        })
+The answers should sound like the business owner wrote them â€” personal, knowledgeable, locally specific.`
+          })
       });
 
       const data  = await res.json();
-      const raw   = data.content?.[0]?.text || "{}";
-      const clean = raw.replace(/```[\w]*\n?/g, "").trim();
+      const clean = data.result || "{}";
       setResult(JSON.parse(clean));
     } catch {
       setResult(buildFallback(
@@ -300,17 +293,17 @@ The answers should sound like the business owner wrote them — personal, knowle
   return (
     <div style={{ maxWidth: 640, fontFamily: "var(--font-sans)" }}>
 
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, padding: "14px 16px", marginBottom: 12 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
           <div style={{ flex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
               <span style={{ fontSize: 9, fontWeight: 500, color: MODULE_COLOR, background: MODULE_COLOR + "18", padding: "2px 6px", borderRadius: 3 }}>{MODULE_TAG}</span>
               <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)" }}>AEO Q&A Page Generator</span>
-              <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "#F8717116", color: "#F87171", border: "0.5px solid #F8717130" }}>AI Overviews · ChatGPT · Gemini</span>
+              <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: "#F8717116", color: "#F87171", border: "0.5px solid #F8717130" }}>AI Overviews Â· ChatGPT Â· Gemini</span>
             </div>
             <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: "0 0 8px", lineHeight: 1.5 }}>
-              Generates a complete Q&A page with 25+ conversational questions and expert answers — optimized to be cited by Google AI Overviews, ChatGPT, Gemini, Perplexity, and voice search. Includes FAQPage schema markup and local entity signals.
+              Generates a complete Q&A page with 25+ conversational questions and expert answers â€” optimized to be cited by Google AI Overviews, ChatGPT, Gemini, Perplexity, and voice search. Includes FAQPage schema markup and local entity signals.
             </p>
             <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
               {["How much questions","Emotional audience Q&A","Emergency scenarios","Local city questions","Competitor comparisons","FAQPage schema"].map(t => (
@@ -323,7 +316,7 @@ The answers should sound like the business owner wrote them — personal, knowle
             disabled={running}
             style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#0B0E16", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
           >
-            {running ? "Generating..." : result ? "Regenerate →" : "Generate Page →"}
+            {running ? "Generating..." : result ? "Regenerate â†’" : "Generate Page â†’"}
           </button>
         </div>
 
@@ -368,7 +361,7 @@ The answers should sound like the business owner wrote them — personal, knowle
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {result.expectedAiQueries.map((q, i) => (
                   <div key={i} style={{ display: "flex", gap: 7, alignItems: "center" }}>
-                    <span style={{ fontSize: 9, color: MODULE_COLOR, flexShrink: 0 }}>→</span>
+                    <span style={{ fontSize: 9, color: MODULE_COLOR, flexShrink: 0 }}>â†’</span>
                     <span style={{ fontSize: 11, color: "var(--color-text-primary)", fontStyle: "italic" }}>"{q}"</span>
                   </div>
                 ))}
@@ -431,10 +424,10 @@ The answers should sound like the business owner wrote them — personal, knowle
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: 12, fontWeight: 500, color: "var(--color-text-primary)", lineHeight: 1.4 }}>"{qa.question}"</div>
                           {!isExp && (
-                            <div style={{ fontSize: 10, color: "var(--color-text-secondary)", marginTop: 3 }}>Tap to see answer →</div>
+                            <div style={{ fontSize: 10, color: "var(--color-text-secondary)", marginTop: 3 }}>Tap to see answer â†’</div>
                           )}
                         </div>
-                        <div style={{ fontSize: 10, color: "var(--color-text-secondary)", flexShrink: 0 }}>{isExp ? "▲" : "▼"}</div>
+                        <div style={{ fontSize: 10, color: "var(--color-text-secondary)", flexShrink: 0 }}>{isExp ? "â–²" : "â–¼"}</div>
                       </div>
 
                       {/* Expanded answer */}
@@ -478,7 +471,7 @@ The answers should sound like the business owner wrote them — personal, knowle
                   onClick={() => copyText(result.schemaMarkup, "schema")}
                   style={{ fontSize: 9, padding: "3px 9px", border: "0.5px solid #10D9A040", borderRadius: 4, background: copied === "schema" ? MODULE_COLOR + "20" : "transparent", color: copied === "schema" ? MODULE_COLOR : "var(--color-text-secondary)", cursor: "pointer" }}
                 >
-                  {copied === "schema" ? "Copied!" : "Copy Schema →"}
+                  {copied === "schema" ? "Copied!" : "Copy Schema â†’"}
                 </button>
               </div>
               <div style={{ padding: "12px 14px", overflowX: "auto" }}>
@@ -496,7 +489,7 @@ The answers should sound like the business owner wrote them — personal, knowle
                 <div style={{ padding: "7px 13px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>LOCAL ENTITY SIGNALS IN THIS PAGE</div>
                 {(result.localEntitySignals || []).map((s, i) => (
                   <div key={i} style={{ display: "flex", gap: 8, padding: "8px 13px", borderBottom: i < result.localEntitySignals.length - 1 ? "0.5px solid var(--color-border-tertiary)" : "none" }}>
-                    <span style={{ color: MODULE_COLOR, fontSize: 11, flexShrink: 0 }}>✓</span>
+                    <span style={{ color: MODULE_COLOR, fontSize: 11, flexShrink: 0 }}>âœ“</span>
                     <span style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{s}</span>
                   </div>
                 ))}
@@ -504,7 +497,7 @@ The answers should sound like the business owner wrote them — personal, knowle
               <div style={{ padding: "10px 13px", background: "#A78BFA08", border: "0.5px solid #A78BFA30", borderRadius: 8 }}>
                 <div style={{ fontSize: 9, color: "#A78BFA", fontWeight: 500, marginBottom: 6, letterSpacing: "0.6px" }}>HOW AI SYSTEMS FIND AND CITE THIS PAGE</div>
                 <div style={{ fontSize: 11, color: "var(--color-text-secondary)", lineHeight: 1.7 }}>
-                  AI systems index the web and retrieve content based on how well it directly answers a specific question. This page uses three signals they prioritize: (1) FAQPage schema tells crawlers this is structured Q&A content, (2) direct answers in the first sentence match how AI systems extract answer snippets, and (3) local entity signals — business name, city, services — confirm the geographic and topical relevance. When someone asks ChatGPT, Gemini, or Perplexity a question about {industry || "local services"} in {city || "your city"}, this page becomes a credible citation source.
+                  AI systems index the web and retrieve content based on how well it directly answers a specific question. This page uses three signals they prioritize: (1) FAQPage schema tells crawlers this is structured Q&A content, (2) direct answers in the first sentence match how AI systems extract answer snippets, and (3) local entity signals â€” business name, city, services â€” confirm the geographic and topical relevance. When someone asks ChatGPT, Gemini, or Perplexity a question about {industry || "local services"} in {city || "your city"}, this page becomes a credible citation source.
                 </div>
               </div>
             </div>
@@ -546,7 +539,7 @@ The answers should sound like the business owner wrote them — personal, knowle
         <div style={{ textAlign: "center", padding: "40px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10 }}>
           <div style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)", marginBottom: 6 }}>Generate an AI-optimized Q&A page</div>
           <div style={{ fontSize: 11, color: "var(--color-text-secondary)", maxWidth: 380, margin: "0 auto 16px", lineHeight: 1.6 }}>
-            Creates 25+ conversational questions including pricing, emotional audience scenarios, and local queries — with expert answers and schema markup that gets cited by ChatGPT, Gemini, and Google AI Overviews.
+            Creates 25+ conversational questions including pricing, emotional audience scenarios, and local queries â€” with expert answers and schema markup that gets cited by ChatGPT, Gemini, and Google AI Overviews.
           </div>
           <div style={{ display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
             {[
@@ -563,3 +556,4 @@ The answers should sound like the business owner wrote them — personal, knowle
     </div>
   );
 }
+

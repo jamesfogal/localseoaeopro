@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Keyword Ownership Map
  * Tag: KOM | Group: Keywords
  */
@@ -12,13 +12,12 @@ export default function KeywordOwnershipMap({ industry, city, businessName, mode
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1500,
+          model: "claude-sonnet-4-20250514",
           system: `You are a local keyword ownership analyst. Map which competitor owns each keyword cluster in the Google 3-Pack for this local market. Return ONLY valid JSON: {"clusters":[{"cluster":"keyword group name","primaryKeyword":"exact phrase","monthlySearches":number,"owner":"business name or type","ownerStrength":"dominant|competitive|weak","clientPosition":"not ranking|weak|competitive","opportunity":"high|medium|low","winStrategy":"one sentence on how to take this cluster"}],"unclaimed":["keyword cluster with no strong local owner"],"topOpportunity":"single best cluster to target"}`,
-          messages: [{ role: "user", content: `Map keyword ownership for ${businessName || "Local Business"}, ${industry || "Local Services"} in ${city || "their city"}. Mode: ${mode}. Generate 12 keyword clusters.` }]
-        })
+          messages: [{ role: "user", content: `Map keyword ownership for ${businessName || "Local Business"}, ${industry || "Local Services"} in ${city || "their city"}. Mode: ${mode}. Generate 12 keyword clusters.` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
@@ -27,11 +26,11 @@ export default function KeywordOwnershipMap({ industry, city, businessName, mode
         clusters: [
           { cluster: "Fire alarm installation", primaryKeyword: `fire alarm installation ${city||"st charles"}`, monthlySearches: 280, owner: mode === "anonymous" ? "Local Competitor A" : "Shield Security", ownerStrength: "dominant", clientPosition: "not ranking", opportunity: "high", winStrategy: "Create dedicated city service page with schema and 10+ GBP reviews mentioning this service" },
           { cluster: "Alarm monitoring", primaryKeyword: `alarm monitoring ${city||"st charles"}`, monthlySearches: 210, owner: mode === "anonymous" ? "Local Competitor B" : "ADT Local Dealer", ownerStrength: "competitive", clientPosition: "weak", opportunity: "high", winStrategy: "GBP posts and FAQ page specifically targeting monitoring pricing questions" },
-          { cluster: "Security cameras", primaryKeyword: `security cameras ${city||"st charles"}`, monthlySearches: 160, owner: "Nobody (unclaimed)", ownerStrength: "weak", clientPosition: "not ranking", opportunity: "high", winStrategy: "First mover advantage — create the page, claim the cluster before a competitor does" },
+          { cluster: "Security cameras", primaryKeyword: `security cameras ${city||"st charles"}`, monthlySearches: 160, owner: "Nobody (unclaimed)", ownerStrength: "weak", clientPosition: "not ranking", opportunity: "high", winStrategy: "First mover advantage â€” create the page, claim the cluster before a competitor does" },
           { cluster: "Commercial fire alarm", primaryKeyword: `commercial fire alarm ${city||"st charles"}`, monthlySearches: 110, owner: mode === "anonymous" ? "Local Competitor A" : "Shield Security", ownerStrength: "competitive", clientPosition: "not ranking", opportunity: "medium", winStrategy: "Target completed commercial projects in GBP posts with photo evidence" },
         ],
         unclaimed: ["home automation st charles", "access control installation", "fire sprinkler inspection"],
-        topOpportunity: "Security cameras — nobody owns this cluster locally. Create a page this week and you become the default."
+        topOpportunity: "Security cameras â€” nobody owns this cluster locally. Create a page this week and you become the default."
       });
     }
     setRunning(false);
@@ -48,10 +47,10 @@ export default function KeywordOwnershipMap({ industry, city, businessName, mode
             <span style={{ fontSize: 9, fontWeight: 500, color: MODULE_COLOR, background: MODULE_COLOR + "18", padding: "2px 6px", borderRadius: 3 }}>KOM</span>
             <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)" }}>Keyword Ownership Map</span>
           </div>
-          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Maps which competitor owns each keyword cluster in your local Google 3-Pack. Shows unclaimed clusters — the fastest path to new rankings.</p>
+          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Maps which competitor owns each keyword cluster in your local Google 3-Pack. Shows unclaimed clusters â€” the fastest path to new rankings.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-          {running ? "Mapping..." : result ? "Re-map →" : "Map Ownership →"}
+          {running ? "Mapping..." : result ? "Re-map â†’" : "Map Ownership â†’"}
         </button>
       </div>
       {result && (
@@ -74,7 +73,7 @@ export default function KeywordOwnershipMap({ industry, city, businessName, mode
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 5 }}>
                   <div>
                     <div style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)", marginBottom: 2 }}>{c.cluster}</div>
-                    <div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>"{c.primaryKeyword}" · {c.monthlySearches}/mo</div>
+                    <div style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>"{c.primaryKeyword}" Â· {c.monthlySearches}/mo</div>
                   </div>
                   <div style={{ display: "flex", gap: 5, flexShrink: 0 }}>
                     <span style={{ fontSize: 8, padding: "2px 5px", borderRadius: 3, background: sc[c.ownerStrength] + "18", color: sc[c.ownerStrength] }}>{c.ownerStrength}</span>
@@ -92,3 +91,4 @@ export default function KeywordOwnershipMap({ industry, city, businessName, mode
     </div>
   );
 }
+

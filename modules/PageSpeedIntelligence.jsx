@@ -1,7 +1,7 @@
-/**
- * Local SEO & AEO Pro — Page Speed Intelligence
+﻿/**
+ * Local SEO & AEO Pro â€” Page Speed Intelligence
  * Tag: PSI | Group: Technical
- * Checks every page found in local search — 23 speed killers, 1-second mobile rule
+ * Checks every page found in local search â€” 23 speed killers, 1-second mobile rule
  */
 import { useState } from "react";
 const MODULE_COLOR = "#F87171";
@@ -14,10 +14,10 @@ export default function PageSpeedIntelligence({ industry, city, websiteUrl, busi
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 2500,
+          model: "claude-sonnet-4-20250514",
           system: `You are a page speed and Core Web Vitals specialist for local SEO. Audit page speed for a local business website. Return ONLY valid JSON:
 {
   "overallScore": 0-100,
@@ -44,8 +44,7 @@ export default function PageSpeedIntelligence({ industry, city, websiteUrl, busi
   "summary": "brief overview"
 }
 Generate 4 pages. Be specific about real speed issues for a local business website.`,
-          messages: [{ role: "user", content: `Audit page speed for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` }]
-        })
+          messages: [{ role: "user", content: `Audit page speed for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles"}\nWebsite: ${websiteUrl || "their site"}` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
@@ -60,17 +59,17 @@ Generate 4 pages. Be specific about real speed issues for a local business websi
           {
             url: "/", pageName: "Homepage", mobileScore: 18, desktopScore: 54, lcp: "6.2s", fid: "210ms", cls: "0.31", passesOneSec: false,
             killers: [
-              { issue: "Hero image carousel (4 images)", impact: "high", detail: "4 JPEG images at 1.2–1.9MB each load before any content renders", fix: "Replace carousel with single CSS hero + text. If carousel required, lazy-load slides 2-4 and convert slide 1 to AVIF under 80KB", fixType: "approval" },
+              { issue: "Hero image carousel (4 images)", impact: "high", detail: "4 JPEG images at 1.2â€“1.9MB each load before any content renders", fix: "Replace carousel with single CSS hero + text. If carousel required, lazy-load slides 2-4 and convert slide 1 to AVIF under 80KB", fixType: "approval" },
               { issue: "Render-blocking JavaScript", impact: "high", detail: "3 scripts load synchronously in <head> blocking page render for 1.8s", fix: "Add defer attribute to all non-critical scripts", fixType: "auto" },
-              { issue: "No Cloudflare CDN", impact: "high", detail: "Pages served directly from GoDaddy server — 780ms TTFB before first byte", fix: "Enable Cloudflare free tier — reduces TTFB to under 200ms with CDN caching", fixType: "manual" },
+              { issue: "No Cloudflare CDN", impact: "high", detail: "Pages served directly from GoDaddy server â€” 780ms TTFB before first byte", fix: "Enable Cloudflare free tier â€” reduces TTFB to under 200ms with CDN caching", fixType: "manual" },
               { issue: "Google Fonts loading slow", impact: "medium", detail: "Google Fonts loads from external server with no preconnect hint", fix: "Add <link rel='preconnect' href='https://fonts.googleapis.com'> to <head>", fixType: "auto" },
             ]
           },
           {
             url: "/fire-alarm-monitoring", pageName: "Fire Alarm Monitoring", mobileScore: 34, desktopScore: 68, lcp: "4.1s", fid: "140ms", cls: "0.12", passesOneSec: false,
             killers: [
-              { issue: "Uncompressed hero image", impact: "high", detail: "1.4MB JPEG hero image — should be AVIF under 100KB", fix: "Convert to AVIF — estimated 1.3MB savings", fixType: "auto" },
-              { issue: "Google Maps iframe above fold", impact: "medium", detail: "Full Google Maps iframe loads on page init — 180KB of scripts", fix: "Replace with static map image. Load full map on click.", fixType: "approval" },
+              { issue: "Uncompressed hero image", impact: "high", detail: "1.4MB JPEG hero image â€” should be AVIF under 100KB", fix: "Convert to AVIF â€” estimated 1.3MB savings", fixType: "auto" },
+              { issue: "Google Maps iframe above fold", impact: "medium", detail: "Full Google Maps iframe loads on page init â€” 180KB of scripts", fix: "Replace with static map image. Load full map on click.", fixType: "approval" },
             ]
           },
           {
@@ -83,15 +82,15 @@ Generate 4 pages. Be specific about real speed issues for a local business websi
             url: "/about", pageName: "About", mobileScore: 22, desktopScore: 59, lcp: "5.3s", fid: "190ms", cls: "0.22", passesOneSec: false,
             killers: [
               { issue: "Team photo gallery (9 JPEGs)", impact: "high", detail: "9 uncompressed team photos totaling 6.8MB load at page init", fix: "Lazy load all images below fold and convert to AVIF. Above-fold photo under 80KB.", fixType: "auto" },
-              { issue: "Layout shift from images", impact: "medium", detail: "Images load without defined width/height — causes 0.22 CLS score", fix: "Add width and height attributes to all img tags", fixType: "auto" },
+              { issue: "Layout shift from images", impact: "medium", detail: "Images load without defined width/height â€” causes 0.22 CLS score", fix: "Add width and height attributes to all img tags", fixType: "auto" },
             ]
           },
         ],
         topKillers: [
-          "0 of 4 pages pass the 1-second mobile load rule — all pages are failing Core Web Vitals",
-          "Hero images are the #1 issue — 3 pages have uncompressed JPEGs above the fold"
+          "0 of 4 pages pass the 1-second mobile load rule â€” all pages are failing Core Web Vitals",
+          "Hero images are the #1 issue â€” 3 pages have uncompressed JPEGs above the fold"
         ],
-        summary: "No pages on this site pass the 1-second mobile load rule. The homepage carousel is the most damaging single element — it alone adds 4+ seconds to load time on 4G."
+        summary: "No pages on this site pass the 1-second mobile load rule. The homepage carousel is the most damaging single element â€” it alone adds 4+ seconds to load time on 4G."
       });
     }
     setRunning(false);
@@ -114,7 +113,7 @@ Generate 4 pages. Be specific about real speed issues for a local business websi
           </p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-          {running ? "Testing..." : result ? "Re-run →" : "Test Speed →"}
+          {running ? "Testing..." : result ? "Re-run â†’" : "Test Speed â†’"}
         </button>
       </div>
 
@@ -125,7 +124,7 @@ Generate 4 pages. Be specific about real speed issues for a local business websi
               { label: "Speed Score", value: `${result.overallScore}/100`, color: scoreColor(result.overallScore) },
               { label: "TTFB", value: `${result.ttfb}ms`, color: result.ttfb < 400 ? "#34D399" : result.ttfb < 700 ? "#FBBF24" : "#F87171" },
               { label: "Under 1 Second", value: `${result.pagesUnderOneSec}/${result.totalPages}`, color: result.pagesUnderOneSec === result.totalPages ? "#34D399" : "#F87171" },
-              { label: "Cloudflare", value: result.cloudflareActive ? "Active ✓" : "Not Active", color: result.cloudflareActive ? "#34D399" : "#F87171" },
+              { label: "Cloudflare", value: result.cloudflareActive ? "Active âœ“" : "Not Active", color: result.cloudflareActive ? "#34D399" : "#F87171" },
             ].map((s, i) => (
               <div key={i} style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 8, padding: "9px 8px", textAlign: "center" }}>
                 <div style={{ fontSize: 8, color: "var(--color-text-secondary)", marginBottom: 4 }}>{s.label}</div>
@@ -136,8 +135,8 @@ Generate 4 pages. Be specific about real speed issues for a local business websi
 
           {!result.cloudflareActive && (
             <div style={{ background: "#F8717108", border: "0.5px solid #F87171", borderRadius: 8, padding: "9px 12px", marginBottom: 10 }}>
-              <div style={{ fontSize: 10, fontWeight: 600, color: "#F87171", marginBottom: 3 }}>⚡ FREE WIN: Cloudflare is not active</div>
-              <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>Enabling Cloudflare's free tier typically reduces TTFB by 200–600ms and costs $0. This is the fastest speed improvement available with zero code changes.</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: "#F87171", marginBottom: 3 }}>âš¡ FREE WIN: Cloudflare is not active</div>
+              <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>Enabling Cloudflare's free tier typically reduces TTFB by 200â€“600ms and costs $0. This is the fastest speed improvement available with zero code changes.</div>
             </div>
           )}
 
@@ -152,14 +151,14 @@ Generate 4 pages. Be specific about real speed issues for a local business websi
                         {page.passesOneSec ? "PASSES" : "FAILING"}
                       </span>
                     </div>
-                    <div style={{ fontSize: 10, color: "var(--color-text-secondary)", marginTop: 2 }}>LCP: {page.lcp} · CLS: {page.cls} · FID: {page.fid}</div>
+                    <div style={{ fontSize: 10, color: "var(--color-text-secondary)", marginTop: 2 }}>LCP: {page.lcp} Â· CLS: {page.cls} Â· FID: {page.fid}</div>
                   </div>
                   <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: 8, color: "var(--color-text-secondary)" }}>Mobile</div>
                       <div style={{ fontSize: 16, fontWeight: 500, color: scoreColor(page.mobileScore) }}>{page.mobileScore}</div>
                     </div>
-                    <span style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>{expanded === i ? "▲" : "▼"}</span>
+                    <span style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>{expanded === i ? "â–²" : "â–¼"}</span>
                   </div>
                 </div>
                 {expanded === i && (
@@ -197,3 +196,4 @@ Generate 4 pages. Be specific about real speed issues for a local business websi
     </div>
   );
 }
+

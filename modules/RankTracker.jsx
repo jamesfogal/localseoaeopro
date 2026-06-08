@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Rank Tracker
  * Tag: RNK | Group: Technical
  */
@@ -12,13 +12,12 @@ export default function RankTracker({ industry, city, websiteUrl, businessName, 
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1500,
+          model: "claude-sonnet-4-20250514",
           system: `You are a local rank tracking specialist. Generate a local keyword ranking report for a business. Track Google 3-Pack AND local organic positions. Return ONLY valid JSON: {"keywords":[{"phrase":"keyword","packPosition":"1-20 or not ranking","organicPosition":"1-20 or not ranking","movement":"up N|down N|new|stable|lost","trend":"improving|declining|stable","url":"page ranking or null","priority":"high|medium|low"}],"summary":{"rankingIn3Pack":number,"notRanking":number,"improving":number,"declining":number,"avgPackPosition":number},"topWin":"keyword gaining most","topRisk":"keyword dropping fastest","recommendation":"single most important ranking action"}`,
-          messages: [{ role: "user", content: `Generate ranking report for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry}\nCity: ${city}\nWebsite: ${websiteUrl}\n\nGenerate 15 keywords. Mix of ranking, not ranking, improving, and declining.` }]
-        })
+          messages: [{ role: "user", content: `Generate ranking report for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry}\nCity: ${city}\nWebsite: ${websiteUrl}\n\nGenerate 15 keywords. Mix of ranking, not ranking, improving, and declining.` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
@@ -32,9 +31,9 @@ export default function RankTracker({ industry, city, websiteUrl, businessName, 
           { phrase: `commercial fire alarm ${city||"st charles"}`, packPosition: "8", organicPosition: "11", movement: "up 1", trend: "improving", url: "/commercial/", priority: "medium" },
         ],
         summary: { rankingIn3Pack: 8, notRanking: 7, improving: 4, declining: 3, avgPackPosition: 6.2 },
-        topWin: `alarm company ${city||"st charles"} — moved from #5 to #3 in the 3-Pack`,
-        topRisk: `fire alarm installation — dropped 3 positions, now on page 2 organic`,
-        recommendation: "Create a dedicated fire alarm installation city page immediately — the ranking drop indicates Google needs more specific content to keep this term."
+        topWin: `alarm company ${city||"st charles"} â€” moved from #5 to #3 in the 3-Pack`,
+        topRisk: `fire alarm installation â€” dropped 3 positions, now on page 2 organic`,
+        recommendation: "Create a dedicated fire alarm installation city page immediately â€” the ranking drop indicates Google needs more specific content to keep this term."
       });
     }
     setRunning(false);
@@ -50,10 +49,10 @@ export default function RankTracker({ industry, city, websiteUrl, businessName, 
             <span style={{ fontSize: 9, fontWeight: 500, color: MODULE_COLOR, background: MODULE_COLOR + "18", padding: "2px 6px", borderRadius: 3 }}>RNK</span>
             <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)" }}>Rank Tracker</span>
           </div>
-          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Tracks Google 3-Pack positions and local organic rankings. Shows movement — what's climbing, what's dropping, and what's at risk.</p>
+          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Tracks Google 3-Pack positions and local organic rankings. Shows movement â€” what's climbing, what's dropping, and what's at risk.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-          {running ? "Tracking..." : result ? "Re-track →" : "Track Rankings →"}
+          {running ? "Tracking..." : result ? "Re-track â†’" : "Track Rankings â†’"}
         </button>
       </div>
       {result && (
@@ -84,15 +83,16 @@ export default function RankTracker({ industry, city, websiteUrl, businessName, 
             {(result.keywords || []).map((kw, i) => (
               <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 80px 80px 70px", gap: 6, alignItems: "center", padding: "8px 12px", borderBottom: i < (result.keywords.length - 1) ? "0.5px solid var(--color-border-tertiary)" : "none" }}>
                 <div style={{ fontSize: 11, color: "var(--color-text-primary)", fontWeight: 500 }}>{kw.phrase}</div>
-                <div style={{ fontSize: 11, color: kw.packPosition === "not ranking" ? "#F87171" : "#34D399" }}>{kw.packPosition === "not ranking" ? "—" : `#${kw.packPosition}`}</div>
-                <div style={{ fontSize: 11, color: kw.organicPosition === "not ranking" ? "#F87171" : "#60A5FA" }}>{kw.organicPosition === "not ranking" ? "—" : `#${kw.organicPosition}`}</div>
+                <div style={{ fontSize: 11, color: kw.packPosition === "not ranking" ? "#F87171" : "#34D399" }}>{kw.packPosition === "not ranking" ? "â€”" : `#${kw.packPosition}`}</div>
+                <div style={{ fontSize: 11, color: kw.organicPosition === "not ranking" ? "#F87171" : "#60A5FA" }}>{kw.organicPosition === "not ranking" ? "â€”" : `#${kw.organicPosition}`}</div>
                 <div style={{ fontSize: 10, color: mc[kw.movement] || "#94A3B8", fontWeight: 500 }}>{kw.movement}</div>
               </div>
             ))}
           </div>
         </div>
       )}
-      {!result && !running && <div style={{ textAlign: "center", padding: "36px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, color: "var(--color-text-secondary)", fontSize: 12 }}>Track Google 3-Pack and organic rankings — see what's moving and what's at risk</div>}
+      {!result && !running && <div style={{ textAlign: "center", padding: "36px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, color: "var(--color-text-secondary)", fontSize: 12 }}>Track Google 3-Pack and organic rankings â€” see what's moving and what's at risk</div>}
     </div>
   );
 }
+

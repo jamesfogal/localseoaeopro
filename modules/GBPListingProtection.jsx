@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — GBP Listing Protection
+﻿/**
+ * LocalRank Pro â€” GBP Listing Protection
  * Tag: GLP | Group: Local Presence
  *
  * Monitors the Google Business Profile for unauthorized
@@ -15,7 +15,7 @@
  *
  * Local Viking's "GBP Listing Locker" is the only
  * competitor that has a version of this. Ours goes
- * further — we analyze whether any detected change
+ * further â€” we analyze whether any detected change
  * HURT rankings, assign a severity score, and generate
  * specific reversion instructions + GBP support contact.
  */
@@ -98,12 +98,11 @@ export default function GBPListingProtection({ industry, city, businessName, mod
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514", max_tokens: 1800, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Generate GBP protection audit for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nMode: ${mode||"named"}\n\nMake it realistic. Most businesses have at least 1-2 vulnerabilities. Competitive service industries (alarm, plumbing, HVAC) have higher competitor edit risk.` }]
-        })
+          messages: [{ role: "user", content: `Generate GBP protection audit for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nMode: ${mode||"named"}\n\nMake it realistic. Most businesses have at least 1-2 vulnerabilities. Competitive service industries (alarm, plumbing, HVAC) have higher competitor edit risk.` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text||"{}").replace(/```[\w]*\n?/g,"").trim()));
@@ -121,18 +120,18 @@ export default function GBPListingProtection({ industry, city, businessName, mod
             detectedDate: "18 days ago",
             source: "competitor suggestion",
             severity: "critical",
-            rankingImpact: "Secondary category changed to irrelevant service — likely causing loss of rankings for fire alarm searches. Google uses all categories for ranking signals.",
+            rankingImpact: "Secondary category changed to irrelevant service â€” likely causing loss of rankings for fire alarm searches. Google uses all categories for ranking signals.",
             reversionSteps: ["Log into Google Business Profile", "Click 'Edit Profile' then 'Business Category'", "Remove 'Security Guard Service'", "Re-add 'Fire Alarm Supplier' as secondary category", "Click Save and monitor rankings over next 7 days"],
             autoRevertible: false
           }
         ],
         vulnerabilities: [
-          { vulnerability: "GBP has 3 co-managers — one is a former employee from 2022 who may still have access", risk: "critical", protection: "Audit GBP user access immediately. Remove anyone who no longer works with the business. Only 1-2 people should have Owner or Manager access." },
-          { vulnerability: "No Google alerts set up for GBP changes — edits can sit unnoticed for weeks or months", risk: "high", protection: "Set up email notifications in GBP settings for any changes to the listing. Takes 2 minutes." },
+          { vulnerability: "GBP has 3 co-managers â€” one is a former employee from 2022 who may still have access", risk: "critical", protection: "Audit GBP user access immediately. Remove anyone who no longer works with the business. Only 1-2 people should have Owner or Manager access." },
+          { vulnerability: "No Google alerts set up for GBP changes â€” edits can sit unnoticed for weeks or months", risk: "high", protection: "Set up email notifications in GBP settings for any changes to the listing. Takes 2 minutes." },
           { vulnerability: "Competitor with 3-Pack position #1 has history of suggesting edits to competing listings in this market", risk: "high", protection: "Monitor GBP weekly for any suggested changes. Review and reject any edits you did not initiate." },
         ],
         protectionRecommendations: [
-          { action: "Revert the secondary category change immediately — this is actively hurting rankings", priority: "immediate", effort: "5 min" },
+          { action: "Revert the secondary category change immediately â€” this is actively hurting rankings", priority: "immediate", effort: "5 min" },
           { action: "Enable GBP change notification emails in profile settings", priority: "immediate", effort: "2 min" },
           { action: "Audit and remove former employee co-manager access", priority: "this week", effort: "5 min" },
           { action: "Review all GBP suggested edits in the 'Edit your business' section and reject any you did not submit", priority: "this week", effort: "10 min" },
@@ -158,7 +157,7 @@ export default function GBPListingProtection({ industry, city, businessName, mod
           <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:0, lineHeight:1.5 }}>Monitors the Google Business Profile for unauthorized changes by competitors. A single category edit can destroy local rankings overnight. We detect it, score the impact, and generate reversion instructions.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding:"8px 14px", background:running?"transparent":MODULE_COLOR, border:`0.5px solid ${MODULE_COLOR}`, borderRadius:6, color:running?MODULE_COLOR:"#fff", fontSize:12, fontWeight:500, cursor:running?"not-allowed":"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
-          {running?"Scanning...":result?"Re-scan →":"Scan GBP →"}
+          {running?"Scanning...":result?"Re-scan â†’":"Scan GBP â†’"}
         </button>
       </div>
 
@@ -175,7 +174,7 @@ export default function GBPListingProtection({ industry, city, businessName, mod
                 { label:"Changes detected", value:result.detectedChanges?.length||0, color:result.detectedChanges?.length>0?"#F87171":"#34D399" },
                 { label:"Vulnerabilities", value:result.vulnerabilities?.length||0, color:"#FBBF24" },
                 { label:"Competitor threat", value:result.competitorThreatLevel, color:result.competitorThreatLevel==="high"?"#F87171":"#FBBF24" },
-                { label:"Verified", value:result.gbpVerified?"Yes ✓":"No ✗", color:result.gbpVerified?"#34D399":"#F87171" },
+                { label:"Verified", value:result.gbpVerified?"Yes âœ“":"No âœ—", color:result.gbpVerified?"#34D399":"#F87171" },
               ].map(({ label, value, color }) => (
                 <div key={label} style={{ display:"flex", justifyContent:"space-between", padding:"5px 10px", background:"var(--color-background-secondary)", borderRadius:6, border:"0.5px solid var(--color-border-tertiary)" }}>
                   <span style={{ fontSize:10, color:"var(--color-text-secondary)" }}>{label}</span>
@@ -198,10 +197,10 @@ export default function GBPListingProtection({ industry, city, businessName, mod
                   <div onClick={() => setExpanded(expanded===i?null:i)} style={{ display:"flex", gap:10, alignItems:"flex-start", padding:"10px 13px", cursor:"pointer", background:`${SEV_COLOR[c.severity]}08` }}>
                     <span style={{ fontSize:8, padding:"2px 5px", borderRadius:3, background:SEV_COLOR[c.severity]+"18", color:SEV_COLOR[c.severity], flexShrink:0, marginTop:2 }}>{c.severity.toUpperCase()}</span>
                     <div style={{ flex:1 }}>
-                      <div style={{ fontSize:11, fontWeight:500, color:"var(--color-text-primary)", marginBottom:2 }}>{c.field} — changed {c.detectedDate}</div>
-                      <div style={{ fontSize:10, color:"var(--color-text-secondary)" }}>Was: "{c.originalValue}" → Now: "{c.newValue}"</div>
+                      <div style={{ fontSize:11, fontWeight:500, color:"var(--color-text-primary)", marginBottom:2 }}>{c.field} â€” changed {c.detectedDate}</div>
+                      <div style={{ fontSize:10, color:"var(--color-text-secondary)" }}>Was: "{c.originalValue}" â†’ Now: "{c.newValue}"</div>
                     </div>
-                    <span style={{ fontSize:10, color:"var(--color-text-secondary)" }}>{expanded===i?"▲":"▼"}</span>
+                    <span style={{ fontSize:10, color:"var(--color-text-secondary)" }}>{expanded===i?"â–²":"â–¼"}</span>
                   </div>
                   {expanded === i && (
                     <div style={{ padding:"10px 13px", borderTop:`0.5px solid ${SEV_COLOR[c.severity]}30` }}>
@@ -250,9 +249,10 @@ export default function GBPListingProtection({ industry, city, businessName, mod
 
       {!result && !running && (
         <div style={{ textAlign:"center", padding:"36px 20px", background:"var(--color-background-secondary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:10, color:"var(--color-text-secondary)", fontSize:12 }}>
-          Scans your GBP for unauthorized edits — a competitor category change can destroy local rankings overnight
+          Scans your GBP for unauthorized edits â€” a competitor category change can destroy local rankings overnight
         </div>
       )}
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — Critical Signals Checker (Expanded)
+﻿/**
+ * LocalRank Pro â€” Critical Signals Checker (Expanded)
  * 
  * Original checks:
  *   NAP consistency, schema markup, SSL, mobile viewport,
@@ -18,7 +18,7 @@ import { useState } from "react";
 const MODULE_COLOR = "#60A5FA";
 const MODULE_TAG = "SIG";
 
-// ─── System prompt (also in /prompts/critical-signals-checker.txt) ────────────
+// â”€â”€â”€ System prompt (also in /prompts/critical-signals-checker.txt) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SYSTEM_PROMPT = `You are a technical SEO specialist for LocalRank Pro, a local SEO platform.
 
 You audit websites for critical signals that directly affect Google rankings and site health.
@@ -27,14 +27,14 @@ You will receive: business name, industry, city, website URL, and audit mode.
 
 YOUR JOB: Check all of the following signal categories and score the site.
 
-CATEGORY 1 — INDEXABILITY + CRAWL (original)
+CATEGORY 1 â€” INDEXABILITY + CRAWL (original)
 - Pages accidentally blocked with noindex meta tag
 - Robots.txt mistakes blocking important pages
-- Canonical tag issues — self-referencing, missing, or wrong
+- Canonical tag issues â€” self-referencing, missing, or wrong
 - XML sitemap present and submitted
 - Hreflang errors (if multilingual)
 
-CATEGORY 2 — ON-PAGE TRUST SIGNALS (original)
+CATEGORY 2 â€” ON-PAGE TRUST SIGNALS (original)
 - HTTPS / SSL certificate valid and active
 - NAP (Name, Address, Phone) consistent across all page instances
 - LocalBusiness schema markup present and valid
@@ -42,13 +42,13 @@ CATEGORY 2 — ON-PAGE TRUST SIGNALS (original)
 - No intrusive popups that trigger on page load
 - Ad density not excessive
 
-CATEGORY 3 — GOOGLE SEARCH CONSOLE (NEW)
+CATEGORY 3 â€” GOOGLE SEARCH CONSOLE (NEW)
 - GSC verification meta tag present in <head>
 - OR Google DNS TXT verification record detectable
 - OR google-site-verification tag present
 - If NO verification method detected: flag as "Google cannot send you search alerts or indexing notices"
 
-CATEGORY 4 — CONTENT QUALITY (NEW)
+CATEGORY 4 â€” CONTENT QUALITY (NEW)
 - Thin content: key pages under 300 words
 - Keyword stuffing: unnatural repetition of the same phrase
 - Hidden text: text that matches background color or is positioned off-screen
@@ -56,7 +56,7 @@ CATEGORY 4 — CONTENT QUALITY (NEW)
 - Duplicate page titles across multiple pages
 - Boilerplate content: pages that are clearly template-generated with no unique value
 
-CATEGORY 5 — SECURITY (NEW)
+CATEGORY 5 â€” SECURITY (NEW)
 - Mixed content: HTTP assets (images, scripts) loading on HTTPS pages
 - Suspicious injected links: links to unrelated pharmaceutical, gambling, or adult sites
 - Malware redirect patterns: pages that redirect differently for different user agents
@@ -107,7 +107,7 @@ Return ONLY valid JSON:
 Be specific to this business and city. Never return generic advice.
 Return ONLY the JSON object.`;
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function CriticalSignalsChecker({ industry, city, websiteUrl, businessName, mode, plan = "free" }) {
   const [running, setRunning] = useState(false);
@@ -121,16 +121,11 @@ export default function CriticalSignalsChecker({ industry, city, websiteUrl, bus
     setResult(null);
 
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 2000,
-          system: SYSTEM_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Run a full critical signals audit.
+          system: SYSTEM_PROMPT,          prompt: `Run a full critical signals audit.
 
 Business: ${businessName || "Local Business"}
 Industry: ${industry || "Local Services"}
@@ -140,13 +135,11 @@ Mode: ${mode || "named"}
 Plan: ${plan}
 
 Check all 5 signal categories including the new Search Console verification check, content quality checks (thin pages, keyword stuffing, hidden text, doorway pages), and security checks (mixed content, injected links, malware patterns, 401 errors on public pages).`
-          }]
-        })
+          })
       });
 
       const data = await response.json();
-      const raw = data.content?.[0]?.text || "{}";
-      const clean = raw.replace(/```[\w]*\n?/g, "").trim();
+      const clean = data.result || "{}";
       setResult(JSON.parse(clean));
     } catch {
       // Fallback demo
@@ -156,7 +149,7 @@ Check all 5 signal categories including the new Search Console verification chec
         findings: [
           { type: "error", category: "Security", item: "Mixed content detected", detail: "Several images and one script are loading over HTTP on your HTTPS site. Browsers block these silently and Google flags mixed content as a trust issue.", fix: "Update all src attributes to use https:// instead of http://. Check your CMS media library for assets uploaded with HTTP paths.", severity: "critical" },
           { type: "error", category: "Search Console", item: "No GSC verification detected", detail: "No Google Search Console verification meta tag found in your homepage <head>. Without this, Google cannot send you coverage reports, manual action notices, or security alerts.", fix: "Go to search.google.com/search-console, add your property, and add the HTML meta tag to your site's <head> section.", severity: "high" },
-          { type: "error", category: "Content Quality", item: "Doorway pages detected", detail: "3 city pages appear to be near-identical copies with only the city name swapped. Google treats these as doorway pages and may devalue or penalize them.", fix: "Rewrite each city page with genuinely unique content — local landmarks, specific service details, local team info, and city-specific testimonials.", severity: "critical" },
+          { type: "error", category: "Content Quality", item: "Doorway pages detected", detail: "3 city pages appear to be near-identical copies with only the city name swapped. Google treats these as doorway pages and may devalue or penalize them.", fix: "Rewrite each city page with genuinely unique content â€” local landmarks, specific service details, local team info, and city-specific testimonials.", severity: "critical" },
           { type: "warning", category: "Content Quality", item: "Thin content on 4 service pages", detail: "Four service pages have under 300 words. Google needs enough content to understand what the page is about and who it serves locally.", fix: "Expand each service page to at least 500 words with city-specific details, FAQs, and use cases.", severity: "medium" },
           { type: "warning", category: "Indexability", item: "Staging subdomain not blocked", detail: "staging.yoursite.com appears to be publicly accessible and indexable. Duplicate content between staging and production can split ranking signals.", fix: "Add a noindex meta tag to your staging environment or restrict it with HTTP basic auth.", severity: "medium" },
           { type: "success", category: "Trust Signals", item: "SSL certificate valid", detail: "Your SSL certificate is valid and properly configured. All pages load over HTTPS.", fix: null, severity: "low" },
@@ -169,7 +162,7 @@ Check all 5 signal categories including the new Search Console verification chec
           contentQuality: { score: 45, issues: 2 },
           security: { score: 50, issues: 1 }
         },
-        topRecommendation: "Fix the mixed content security issue first — it affects every page on your site and is a direct trust signal to Google and visitors."
+        topRecommendation: "Fix the mixed content security issue first â€” it affects every page on your site and is a direct trust signal to Google and visitors."
       });
     }
     setRunning(false);
@@ -205,7 +198,7 @@ Check all 5 signal categories including the new Search Console verification chec
           disabled={running}
           style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
         >
-          {running ? "Checking..." : result ? "Re-check →" : "Run Check →"}
+          {running ? "Checking..." : result ? "Re-check â†’" : "Run Check â†’"}
         </button>
       </div>
 
@@ -230,7 +223,7 @@ Check all 5 signal categories including the new Search Console verification chec
                     style={{ background: "var(--color-background-secondary)", border: `0.5px solid ${cat?.issues > 0 ? typeColor.error + "40" : "var(--color-border-tertiary)"}`, borderRadius: 8, padding: "8px 6px", textAlign: "center", cursor: "pointer" }}
                   >
                     <div style={{ fontSize: 9, color: "var(--color-text-secondary)", marginBottom: 3 }}>{label}</div>
-                    <div style={{ fontSize: 18, fontWeight: 500, color: scoreColor(s), lineHeight: 1 }}>{key === "searchConsole" ? (cat?.verified ? "✓" : "✗") : s}</div>
+                    <div style={{ fontSize: 18, fontWeight: 500, color: scoreColor(s), lineHeight: 1 }}>{key === "searchConsole" ? (cat?.verified ? "âœ“" : "âœ—") : s}</div>
                   </div>
                 );
               })}
@@ -259,7 +252,7 @@ Check all 5 signal categories including the new Search Console verification chec
           {/* Findings */}
           <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, overflow: "hidden" }}>
             <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, color: "var(--color-text-secondary)", letterSpacing: "0.8px", fontWeight: 500 }}>
-              FINDINGS — {filteredFindings.length}
+              FINDINGS â€” {filteredFindings.length}
             </div>
             {filteredFindings.map((f, i) => (
               <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 12px", borderBottom: i < filteredFindings.length - 1 ? "0.5px solid var(--color-border-tertiary)" : "none", background: f.severity === "critical" ? severityBg.critical : "transparent" }}>
@@ -300,3 +293,4 @@ Check all 5 signal categories including the new Search Console verification chec
     </div>
   );
 }
+

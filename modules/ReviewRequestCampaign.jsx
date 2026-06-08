@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — Review Request Campaign
+﻿/**
+ * LocalRank Pro â€” Review Request Campaign
  * Tag: RRC | Group: Local Presence
  *
  * Generates personalized review request campaigns:
@@ -30,15 +30,15 @@ const SYSTEM_PROMPT = `You are a review generation specialist for LocalRank Pro.
 Generate a complete, personalized review request campaign for a local business.
 
 WHAT MAKES REVIEW REQUESTS CONVERT:
-1. Personalization — mention the specific service, the technician, the date
-2. Timing — send within 2-24 hours of job completion (highest conversion window)
-3. One specific ask — link directly to Google review page, no extra steps
-4. Short — SMS under 160 chars, email under 100 words
-5. Authentic voice — written like the business owner, not a marketing agency
-6. Follow-up — one follow-up 5 days later if no review posted
+1. Personalization â€” mention the specific service, the technician, the date
+2. Timing â€” send within 2-24 hours of job completion (highest conversion window)
+3. One specific ask â€” link directly to Google review page, no extra steps
+4. Short â€” SMS under 160 chars, email under 100 words
+5. Authentic voice â€” written like the business owner, not a marketing agency
+6. Follow-up â€” one follow-up 5 days later if no review posted
 
 Generate a full campaign including:
-- 3 SMS variations (A/B/C test options — different tones)
+- 3 SMS variations (A/B/C test options â€” different tones)
 - 2 email variations (warm and direct)
 - 1 follow-up SMS for 5 days later
 - 1 follow-up email for 5 days later
@@ -106,16 +106,11 @@ export default function ReviewRequestCampaign({
     setResult(null);
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 2000,
-          system: SYSTEM_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Generate review request campaign:
+          system: SYSTEM_PROMPT,          prompt: `Generate review request campaign:
 Business: ${businessName || "Local Business"}
 Industry: ${industry || "Local Services"}
 City: ${city || "their city"}
@@ -124,13 +119,11 @@ Service performed: ${service || "recent service"}
 
 Write as if from the business owner. Keep SMS under 160 chars.
 Make it sound human, not marketing copy. Include Google Maps review link placeholder [REVIEW_LINK].`
-          }]
-        })
+          })
       });
 
       const data  = await res.json();
-      const raw   = data.content?.[0]?.text || "{}";
-      const clean = raw.replace(/```[\w]*\n?/g, "").trim();
+      const clean = data.result || "{}";
       const parsed = JSON.parse(clean);
       setResult(parsed.campaign || parsed);
     } catch {
@@ -138,7 +131,7 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
         name: `${businessName || "Your Business"} Review Campaign`,
         industry: industry || "Local Services",
         timingRecommendation: "Send within 2 hours of job completion. Conversion rates drop 60% after 24 hours. For alarm installs, send the SMS the moment your technician marks the job complete.",
-        expectedConversionRate: "18–28% SMS, 8–14% email (3–4× industry average due to personalization)",
+        expectedConversionRate: "18â€“28% SMS, 8â€“14% email (3â€“4Ã— industry average due to personalization)",
         sms: [
           {
             variation: "A",
@@ -150,7 +143,7 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
           {
             variation: "B",
             tone: "direct",
-            message: `[Customer] — ${techName || "Your tech"} just closed out your ${service || "service call"} at ${businessName || "Citywide Alarms"}. We'd love a Google review if you have 60 sec. [REVIEW_LINK] — Thank you!`,
+            message: `[Customer] â€” ${techName || "Your tech"} just closed out your ${service || "service call"} at ${businessName || "Citywide Alarms"}. We'd love a Google review if you have 60 sec. [REVIEW_LINK] â€” Thank you!`,
             charCount: 152,
             whenToSend: "4 hours after job completion"
           },
@@ -167,29 +160,29 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
             variation: "A",
             subject: `How did ${techName || "our team"} do today, [Customer]?`,
             tone: "warm",
-            body: `Hi [Customer],\n\nI wanted to personally follow up on your ${service || "service"} today. ${techName || "Our technician"} mentioned everything went smoothly — I hope you feel good about your new system.\n\nIf you have a moment, an honest Google review would mean a tremendous amount to our small team. It only takes 60 seconds and helps other ${city || "local"} families find reliable service.\n\n[REVIEW_LINK]\n\nThank you genuinely,\n[Owner Name]\n${businessName || "Local Business"}`
+            body: `Hi [Customer],\n\nI wanted to personally follow up on your ${service || "service"} today. ${techName || "Our technician"} mentioned everything went smoothly â€” I hope you feel good about your new system.\n\nIf you have a moment, an honest Google review would mean a tremendous amount to our small team. It only takes 60 seconds and helps other ${city || "local"} families find reliable service.\n\n[REVIEW_LINK]\n\nThank you genuinely,\n[Owner Name]\n${businessName || "Local Business"}`
           },
           {
             variation: "B",
-            subject: `Your ${service || "service"} is complete — quick favor?`,
+            subject: `Your ${service || "service"} is complete â€” quick favor?`,
             tone: "direct",
-            body: `[Customer],\n\nYour ${service || "job"} is wrapped up. We hope ${techName || "the team"} took good care of you.\n\nWould you leave us a Google review? Reviews are how families in ${city || "your area"} find companies they can trust — and they're the lifeblood of a small business like ours.\n\n[REVIEW_LINK]\n\nWith thanks,\n${businessName || "Local Business"}`
+            body: `[Customer],\n\nYour ${service || "job"} is wrapped up. We hope ${techName || "the team"} took good care of you.\n\nWould you leave us a Google review? Reviews are how families in ${city || "your area"} find companies they can trust â€” and they're the lifeblood of a small business like ours.\n\n[REVIEW_LINK]\n\nWith thanks,\n${businessName || "Local Business"}`
           }
         ],
         followUpSms: {
-          message: `Hi [Customer], [Owner] here from ${businessName || "Citywide Alarms"}. We sent a note a few days ago — if you had a moment to leave a Google review we'd be so grateful. [REVIEW_LINK] No worries if not!`,
+          message: `Hi [Customer], [Owner] here from ${businessName || "Citywide Alarms"}. We sent a note a few days ago â€” if you had a moment to leave a Google review we'd be so grateful. [REVIEW_LINK] No worries if not!`,
           sendOn: "Day 5 after initial SMS",
           charCount: 155
         },
         followUpEmail: {
           subject: "Still thinking of you, [Customer]",
-          body: `[Customer],\n\nJust a gentle follow-up from [Owner] at ${businessName || "Citywide Alarms"}. If the ${service || "service"} went well, we'd truly appreciate a Google review — it takes under a minute and helps local families find trusted companies.\n\n[REVIEW_LINK]\n\nWe won't bother you again after this — just wanted one more chance to ask. Thank you for your business.\n\n[Owner Name]`
+          body: `[Customer],\n\nJust a gentle follow-up from [Owner] at ${businessName || "Citywide Alarms"}. If the ${service || "service"} went well, we'd truly appreciate a Google review â€” it takes under a minute and helps local families find trusted companies.\n\n[REVIEW_LINK]\n\nWe won't bother you again after this â€” just wanted one more chance to ask. Thank you for your business.\n\n[Owner Name]`
         },
-        qrCardText: `How'd we do?\nLeave us a quick Google review\n[QR CODE]\n${businessName || "Citywide Alarms"} · ${city || "St. Charles"} · [PHONE]`,
+        qrCardText: `How'd we do?\nLeave us a quick Google review\n[QR CODE]\n${businessName || "Citywide Alarms"} Â· ${city || "St. Charles"} Â· [PHONE]`,
         proTips: [
-          "Have the technician personally hand the QR code card to the customer at job completion — verbal + physical ask converts 40% better than SMS alone",
-          "Never send a review request if the job had any problems — resolve the issue first or the review will be negative",
-          "Add the customer's first name to every SMS — personalized messages convert at 3× generic ones"
+          "Have the technician personally hand the QR code card to the customer at job completion â€” verbal + physical ask converts 40% better than SMS alone",
+          "Never send a review request if the job had any problems â€” resolve the issue first or the review will be negative",
+          "Add the customer's first name to every SMS â€” personalized messages convert at 3Ã— generic ones"
         ]
       });
     }
@@ -215,7 +208,7 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
               <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)" }}>Review Request Campaign</span>
             </div>
             <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: "0 0 10px", lineHeight: 1.5 }}>
-              Generates personalized SMS + email review requests that convert at 3–4× industry average. Claude writes each message to mention the technician, the service, and the customer — not generic copy.
+              Generates personalized SMS + email review requests that convert at 3â€“4Ã— industry average. Claude writes each message to mention the technician, the service, and the customer â€” not generic copy.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
               <input type="text" placeholder="Technician name (e.g. Mike)" value={techName} onChange={e => setTechName(e.target.value)} style={{ fontSize: 11 }} />
@@ -223,7 +216,7 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
             </div>
           </div>
           <button onClick={generate} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-            {running ? "Generating..." : result ? "Regenerate →" : "Generate Campaign →"}
+            {running ? "Generating..." : result ? "Regenerate â†’" : "Generate Campaign â†’"}
           </button>
         </div>
       </div>
@@ -288,7 +281,7 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
                 <div key={i} style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 8, overflow: "hidden" }}>
                   <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", display: "flex", justifyContent: "space-between" }}>
                     <div>
-                      <span style={{ fontSize: 10, fontWeight: 500, color: "var(--color-text-primary)" }}>Variation {em.variation} · </span>
+                      <span style={{ fontSize: 10, fontWeight: 500, color: "var(--color-text-primary)" }}>Variation {em.variation} Â· </span>
                       <span style={{ fontSize: 10, color: "var(--color-text-secondary)" }}>Subject: {em.subject}</span>
                     </div>
                     <button onClick={() => copy(`Subject: ${em.subject}\n\n${em.body}`, `email-${i}`)} style={{ fontSize: 9, padding: "2px 7px", border: "0.5px solid var(--color-border-secondary)", borderRadius: 4, background: "transparent", color: "var(--color-text-secondary)", cursor: "pointer" }}>
@@ -305,13 +298,13 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
           {activeTab === "followup" && plan !== "free" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 8, overflow: "hidden" }}>
-                <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>FOLLOW-UP SMS — {result.followUpSms?.sendOn}</div>
+                <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>FOLLOW-UP SMS â€” {result.followUpSms?.sendOn}</div>
                 <div style={{ padding: "12px", background: "var(--color-background-secondary)", margin: "10px", borderRadius: 8 }}>
                   <div style={{ fontSize: 12, color: "var(--color-text-primary)", lineHeight: 1.6 }}>{result.followUpSms?.message}</div>
                 </div>
               </div>
               <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 8, overflow: "hidden" }}>
-                <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>FOLLOW-UP EMAIL · Subject: {result.followUpEmail?.subject}</div>
+                <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>FOLLOW-UP EMAIL Â· Subject: {result.followUpEmail?.subject}</div>
                 <div style={{ padding: "12px", fontSize: 11, color: "var(--color-text-secondary)", lineHeight: 1.7, whiteSpace: "pre-line" }}>{result.followUpEmail?.body}</div>
               </div>
             </div>
@@ -321,7 +314,7 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
           {activeTab === "qr" && plan !== "free" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, overflow: "hidden" }}>
-                <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>QR CARD TEXT — PRINT AND HAND AT JOB COMPLETION</div>
+                <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, fontWeight: 500, color: "var(--color-text-secondary)", letterSpacing: "0.7px" }}>QR CARD TEXT â€” PRINT AND HAND AT JOB COMPLETION</div>
                 <div style={{ padding: "20px", display: "flex", justifyContent: "center" }}>
                   <div style={{ border: "1px solid var(--color-border-tertiary)", borderRadius: 10, padding: "20px 24px", textAlign: "center", maxWidth: 280 }}>
                     <div style={{ width: 80, height: 80, background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 6, margin: "0 auto 12px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "var(--color-text-secondary)" }}>QR CODE</div>
@@ -331,7 +324,7 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
               </div>
               {(result.proTips || []).map((tip, i) => (
                 <div key={i} style={{ display: "flex", gap: 8, padding: "9px 12px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 7 }}>
-                  <span style={{ color: MODULE_COLOR, fontSize: 11, flexShrink: 0, marginTop: 1 }}>✓</span>
+                  <span style={{ color: MODULE_COLOR, fontSize: 11, flexShrink: 0, marginTop: 1 }}>âœ“</span>
                   <span style={{ fontSize: 11, color: "var(--color-text-secondary)", lineHeight: 1.5 }}>{tip}</span>
                 </div>
               ))}
@@ -355,3 +348,4 @@ Make it sound human, not marketing copy. Include Google Maps review link placeho
     </div>
   );
 }
+

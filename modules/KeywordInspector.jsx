@@ -1,7 +1,7 @@
-/**
- * LocalRank Pro — Keyword Inspector
+﻿/**
+ * LocalRank Pro â€” Keyword Inspector
  * Tag: KI | Group: Keywords
- * Finds local keyword gaps — city searches competitors win that you don't
+ * Finds local keyword gaps â€” city searches competitors win that you don't
  */
 
 import { useState } from "react";
@@ -10,7 +10,7 @@ const MODULE_TAG = "KI";
 
 const SYSTEM_PROMPT = `You are a local keyword gap specialist for LocalRank Pro.
 
-Find keyword gaps for a local business — searches people make in their city that competitors rank for but this business does not.
+Find keyword gaps for a local business â€” searches people make in their city that competitors rank for but this business does not.
 
 IMPORTANT: These are LOCAL search keywords only. City-specific. Google 3-Pack and local organic results.
 NOT national keywords. Every keyword must include the city or a local modifier.
@@ -50,12 +50,11 @@ export default function KeywordInspector({ industry, city, websiteUrl, businessN
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514", max_tokens: 2000, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Find keyword gaps:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "their city"}\nWebsite: ${websiteUrl || "their site"}\nMode: ${mode || "named"}\n\nGenerate realistic local keyword gaps for this industry and city.` }]
-        })
+          messages: [{ role: "user", content: `Find keyword gaps:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "their city"}\nWebsite: ${websiteUrl || "their site"}\nMode: ${mode || "named"}\n\nGenerate realistic local keyword gaps for this industry and city.` })
       });
       const data = await res.json();
       const clean = (data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim();
@@ -74,7 +73,7 @@ export default function KeywordInspector({ industry, city, websiteUrl, businessN
           { keyword: `commercial fire alarm ${city || "st charles"}`, monthlySearches: 110, difficulty: "medium", intent: "transactional", currentRank: "not ranking", competitorRanking: "Shield Security #2", priority: "high", pageToCreate: `/commercial-fire-alarm-${(city||"st-charles").toLowerCase().replace(/\s+/g,"-")}/`, quickWin: false },
           { keyword: `security camera installation ${city || "st charles"}`, monthlySearches: 160, difficulty: "medium", intent: "transactional", currentRank: "21+", competitorRanking: "Safe Home Systems #1", priority: "medium", pageToCreate: `/security-camera-installation-${(city||"st-charles").toLowerCase().replace(/\s+/g,"-")}/`, quickWin: false },
         ],
-        topRecommendation: `Target "fire alarm company ${city || "St. Charles"}" first — 320 monthly searches, medium difficulty, and no strong local competitor owns it. Create a dedicated city page with LocalBusiness schema and 500+ words targeting this phrase.`
+        topRecommendation: `Target "fire alarm company ${city || "St. Charles"}" first â€” 320 monthly searches, medium difficulty, and no strong local competitor owns it. Create a dedicated city page with LocalBusiness schema and 500+ words targeting this phrase.`
       });
     }
     setRunning(false);
@@ -93,10 +92,10 @@ export default function KeywordInspector({ industry, city, websiteUrl, businessN
             <span style={{ fontSize: 9, fontWeight: 500, color: MODULE_COLOR, background: MODULE_COLOR + "18", padding: "2px 6px", borderRadius: 3 }}>{MODULE_TAG}</span>
             <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)" }}>Keyword Inspector</span>
           </div>
-          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Finds local keyword gaps — city-specific searches that competitors rank for in the Google 3-Pack and local organic results that you don't. Every keyword is local. No national fluff.</p>
+          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Finds local keyword gaps â€” city-specific searches that competitors rank for in the Google 3-Pack and local organic results that you don't. Every keyword is local. No national fluff.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-          {running ? "Analyzing..." : result ? "Re-run →" : "Find Gaps →"}
+          {running ? "Analyzing..." : result ? "Re-run â†’" : "Find Gaps â†’"}
         </button>
       </div>
 
@@ -166,3 +165,4 @@ export default function KeywordInspector({ industry, city, websiteUrl, businessN
     </div>
   );
 }
+

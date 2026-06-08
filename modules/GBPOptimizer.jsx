@@ -1,12 +1,12 @@
-/**
- * LocalRank Pro — GBP Optimizer (Upgraded)
+﻿/**
+ * LocalRank Pro â€” GBP Optimizer (Upgraded)
  * 
  * Original: scores 15 Google Business Profile ranking factors
  * 
  * NEW: Review Response Generator
  *   - Reads unanswered reviews (positive + negative)
  *   - Claude writes a professional, on-brand response for each
- *   - Responses are personalized — not copy/paste templates
+ *   - Responses are personalized â€” not copy/paste templates
  *   - Includes local city/service keywords naturally
  *   - Negative reviews handled diplomatically
  *   - One-click copy per response
@@ -17,7 +17,7 @@ import { useState } from "react";
 const MODULE_COLOR = "#34D399";
 const MODULE_TAG = "GBP";
 
-// ─── GBP audit system prompt ──────────────────────────────────────────────────
+// â”€â”€â”€ GBP audit system prompt â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AUDIT_PROMPT = `You are a Google Business Profile optimization specialist for LocalRank Pro.
 
 Score and optimize a Google Business Profile for a local business.
@@ -63,13 +63,13 @@ Return ONLY valid JSON:
   "topRecommendation": "highest impact GBP improvement"
 }`;
 
-// ─── Review response system prompt ───────────────────────────────────────────
+// â”€â”€â”€ Review response system prompt â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const REVIEW_PROMPT = `You are a reputation management specialist for LocalRank Pro.
 
 Write professional Google review responses for a local business.
 
 RULES:
-- Each response must feel personal and human — never templated
+- Each response must feel personal and human â€” never templated
 - Positive reviews: thank by first name, reference what they mentioned, include business name and city naturally, invite them back
 - Negative reviews: acknowledge concern without being defensive, offer to make it right offline, include contact method, keep it professional and empathetic
 - Never argue with a negative review
@@ -90,7 +90,7 @@ Return ONLY valid JSON:
   ]
 }`;
 
-// ─── Sample reviews for demo ─────────────────────────────────────────────────
+// â”€â”€â”€ Sample reviews for demo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SAMPLE_REVIEWS = [
   { name: "Mike T.", rating: 5, text: "Citywide Alarms did an amazing job installing our new fire alarm system. The tech was on time, professional, and explained everything. Highly recommend!", date: "2 days ago", answered: false },
   { name: "Sarah M.", rating: 2, text: "Scheduled a service call and nobody showed up. No call, no explanation. Very disappointed.", date: "1 week ago", answered: false },
@@ -98,7 +98,7 @@ const SAMPLE_REVIEWS = [
   { name: "Linda K.", rating: 4, text: "Good service overall. Tech was knowledgeable. Took a bit longer than expected but quality work.", date: "3 weeks ago", answered: false },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function GBPOptimizer({ industry, city, websiteUrl, businessName, mode, plan = "free" }) {
   const [running, setRunning] = useState(false);
@@ -113,16 +113,11 @@ export default function GBPOptimizer({ industry, city, websiteUrl, businessName,
     setRunning(true);
     setResult(null);
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 2000,
-          system: AUDIT_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Audit the Google Business Profile for:
+          system: AUDIT_PROMPT,          prompt: `Audit the Google Business Profile for:
 Business: ${businessName || "Local Business"}
 Industry: ${industry || "Local Services"}  
 City: ${city || "their city"}
@@ -130,8 +125,7 @@ Website: ${websiteUrl || "their website"}
 Mode: ${mode || "named"}
 
 Score all 15 factors. Be specific to this industry and city.`
-          }]
-        })
+          })
       });
       const data = await response.json();
       const raw = data.content?.[0]?.text || "{}";
@@ -142,15 +136,15 @@ Score all 15 factors. Be specific to this industry and city.`
         status: "Issues Found",
         factors: [
           { factor: "Primary category", score: 7, status: "good", finding: "Fire Protection Service is correct", action: "Add 'Fire Alarm Supplier' and 'Security System Installer' as secondary categories" },
-          { factor: "Business description", score: 4, status: "weak", finding: "Description is 180 characters — well under the 750 character limit", action: "Rewrite to 700+ characters including city name, all primary services, and a call to action" },
-          { factor: "Photo count", score: 3, status: "weak", finding: "Only 6 photos — competitors average 40+", action: "Add 10 photos immediately: team, vehicles, completed installs, office exterior, equipment" },
-          { factor: "Review response rate", score: 2, status: "missing", finding: "Only 25% of reviews have responses", action: "Respond to all unanswered reviews — use the Review Response Generator below" },
+          { factor: "Business description", score: 4, status: "weak", finding: "Description is 180 characters â€” well under the 750 character limit", action: "Rewrite to 700+ characters including city name, all primary services, and a call to action" },
+          { factor: "Photo count", score: 3, status: "weak", finding: "Only 6 photos â€” competitors average 40+", action: "Add 10 photos immediately: team, vehicles, completed installs, office exterior, equipment" },
+          { factor: "Review response rate", score: 2, status: "missing", finding: "Only 25% of reviews have responses", action: "Respond to all unanswered reviews â€” use the Review Response Generator below" },
           { factor: "GBP posts", score: 0, status: "missing", finding: "No posts in last 90 days", action: "Post once per week: promotions, completed projects, seasonal offers, company news" },
           { factor: "Products/services", score: 5, status: "good", finding: "8 services listed", action: "Add pricing ranges to each service listing" },
           { factor: "Booking link", score: 0, status: "missing", finding: "No appointment booking link configured", action: "Add your scheduling link or phone number as the booking URL" },
         ],
         reviewSummary: { totalReviews: 23, averageRating: 4.3, responseRate: 25, unansweredCount: 3, recentNegative: 1 },
-        topRecommendation: "Add more photos and respond to unanswered reviews — these two actions have the highest direct impact on local 3-Pack rankings."
+        topRecommendation: "Add more photos and respond to unanswered reviews â€” these two actions have the highest direct impact on local 3-Pack rankings."
       });
     }
     setRunning(false);
@@ -160,24 +154,18 @@ Score all 15 factors. Be specific to this industry and city.`
     setGeneratingResponses(true);
     const unanswered = reviews.filter(r => !r.answered);
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1500,
-          system: REVIEW_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Write responses for these unanswered reviews.
+          system: REVIEW_PROMPT,          prompt: `Write responses for these unanswered reviews.
 Business: ${businessName || "Citywide Alarms"}
 Industry: ${industry || "Fire Alarm and Security"}
 City: ${city || "St. Charles, MO"}
 
 Reviews:
 ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.date}): "${r.text}"`).join("\n")}`
-          }]
-        })
+          })
       });
       const data = await response.json();
       const raw = data.content?.[0]?.text || "{}";
@@ -185,8 +173,8 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
       setResponses(parsed.responses);
     } catch {
       setResponses([
-        { reviewIndex: 0, reviewerName: "Mike T.", rating: 5, tone: "grateful", responseText: `Thank you so much, Mike! We're thrilled the installation went smoothly and that our technician took the time to walk you through everything. Knowing your family is protected with a properly installed fire alarm system means everything to us. We're always here in St. Charles if you need anything — don't hesitate to reach out!` },
-        { reviewIndex: 1, reviewerName: "Sarah M.", rating: 2, tone: "empathetic", responseText: `Sarah, we sincerely apologize for missing your appointment without any communication — that's not the standard we hold ourselves to. Please reach out to us directly at our main number so we can make this right and get your service scheduled promptly. You deserve better, and we'd like the chance to show you the service Citywide Alarms is known for in St. Charles.` },
+        { reviewIndex: 0, reviewerName: "Mike T.", rating: 5, tone: "grateful", responseText: `Thank you so much, Mike! We're thrilled the installation went smoothly and that our technician took the time to walk you through everything. Knowing your family is protected with a properly installed fire alarm system means everything to us. We're always here in St. Charles if you need anything â€” don't hesitate to reach out!` },
+        { reviewIndex: 1, reviewerName: "Sarah M.", rating: 2, tone: "empathetic", responseText: `Sarah, we sincerely apologize for missing your appointment without any communication â€” that's not the standard we hold ourselves to. Please reach out to us directly at our main number so we can make this right and get your service scheduled promptly. You deserve better, and we'd like the chance to show you the service Citywide Alarms is known for in St. Charles.` },
         { reviewIndex: 3, reviewerName: "Linda K.", rating: 4, tone: "grateful", responseText: `Thank you, Linda! We appreciate your patience and kind words about our technician's knowledge. We're always working to improve our scheduling, and your feedback helps us do that. We're glad the work met your expectations and we look forward to being your trusted alarm company in the area.` },
       ]);
     }
@@ -216,7 +204,7 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
             <span style={{ fontSize: 9, padding: "1px 5px", borderRadius: 3, background: "#34D39916", color: "#34D399", border: "0.5px solid #34D39930" }}>+ Review Responses</span>
           </div>
           <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: "0", lineHeight: 1.5 }}>
-            Scores 15 GBP ranking factors. New: Review Response Generator — Claude writes personalized responses to every unanswered review.
+            Scores 15 GBP ranking factors. New: Review Response Generator â€” Claude writes personalized responses to every unanswered review.
           </p>
         </div>
         <button
@@ -224,7 +212,7 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
           disabled={running}
           style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#0B0E16", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
         >
-          {running ? "Auditing..." : result ? "Re-audit →" : "Run Audit →"}
+          {running ? "Auditing..." : result ? "Re-audit â†’" : "Run Audit â†’"}
         </button>
       </div>
 
@@ -253,7 +241,7 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 4 }}>
                     {[
                       { label: "Reviews", value: result.reviewSummary?.totalReviews },
-                      { label: "Rating", value: result.reviewSummary?.averageRating?.toFixed(1) + "★" },
+                      { label: "Rating", value: result.reviewSummary?.averageRating?.toFixed(1) + "â˜…" },
                       { label: "Response rate", value: result.reviewSummary?.responseRate + "%" },
                       { label: "Unanswered", value: result.reviewSummary?.unansweredCount, warn: true },
                     ].map(({ label, value, warn }) => (
@@ -281,7 +269,7 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
                     <div style={{ fontSize: 12, fontWeight: 500, color: factorColor[f.status] || "#94A3B8", textAlign: "center" }}>{f.score}/10</div>
                     <div>
                       <div style={{ fontSize: 11, color: "var(--color-text-secondary)", marginBottom: 3 }}>{f.finding}</div>
-                      {f.action && <div style={{ fontSize: 10, color: "#34D399", lineHeight: 1.4 }}>→ {f.action}</div>}
+                      {f.action && <div style={{ fontSize: 10, color: "#34D399", lineHeight: 1.4 }}>â†’ {f.action}</div>}
                     </div>
                   </div>
                 ))}
@@ -292,13 +280,13 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
           {activeTab === "reviews" && (
             <div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{reviews.filter(r => !r.answered).length} unanswered reviews — Claude will write a personalized response for each one.</div>
+                <div style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>{reviews.filter(r => !r.answered).length} unanswered reviews â€” Claude will write a personalized response for each one.</div>
                 <button
                   onClick={generateResponses}
                   disabled={generatingResponses}
                   style={{ padding: "7px 12px", background: generatingResponses ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: generatingResponses ? MODULE_COLOR : "#0B0E16", fontSize: 11, fontWeight: 500, cursor: generatingResponses ? "not-allowed" : "pointer" }}
                 >
-                  {generatingResponses ? "Writing..." : "Write Responses →"}
+                  {generatingResponses ? "Writing..." : "Write Responses â†’"}
                 </button>
               </div>
 
@@ -312,7 +300,7 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <span style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)" }}>{review.name}</span>
-                            <span style={{ fontSize: 11, color: starColor(review.rating) }}>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</span>
+                            <span style={{ fontSize: 11, color: starColor(review.rating) }}>{"â˜…".repeat(review.rating)}{"â˜†".repeat(5 - review.rating)}</span>
                           </div>
                           <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
                             <span style={{ fontSize: 9, color: "var(--color-text-secondary)" }}>{review.date}</span>
@@ -333,7 +321,7 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
                                   onClick={() => copyResponse(resp.responseText, i)}
                                   style={{ fontSize: 9, padding: "2px 8px", border: "0.5px solid #34D39940", borderRadius: 4, background: copiedIndex === i ? "#34D39920" : "transparent", color: copiedIndex === i ? "#34D399" : "var(--color-text-secondary)", cursor: "pointer" }}
                                 >
-                                  {copiedIndex === i ? "Copied!" : "Copy →"}
+                                  {copiedIndex === i ? "Copied!" : "Copy â†’"}
                                 </button>
                               </div>
                               <div style={{ fontSize: 11, color: "var(--color-text-primary)", lineHeight: 1.6, background: "#34D39908", padding: "8px 10px", borderRadius: 6 }}>{resp.responseText}</div>
@@ -360,3 +348,4 @@ ${unanswered.map((r, i) => `Review ${i}: ${r.rating} stars from ${r.name} (${r.d
     </div>
   );
 }
+

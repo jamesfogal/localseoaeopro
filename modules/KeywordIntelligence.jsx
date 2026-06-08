@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Keyword Intelligence
  * Tag: KIN | Group: Keywords
  */
@@ -12,13 +12,12 @@ export default function KeywordIntelligence({ industry, city, businessName, mode
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1500,
+          model: "claude-sonnet-4-20250514",
           system: `You are a local keyword intelligence analyst. Generate deep keyword research for a local business including volume estimates, difficulty, seasonal trends, and content type recommendations. Return ONLY valid JSON: {"keywords":[{"phrase":"exact keyword","monthlySearches":number,"difficulty":1-100,"localIntent":"high|medium","seasonality":"year-round|seasonal","peakMonths":["month"],"contentType":"service page|city page|faq|blog|comparison","currentOpportunity":"immediate|short-term|long-term","schema":"LocalBusiness|FAQPage|Service|HowTo"}],"contentPriority":"which content type to create first and why","seasonalAlert":"any seasonal opportunity coming up"}`,
-          messages: [{ role: "user", content: `Generate keyword intelligence for ${businessName || "Local Business"}, ${industry} in ${city}. Generate 15 keywords.` }]
-        })
+          messages: [{ role: "user", content: `Generate keyword intelligence for ${businessName || "Local Business"}, ${industry} in ${city}. Generate 15 keywords.` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
@@ -31,8 +30,8 @@ export default function KeywordIntelligence({ industry, city, businessName, mode
           { phrase: `best alarm company ${city||"st charles"} review`, monthlySearches: 140, difficulty: 35, localIntent: "high", seasonality: "year-round", peakMonths: [], contentType: "comparison", currentOpportunity: "immediate", schema: "LocalBusiness" },
           { phrase: `fire alarm inspection requirements missouri`, monthlySearches: 210, difficulty: 22, localIntent: "medium", seasonality: "seasonal", peakMonths: ["January", "February"], contentType: "blog", currentOpportunity: "immediate", schema: "HowTo" },
         ],
-        contentPriority: "Create service pages first — they have the highest local intent and directly target transactional searches where people are ready to call.",
-        seasonalAlert: "Fire safety awareness month in October — create content now to rank before the peak."
+        contentPriority: "Create service pages first â€” they have the highest local intent and directly target transactional searches where people are ready to call.",
+        seasonalAlert: "Fire safety awareness month in October â€” create content now to rank before the peak."
       });
     }
     setRunning(false);
@@ -46,10 +45,10 @@ export default function KeywordIntelligence({ industry, city, businessName, mode
             <span style={{ fontSize: 9, fontWeight: 500, color: MODULE_COLOR, background: MODULE_COLOR + "18", padding: "2px 6px", borderRadius: 3 }}>KIN</span>
             <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-text-primary)" }}>Keyword Intelligence</span>
           </div>
-          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Deep keyword data — volume estimates, difficulty scoring, seasonal peaks, content type recommendations, and schema type per keyword.</p>
+          <p style={{ fontSize: 11, color: "var(--color-text-secondary)", margin: 0, lineHeight: 1.5 }}>Deep keyword data â€” volume estimates, difficulty scoring, seasonal peaks, content type recommendations, and schema type per keyword.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-          {running ? "Analyzing..." : result ? "Re-run →" : "Run Intelligence →"}
+          {running ? "Analyzing..." : result ? "Re-run â†’" : "Run Intelligence â†’"}
         </button>
       </div>
       {result && (
@@ -64,7 +63,7 @@ export default function KeywordIntelligence({ industry, city, businessName, mode
               <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 80px 70px 80px 80px", gap: 6, alignItems: "center", padding: "9px 12px", borderBottom: i < (result.keywords?.length || 0) - 1 ? "0.5px solid var(--color-border-tertiary)" : "none" }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)" }}>{kw.phrase}</div>
-                  <div style={{ fontSize: 9, color: "var(--color-text-secondary)" }}>{kw.schema} schema · {kw.seasonality}</div>
+                  <div style={{ fontSize: 9, color: "var(--color-text-secondary)" }}>{kw.schema} schema Â· {kw.seasonality}</div>
                 </div>
                 <div style={{ fontSize: 11, color: "var(--color-text-primary)", fontWeight: 500 }}>{kw.monthlySearches?.toLocaleString()}/mo</div>
                 <div style={{ fontSize: 11, color: kw.difficulty < 40 ? "#34D399" : kw.difficulty < 65 ? "#FBBF24" : "#F87171", fontWeight: 500 }}>{kw.difficulty}/100</div>
@@ -79,3 +78,4 @@ export default function KeywordIntelligence({ industry, city, businessName, mode
     </div>
   );
 }
+

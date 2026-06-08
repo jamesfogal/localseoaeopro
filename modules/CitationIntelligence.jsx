@@ -1,5 +1,5 @@
-/**
- * Local SEO & AEO Pro — Citation Intelligence
+﻿/**
+ * Local SEO & AEO Pro â€” Citation Intelligence
  * Tag: CIT | Group: Local Presence
  * Audits NAP consistency across 50+ directories
  */
@@ -14,10 +14,10 @@ export default function CitationIntelligence({ industry, city, websiteUrl, busin
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 2000,
+          model: "claude-sonnet-4-20250514",
           system: `You are a local SEO citation analyst. Audit NAP (Name, Address, Phone) consistency across directories for a local business. Return ONLY valid JSON:
 {
   "overallScore": 0-100,
@@ -40,8 +40,7 @@ export default function CitationIntelligence({ industry, city, websiteUrl, busin
   "fixes": ["fix 1", "fix 2"]
 }
 Generate 12-15 realistic directory citations. Tier 1 = Google, Yelp, Facebook, BBB. Tier 2 = Yelp, Angi, HomeAdvisor. Tier 3 = smaller directories.`,
-          messages: [{ role: "user", content: `Audit citations for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles, MO"}\nWebsite: ${websiteUrl || "their site"}` }]
-        })
+          messages: [{ role: "user", content: `Audit citations for:\nBusiness: ${businessName || "Local Business"}\nIndustry: ${industry || "Local Services"}\nCity: ${city || "St. Charles, MO"}\nWebsite: ${websiteUrl || "their site"}` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text || "{}").replace(/```[\w]*\n?/g, "").trim()));
@@ -61,23 +60,23 @@ Generate 12-15 realistic directory citations. Tier 1 = Google, Yelp, Facebook, B
         },
         citations: [
           { directory: "Google Business Profile", tier: 1, status: "consistent", issue: "", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0100", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
-          { directory: "Yelp", tier: 1, status: "inconsistent", issue: "Phone number is old — shows (636) 555-0199 which was disconnected", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0199", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
-          { directory: "Facebook", tier: 1, status: "inconsistent", issue: "Business name listed as 'Citywide Alarm Systems' — inconsistent with GBP", foundNAP: { name: "Citywide Alarm Systems", phone: "(636) 555-0100", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
-          { directory: "BBB", tier: 1, status: "missing", issue: "Not listed on BBB — major trust signal for home service businesses", foundNAP: { name: "", phone: "", address: "" } },
+          { directory: "Yelp", tier: 1, status: "inconsistent", issue: "Phone number is old â€” shows (636) 555-0199 which was disconnected", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0199", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
+          { directory: "Facebook", tier: 1, status: "inconsistent", issue: "Business name listed as 'Citywide Alarm Systems' â€” inconsistent with GBP", foundNAP: { name: "Citywide Alarm Systems", phone: "(636) 555-0100", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
+          { directory: "BBB", tier: 1, status: "missing", issue: "Not listed on BBB â€” major trust signal for home service businesses", foundNAP: { name: "", phone: "", address: "" } },
           { directory: "Angi", tier: 2, status: "consistent", issue: "", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0100", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
           { directory: "HomeAdvisor", tier: 2, status: "inconsistent", issue: "Address shows Suite 100 which was removed 2 years ago", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0100", address: `123 Main St, Suite 100, ${city || "St. Charles"}, MO 63301` } },
-          { directory: "Infogroup / Data Axle", tier: 2, status: "inconsistent", issue: "This aggregator feeds 200+ other directories — wrong phone here is spreading everywhere", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0199", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
-          { directory: "Apple Maps", tier: 2, status: "missing", issue: "Not listed on Apple Maps — critical for iOS Siri searches", foundNAP: { name: "", phone: "", address: "" } },
+          { directory: "Infogroup / Data Axle", tier: 2, status: "inconsistent", issue: "This aggregator feeds 200+ other directories â€” wrong phone here is spreading everywhere", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0199", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
+          { directory: "Apple Maps", tier: 2, status: "missing", issue: "Not listed on Apple Maps â€” critical for iOS Siri searches", foundNAP: { name: "", phone: "", address: "" } },
           { directory: "Bing Places", tier: 2, status: "consistent", issue: "", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0100", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
           { directory: "Foursquare", tier: 3, status: "inconsistent", issue: "Listed with old website URL", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0100", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
-          { directory: "Nextdoor", tier: 3, status: "missing", issue: "Not claimed on Nextdoor — powerful hyperlocal platform for home services", foundNAP: { name: "", phone: "", address: "" } },
+          { directory: "Nextdoor", tier: 3, status: "missing", issue: "Not claimed on Nextdoor â€” powerful hyperlocal platform for home services", foundNAP: { name: "", phone: "", address: "" } },
           { directory: "Manta", tier: 3, status: "consistent", issue: "", foundNAP: { name: businessName || "Citywide Alarms", phone: "(636) 555-0100", address: `123 Main St, ${city || "St. Charles"}, MO 63301` } },
         ],
-        biggestRisk: "Infogroup/Data Axle has the wrong phone number and is feeding that bad data to over 200 downstream directories automatically. This is the #1 fix — correct Infogroup first and the bad data stops spreading.",
+        biggestRisk: "Infogroup/Data Axle has the wrong phone number and is feeding that bad data to over 200 downstream directories automatically. This is the #1 fix â€” correct Infogroup first and the bad data stops spreading.",
         fixes: [
-          "Fix Infogroup/Data Axle immediately — it is the aggregator feeding bad data to 200+ other directories",
-          "Claim BBB listing — most important trust signal for home service and security businesses",
-          "Claim Apple Maps and Nextdoor — both missing entirely"
+          "Fix Infogroup/Data Axle immediately â€” it is the aggregator feeding bad data to 200+ other directories",
+          "Claim BBB listing â€” most important trust signal for home service and security businesses",
+          "Claim Apple Maps and Nextdoor â€” both missing entirely"
         ]
       });
     }
@@ -100,7 +99,7 @@ Generate 12-15 realistic directory citations. Tier 1 = Google, Yelp, Facebook, B
           </p>
         </div>
         <button onClick={run} disabled={running} style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#0B0E16", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
-          {running ? "Scanning..." : result ? "Re-run →" : "Audit Citations →"}
+          {running ? "Scanning..." : result ? "Re-run â†’" : "Audit Citations â†’"}
         </button>
       </div>
 
@@ -122,7 +121,7 @@ Generate 12-15 realistic directory citations. Tier 1 = Google, Yelp, Facebook, B
 
           {result.masterNAP && (
             <div style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 8, padding: "10px 12px", marginBottom: 10 }}>
-              <div style={{ fontSize: 9, color: MODULE_COLOR, fontWeight: 500, marginBottom: 6 }}>MASTER NAP (CORRECT VERSION — ALL DIRECTORIES SHOULD MATCH THIS)</div>
+              <div style={{ fontSize: 9, color: MODULE_COLOR, fontWeight: 500, marginBottom: 6 }}>MASTER NAP (CORRECT VERSION â€” ALL DIRECTORIES SHOULD MATCH THIS)</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
                 {Object.entries(result.masterNAP).map(([key, val]) => (
                   <div key={key}>
@@ -157,7 +156,7 @@ Generate 12-15 realistic directory citations. Tier 1 = Google, Yelp, Facebook, B
                     <span style={{ fontSize: 11, fontWeight: 500, color: "var(--color-text-primary)" }}>{c.directory}</span>
                     <span style={{ fontSize: 8, color: "var(--color-text-secondary)" }}>Tier {c.tier}</span>
                   </div>
-                  {c.issue && <div style={{ fontSize: 10, color: "#FBBF24" }}>⚠ {c.issue}</div>}
+                  {c.issue && <div style={{ fontSize: 10, color: "#FBBF24" }}>âš  {c.issue}</div>}
                 </div>
                 <span style={{ fontSize: 9, padding: "2px 7px", borderRadius: 10, background: statusColor[c.status] + "20", color: statusColor[c.status], fontWeight: 500, whiteSpace: "nowrap" }}>{c.status}</span>
               </div>
@@ -175,9 +174,10 @@ Generate 12-15 realistic directory citations. Tier 1 = Google, Yelp, Facebook, B
 
       {!result && !running && (
         <div style={{ textAlign: "center", padding: "36px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, color: "var(--color-text-secondary)", fontSize: 12 }}>
-          Audits NAP consistency across 50+ directories — inconsistent data quietly destroys local rankings
+          Audits NAP consistency across 50+ directories â€” inconsistent data quietly destroys local rankings
         </div>
       )}
     </div>
   );
 }
+

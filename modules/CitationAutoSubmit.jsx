@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — Citation Auto Submit
+﻿/**
+ * LocalRank Pro â€” Citation Auto Submit
  * Tag: CAS | Group: Local Presence
  *
  * Done-for-you citation building. Claude selects the
@@ -35,7 +35,7 @@ They signal to Google that this business is real, local, and established.
 Consistent NAP across 50+ directories is a direct local ranking factor.
 
 CATEGORIES TO COVER:
-1. Data aggregators (most important — feed data to hundreds of sites): Infogroup, Neustar, Acxiom, Localeze
+1. Data aggregators (most important â€” feed data to hundreds of sites): Infogroup, Neustar, Acxiom, Localeze
 2. Core directories: Google, Yelp, Bing Places, Apple Maps, Facebook, Foursquare
 3. Industry-specific: Based on the business type (alarm = NFPA, BBB, Angi, HomeAdvisor; medical = Healthgrades, Vitals; legal = Avvo, FindLaw; restaurant = OpenTable, TripAdvisor)
 4. Local/regional: Chamber of commerce, local business directories for the city
@@ -43,7 +43,7 @@ CATEGORIES TO COVER:
 
 SUBMISSION METHODS:
 - Automated: Most major directories accept data push via API or aggregator
-- Manual: Some directories require human login (Yelp, Google, Facebook — owner must do these)
+- Manual: Some directories require human login (Yelp, Google, Facebook â€” owner must do these)
 - Guided: We generate the exact text to paste for manual submissions
 
 Return ONLY valid JSON:
@@ -102,7 +102,7 @@ const TYPE_CONFIG = {
   general:    { color: "#94A3B8",  label: "General",     bg: "var(--color-background-secondary)" },
 };
 
-const STATUS_ICON = { accurate:"✓", inaccurate:"✗", missing:"○", "requires-manual":"👤" };
+const STATUS_ICON = { accurate:"âœ“", inaccurate:"âœ—", missing:"â—‹", "requires-manual":"ðŸ‘¤" };
 const STATUS_COLOR = { accurate:"#34D399", inaccurate:"#F87171", missing:"#FBBF24", "requires-manual":"#A78BFA" };
 
 export default function CitationAutoSubmit({ industry, city, websiteUrl, businessName, mode, plan = "free" }) {
@@ -121,12 +121,11 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
   const run = async () => {
     setRunning(true); setResult(null);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514", max_tokens: 2500, system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Generate citation audit for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nWebsite: ${websiteUrl||"their site"}\n\nGenerate 20-25 directories. Include industry-specific ones for ${industry}. Most businesses have 40-60% of citations accurate. Include 3-4 manual submissions for major platforms requiring owner login.` }]
-        })
+          messages: [{ role: "user", content: `Generate citation audit for:\nBusiness: ${businessName||"Local Business"}\nIndustry: ${industry||"Local Services"}\nCity: ${city||"St. Charles"}\nWebsite: ${websiteUrl||"their site"}\n\nGenerate 20-25 directories. Include industry-specific ones for ${industry}. Most businesses have 40-60% of citations accurate. Include 3-4 manual submissions for major platforms requiring owner login.` })
       });
       const data = await res.json();
       setResult(JSON.parse((data.content?.[0]?.text||"{}").replace(/```[\w]*\n?/g,"").trim()));
@@ -143,26 +142,26 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
         },
         existingCitations: { total: 31, accurate: 18, inaccurate: 9, missing: 24, consistencyScore: 58 },
         directories: [
-          { name:"Infogroup (Data Axle)", type:"aggregator", domainAuthority:72, status:"inaccurate", submissionMethod:"automated", priority:"critical", currentIssue:"Old phone number (636-555-0099) — feeding incorrect data to 200+ downstream directories", estimatedTime:"1-3 days" },
-          { name:"Neustar Localeze", type:"aggregator", domainAuthority:68, status:"missing", submissionMethod:"automated", priority:"critical", currentIssue:"Not submitted — missing from this major aggregator affecting hundreds of downstream directories", estimatedTime:"1-3 days" },
+          { name:"Infogroup (Data Axle)", type:"aggregator", domainAuthority:72, status:"inaccurate", submissionMethod:"automated", priority:"critical", currentIssue:"Old phone number (636-555-0099) â€” feeding incorrect data to 200+ downstream directories", estimatedTime:"1-3 days" },
+          { name:"Neustar Localeze", type:"aggregator", domainAuthority:68, status:"missing", submissionMethod:"automated", priority:"critical", currentIssue:"Not submitted â€” missing from this major aggregator affecting hundreds of downstream directories", estimatedTime:"1-3 days" },
           { name:"Google Business Profile", type:"core", domainAuthority:100, status:"accurate", submissionMethod:"manual", priority:"critical", currentIssue:null, estimatedTime:"immediate" },
-          { name:"Bing Places", type:"core", domainAuthority:88, status:"missing", submissionMethod:"manual", priority:"critical", currentIssue:"No Bing listing — many local searches happen on Bing especially via Cortana and Edge", estimatedTime:"immediate" },
-          { name:"Apple Maps", type:"core", domainAuthority:85, status:"missing", submissionMethod:"manual", priority:"critical", currentIssue:"Not listed on Apple Maps — iPhone users searching locally will not find this business", estimatedTime:"1-2 weeks" },
-          { name:"Facebook Business", type:"core", domainAuthority:96, status:"inaccurate", submissionMethod:"manual", priority:"high", currentIssue:"Old address listed (previous location) — causes NAP inconsistency", estimatedTime:"immediate" },
+          { name:"Bing Places", type:"core", domainAuthority:88, status:"missing", submissionMethod:"manual", priority:"critical", currentIssue:"No Bing listing â€” many local searches happen on Bing especially via Cortana and Edge", estimatedTime:"immediate" },
+          { name:"Apple Maps", type:"core", domainAuthority:85, status:"missing", submissionMethod:"manual", priority:"critical", currentIssue:"Not listed on Apple Maps â€” iPhone users searching locally will not find this business", estimatedTime:"1-2 weeks" },
+          { name:"Facebook Business", type:"core", domainAuthority:96, status:"inaccurate", submissionMethod:"manual", priority:"high", currentIssue:"Old address listed (previous location) â€” causes NAP inconsistency", estimatedTime:"immediate" },
           { name:"Yelp", type:"core", domainAuthority:94, status:"accurate", submissionMethod:"manual", priority:"high", currentIssue:null, estimatedTime:"immediate" },
           { name:"BBB (Better Business Bureau)", type:"general", domainAuthority:83, status:"accurate", submissionMethod:"manual", priority:"high", currentIssue:null, estimatedTime:"immediate" },
-          { name:"Angi (Angie's List)", type:"industry", domainAuthority:79, status:"missing", submissionMethod:"automated", priority:"high", currentIssue:"No Angi listing — critical for home service businesses", estimatedTime:"1-3 days" },
-          { name:"HomeAdvisor", type:"industry", domainAuthority:76, status:"missing", submissionMethod:"automated", priority:"high", currentIssue:"No HomeAdvisor listing — major source of home service leads", estimatedTime:"1-3 days" },
+          { name:"Angi (Angie's List)", type:"industry", domainAuthority:79, status:"missing", submissionMethod:"automated", priority:"high", currentIssue:"No Angi listing â€” critical for home service businesses", estimatedTime:"1-3 days" },
+          { name:"HomeAdvisor", type:"industry", domainAuthority:76, status:"missing", submissionMethod:"automated", priority:"high", currentIssue:"No HomeAdvisor listing â€” major source of home service leads", estimatedTime:"1-3 days" },
           { name:"YellowPages.com", type:"general", domainAuthority:74, status:"inaccurate", submissionMethod:"automated", priority:"medium", currentIssue:"Missing suite number in address", estimatedTime:"1-3 days" },
-          { name:"Foursquare", type:"core", domainAuthority:71, status:"missing", submissionMethod:"automated", priority:"medium", currentIssue:"Missing — Foursquare feeds data to hundreds of apps including Uber and Snapchat", estimatedTime:"immediate" },
-          { name:"St. Charles Chamber of Commerce", type:"local", domainAuthority:52, status:"missing", submissionMethod:"guided", priority:"high", currentIssue:"Local chamber listing missing — strong local authority signal", estimatedTime:"1 week" },
-          { name:"NFPA (Natl Fire Protection Assoc)", type:"industry", domainAuthority:78, status:"missing", submissionMethod:"guided", priority:"high", currentIssue:"Industry association listing — critical for fire alarm companies", estimatedTime:"2 weeks" },
+          { name:"Foursquare", type:"core", domainAuthority:71, status:"missing", submissionMethod:"automated", priority:"medium", currentIssue:"Missing â€” Foursquare feeds data to hundreds of apps including Uber and Snapchat", estimatedTime:"immediate" },
+          { name:"St. Charles Chamber of Commerce", type:"local", domainAuthority:52, status:"missing", submissionMethod:"guided", priority:"high", currentIssue:"Local chamber listing missing â€” strong local authority signal", estimatedTime:"1 week" },
+          { name:"NFPA (Natl Fire Protection Assoc)", type:"industry", domainAuthority:78, status:"missing", submissionMethod:"guided", priority:"high", currentIssue:"Industry association listing â€” critical for fire alarm companies", estimatedTime:"2 weeks" },
           { name:"Manta", type:"general", domainAuthority:61, status:"missing", submissionMethod:"automated", priority:"low", currentIssue:"Not listed", estimatedTime:"1-3 days" },
         ],
         manualSubmissions: [
-          { directory:"Bing Places", url:"https://www.bingplaces.com", instructions:"Sign in with Microsoft account → Click 'List your business' → Enter business name and address → Verify via phone or postcard", napText:`Business Name: ${businessName||"Citywide Alarms"}\nAddress: 123 Main Street, ${city||"St. Charles"}, MO 63301\nPhone: (636) 555-0100\nWebsite: ${websiteUrl||"https://citywidealarms.com"}\nCategory: Fire Alarm System Supplier\nHours: Mon-Fri 8am-6pm` },
-          { directory:"Apple Maps Connect", url:"https://mapsconnect.apple.com", instructions:"Sign in with Apple ID → Click 'Add New Place' → Enter all business information → Verify with Apple via email → Allow 2 weeks for review", napText:`Same NAP as Google Business Profile exactly` },
-          { directory:"Facebook Business Page", url:"https://www.facebook.com/business", instructions:"Log into Facebook → Go to Page Settings → Update Address and Phone to match Google exactly → Save changes immediately", napText:`Address: 123 Main Street, ${city||"St. Charles"}, MO 63301\nPhone: (636) 555-0100` },
+          { directory:"Bing Places", url:"https://www.bingplaces.com", instructions:"Sign in with Microsoft account â†’ Click 'List your business' â†’ Enter business name and address â†’ Verify via phone or postcard", napText:`Business Name: ${businessName||"Citywide Alarms"}\nAddress: 123 Main Street, ${city||"St. Charles"}, MO 63301\nPhone: (636) 555-0100\nWebsite: ${websiteUrl||"https://citywidealarms.com"}\nCategory: Fire Alarm System Supplier\nHours: Mon-Fri 8am-6pm` },
+          { directory:"Apple Maps Connect", url:"https://mapsconnect.apple.com", instructions:"Sign in with Apple ID â†’ Click 'Add New Place' â†’ Enter all business information â†’ Verify with Apple via email â†’ Allow 2 weeks for review", napText:`Same NAP as Google Business Profile exactly` },
+          { directory:"Facebook Business Page", url:"https://www.facebook.com/business", instructions:"Log into Facebook â†’ Go to Page Settings â†’ Update Address and Phone to match Google exactly â†’ Save changes immediately", napText:`Address: 123 Main Street, ${city||"St. Charles"}, MO 63301\nPhone: (636) 555-0100` },
         ],
         industrySpecificDirectories: ["NFPA Member Directory", "Angi", "HomeAdvisor", "Thumbtack", "Porch.com", "Missouri Fire Protection Association"],
         estimatedRankingImpact: "Fixing the Infogroup aggregator and adding the 4 missing core directories (Bing, Apple Maps, Angi, HomeAdvisor) is expected to improve local pack visibility within 60-90 days.",
@@ -186,10 +185,10 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
             <span style={{ fontSize:13, fontWeight:500, color:"var(--color-text-primary)" }}>Citation Auto Submit</span>
             <span style={{ fontSize:9, padding:"1px 6px", borderRadius:3, background:"#10D9A016", color:"#10D9A0", border:"0.5px solid #10D9A030" }}>No recurring fee</span>
           </div>
-          <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:0, lineHeight:1.5 }}>Done-for-you citation building. Audits existing citations, finds inconsistencies, submits to 50+ directories. Citations are owned by the client forever — no Yext lock-in, no monthly fee.</p>
+          <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:0, lineHeight:1.5 }}>Done-for-you citation building. Audits existing citations, finds inconsistencies, submits to 50+ directories. Citations are owned by the client forever â€” no Yext lock-in, no monthly fee.</p>
         </div>
         <button onClick={run} disabled={running} style={{ padding:"8px 14px", background:running?"transparent":MODULE_COLOR, border:`0.5px solid ${MODULE_COLOR}`, borderRadius:6, color:running?MODULE_COLOR:"#0B0E16", fontSize:12, fontWeight:500, cursor:running?"not-allowed":"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
-          {running?"Auditing...":result?"Re-audit →":"Audit Citations →"}
+          {running?"Auditing...":result?"Re-audit â†’":"Audit Citations â†’"}
         </button>
       </div>
 
@@ -240,7 +239,7 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
                         <div style={{ fontSize:11, fontWeight:500, color:"var(--color-text-primary)", marginBottom:2 }}>{d.name}</div>
                         {d.currentIssue && <div style={{ fontSize:10, color:"#F87171" }}>{d.currentIssue}</div>}
                         {!d.currentIssue && <div style={{ fontSize:10, color:"#34D399" }}>NAP accurate</div>}
-                        <div style={{ fontSize:9, color:"var(--color-text-secondary)" }}>DA {d.domainAuthority} · {d.estimatedTime}</div>
+                        <div style={{ fontSize:9, color:"var(--color-text-secondary)" }}>DA {d.domainAuthority} Â· {d.estimatedTime}</div>
                       </div>
                       <div><span style={{ fontSize:8, padding:"2px 5px", borderRadius:3, background:tc.bg, color:tc.color }}>{tc.label}</span></div>
                       <div style={{ display:"flex", gap:4, alignItems:"center" }}>
@@ -250,7 +249,7 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
                       <div>
                         {plan !== "free" && d.submissionMethod !== "manual" && d.status !== "accurate" ? (
                           <button onClick={() => setSubmitted(s=>({...s,[d.name]:true}))} style={{ fontSize:9, padding:"3px 7px", background:submitted[d.name]?"#34D39920":MODULE_COLOR, border:`0.5px solid ${submitted[d.name]?"#34D39940":MODULE_COLOR}`, borderRadius:4, color:submitted[d.name]?"#34D399":"#0B0E16", cursor:submitted[d.name]?"default":"pointer" }}>
-                            {submitted[d.name]?"Submitted ✓":"Submit →"}
+                            {submitted[d.name]?"Submitted âœ“":"Submit â†’"}
                           </button>
                         ) : d.submissionMethod === "manual" ? (
                           <span style={{ fontSize:9, color:"#A78BFA" }}>Manual req.</span>
@@ -271,7 +270,7 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
 
           {activeTab === "nap" && result.napData && (
             <div style={{ border:"0.5px solid var(--color-border-tertiary)", borderRadius:10, overflow:"hidden" }}>
-              <div style={{ padding:"7px 12px", background:"var(--color-background-secondary)", borderBottom:"0.5px solid var(--color-border-tertiary)", fontSize:9, fontWeight:500, color:"var(--color-text-secondary)", letterSpacing:"0.7px" }}>MASTER NAP DATA — USE THIS EXACT FORMAT ON ALL DIRECTORIES</div>
+              <div style={{ padding:"7px 12px", background:"var(--color-background-secondary)", borderBottom:"0.5px solid var(--color-border-tertiary)", fontSize:9, fontWeight:500, color:"var(--color-text-secondary)", letterSpacing:"0.7px" }}>MASTER NAP DATA â€” USE THIS EXACT FORMAT ON ALL DIRECTORIES</div>
               {Object.entries(result.napData).map(([key, value], i) => (
                 <div key={i} style={{ display:"grid", gridTemplateColumns:"120px 1fr", gap:8, padding:"7px 12px", borderBottom:"0.5px solid var(--color-border-tertiary)", alignItems:"start" }}>
                   <div style={{ fontSize:10, fontWeight:500, color:"var(--color-text-secondary)", textTransform:"capitalize" }}>{key.replace(/([A-Z])/g," $1").trim()}</div>
@@ -287,7 +286,7 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
                 <div key={i} style={{ border:"0.5px solid #A78BFA40", borderRadius:9, overflow:"hidden" }}>
                   <div style={{ padding:"8px 12px", background:"#A78BFA08", borderBottom:"0.5px solid #A78BFA30", display:"flex", justifyContent:"space-between" }}>
                     <span style={{ fontSize:12, fontWeight:500, color:"var(--color-text-primary)" }}>{m.directory}</span>
-                    <a href={m.url} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:"#A78BFA", textDecoration:"none" }}>Open site →</a>
+                    <a href={m.url} target="_blank" rel="noopener noreferrer" style={{ fontSize:10, color:"#A78BFA", textDecoration:"none" }}>Open site â†’</a>
                   </div>
                   <div style={{ padding:"10px 12px" }}>
                     <div style={{ fontSize:10, color:"var(--color-text-secondary)", marginBottom:6, lineHeight:1.5 }}>{m.instructions}</div>
@@ -302,9 +301,10 @@ export default function CitationAutoSubmit({ industry, city, websiteUrl, busines
 
       {!result && !running && (
         <div style={{ textAlign:"center", padding:"36px 20px", background:"var(--color-background-secondary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:10, color:"var(--color-text-secondary)", fontSize:12 }}>
-          Done-for-you citation building — clients own their citations forever, no Yext lock-in
+          Done-for-you citation building â€” clients own their citations forever, no Yext lock-in
         </div>
       )}
     </div>
   );
 }
+

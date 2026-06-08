@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — Canonical Auditor
+﻿/**
+ * LocalRank Pro â€” Canonical Auditor
  * Tag: CAN | Group: On-Page Audit
  *
  * Checks every page on the site for:
@@ -25,7 +25,7 @@ import { useState } from "react";
 const MODULE_COLOR = "#A78BFA";
 const MODULE_TAG   = "CAN";
 
-// ─── System prompt ────────────────────────────────────────────────────────────
+// â”€â”€â”€ System prompt â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SYSTEM_PROMPT = `You are a canonical tag specialist for LocalRank Pro, a local SEO platform.
 
 You audit every page of a local business website for canonical tag correctness.
@@ -34,30 +34,30 @@ You will receive: business name, industry, city, website URL, and audit mode.
 
 CANONICAL RULES FOR LOCAL SEO:
 Every page must have exactly one canonical tag pointing to itself (self-referencing canonical).
-This is not optional — it is baseline hygiene for every page without exception.
+This is not optional â€” it is baseline hygiene for every page without exception.
 
 CHECK EACH PAGE FOR THESE 5 ERROR STATES:
 
-STATE 1 — CORRECT: canonical href matches the page URL exactly (normalized).
+STATE 1 â€” CORRECT: canonical href matches the page URL exactly (normalized).
   Example: page is /fire-alarm-monitoring/ and canonical is https://site.com/fire-alarm-monitoring/
   Result: PASS
 
-STATE 2 — MISSING: no canonical tag found in <head>.
+STATE 2 â€” MISSING: no canonical tag found in <head>.
   Risk: Google may pick the wrong canonical version of this page.
   Fix: add self-referencing canonical.
 
-STATE 3 — WRONG URL: canonical points to a different page.
+STATE 3 â€” WRONG URL: canonical points to a different page.
   This is the most damaging state. All ranking signals flow to the wrong page.
   Common cause: copy-paste template not updated, or SEO plugin misconfigured.
-  Sub-type: CITY PAGE ERROR — city page canonicalizes to parent service page.
+  Sub-type: CITY PAGE ERROR â€” city page canonicalizes to parent service page.
   Example: /st-charles-fire-alarm/ canonicalizes to /fire-alarm/
-  This is a local SEO-specific failure — the city page will never rank for its city.
+  This is a local SEO-specific failure â€” the city page will never rank for its city.
 
-STATE 4 — MULTIPLE: two or more canonical tags on the same page.
+STATE 4 â€” MULTIPLE: two or more canonical tags on the same page.
   Google ignores all of them when there are multiple.
   Common cause: WordPress theme adds one + SEO plugin adds another.
 
-STATE 5 — PROTOCOL/DOMAIN MISMATCH: canonical uses HTTP on an HTTPS site,
+STATE 5 â€” PROTOCOL/DOMAIN MISMATCH: canonical uses HTTP on an HTTPS site,
   or uses www when the site is non-www (or vice versa).
 
 LOCAL SEO PAGES TO CHECK (generate realistic examples for this business):
@@ -70,7 +70,7 @@ LOCAL SEO PAGES TO CHECK (generate realistic examples for this business):
 - Blog/resources index
 
 Generate 12-18 pages for a realistic local business in this industry and city.
-Make at least 30-40% of them have errors — this is realistic for local business sites.
+Make at least 30-40% of them have errors â€” this is realistic for local business sites.
 Include at least 2 city-page-to-service-page canonical errors (the local SEO specific issue).
 Include at least 1 multiple canonical error.
 Include at least 2 missing canonicals.
@@ -111,14 +111,14 @@ Return ONLY valid JSON:
 Be specific to this business, industry, and city. Use realistic URL structures.
 Return ONLY the JSON object. No markdown, no preamble.`;
 
-// ─── Status config ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Status config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const STATUS_CONFIG = {
-  "correct":           { color: "#34D399", bg: "#34D39916", label: "Correct",        icon: "✓" },
+  "correct":           { color: "#34D399", bg: "#34D39916", label: "Correct",        icon: "âœ“" },
   "missing":           { color: "#FBBF24", bg: "#FBBF2416", label: "Missing",        icon: "!" },
-  "wrong-url":         { color: "#F87171", bg: "#F8717116", label: "Wrong URL",      icon: "✗" },
-  "city-page-error":   { color: "#F87171", bg: "#F8717116", label: "City Page ✗",    icon: "📍" },
-  "multiple":          { color: "#F87171", bg: "#F8717116", label: "Duplicate Tags", icon: "✗✗" },
-  "protocol-mismatch": { color: "#FBBF24", bg: "#FBBF2416", label: "HTTP/HTTPS",    icon: "⚠" },
+  "wrong-url":         { color: "#F87171", bg: "#F8717116", label: "Wrong URL",      icon: "âœ—" },
+  "city-page-error":   { color: "#F87171", bg: "#F8717116", label: "City Page âœ—",    icon: "ðŸ“" },
+  "multiple":          { color: "#F87171", bg: "#F8717116", label: "Duplicate Tags", icon: "âœ—âœ—" },
+  "protocol-mismatch": { color: "#FBBF24", bg: "#FBBF2416", label: "HTTP/HTTPS",    icon: "âš " },
 };
 
 const PAGE_TYPE_LABEL = {
@@ -141,7 +141,7 @@ const PAGE_TYPE_COLOR = {
   blog:           "#FBBF24",
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function CanonicalAuditor({
   industry, city, websiteUrl, businessName, mode, plan = "free"
 }) {
@@ -151,23 +151,18 @@ export default function CanonicalAuditor({
   const [expandedPage, setExpandedPage] = useState(null);
   const [copied,       setCopied]       = useState(null);
 
-  // ─── Run audit ──────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Run audit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const runAudit = async () => {
     setRunning(true);
     setResult(null);
     setExpandedPage(null);
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 3000,
-          system: SYSTEM_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Run a full canonical tag audit.
+          system: SYSTEM_PROMPT,          prompt: `Run a full canonical tag audit.
 
 Business: ${businessName || "Local Business"}
 Industry: ${industry    || "Local Services"}
@@ -180,23 +175,21 @@ Generate realistic page URLs for this ${industry} business in ${city}.
 Check every page type: homepage, service pages, city pages, city+service combinations,
 contact, about, and blog. Find all canonical errors including the city-page-to-service-page
 template error that is common in local SEO.`
-          }]
-        })
+          })
       });
 
       const data  = await res.json();
-      const raw   = data.content?.[0]?.text || "{}";
-      const clean = raw.replace(/```[\w]*\n?/g, "").trim();
+      const clean = data.result || "{}";
       setResult(JSON.parse(clean));
 
     } catch {
-      // ── Realistic fallback demo ─────────────────────────────────────────────
+      // â”€â”€ Realistic fallback demo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       const base = websiteUrl?.replace(/\/$/, "") || "https://citywidealarms.com";
       setResult({
         moduleId: "canonical-auditor",
         score: 52,
         status: "Critical Issues",
-        summary: `Found canonical errors on 8 of 16 pages — including 2 city pages pointing to their parent service page, which means those city pages will not rank for local searches.`,
+        summary: `Found canonical errors on 8 of 16 pages â€” including 2 city pages pointing to their parent service page, which means those city pages will not rank for local searches.`,
         stats: {
           totalPages: 16,
           correct: 8,
@@ -210,28 +203,28 @@ template error that is common in local SEO.`
           { url: `${base}/`, pageLabel: "Homepage", pageType: "homepage", status: "correct", currentCanonical: `${base}/`, shouldBe: `${base}/`, correctedTag: `<link rel="canonical" href="${base}/" />`, severity: "pass", explanation: "Homepage canonical is correctly self-referencing." },
           { url: `${base}/fire-alarm-monitoring/`, pageLabel: "Fire Alarm Monitoring", pageType: "service", status: "correct", currentCanonical: `${base}/fire-alarm-monitoring/`, shouldBe: `${base}/fire-alarm-monitoring/`, correctedTag: `<link rel="canonical" href="${base}/fire-alarm-monitoring/" />`, severity: "pass", explanation: "Service page canonical is correct." },
           { url: `${base}/security-cameras/`, pageLabel: "Security Cameras", pageType: "service", status: "missing", currentCanonical: null, shouldBe: `${base}/security-cameras/`, correctedTag: `<link rel="canonical" href="${base}/security-cameras/" />`, severity: "medium", explanation: "No canonical tag found. Google may pick a wrong version of this URL (with or without trailing slash, HTTP vs HTTPS)." },
-          { url: `${base}/commercial-fire-alarm/`, pageLabel: "Commercial Fire Alarm", pageType: "service", status: "multiple", currentCanonical: `${base}/commercial-fire-alarm/ AND ${base}/`, shouldBe: `${base}/commercial-fire-alarm/`, correctedTag: `<link rel="canonical" href="${base}/commercial-fire-alarm/" />`, severity: "critical", explanation: "Two canonical tags found — the theme adds one and the SEO plugin adds another. Google ignores both. Remove the duplicate and keep only the self-referencing one." },
+          { url: `${base}/commercial-fire-alarm/`, pageLabel: "Commercial Fire Alarm", pageType: "service", status: "multiple", currentCanonical: `${base}/commercial-fire-alarm/ AND ${base}/`, shouldBe: `${base}/commercial-fire-alarm/`, correctedTag: `<link rel="canonical" href="${base}/commercial-fire-alarm/" />`, severity: "critical", explanation: "Two canonical tags found â€” the theme adds one and the SEO plugin adds another. Google ignores both. Remove the duplicate and keep only the self-referencing one." },
           { url: `${base}/st-charles/`, pageLabel: "St. Charles", pageType: "city", status: "correct", currentCanonical: `${base}/st-charles/`, shouldBe: `${base}/st-charles/`, correctedTag: `<link rel="canonical" href="${base}/st-charles/" />`, severity: "pass", explanation: "City page canonical is correctly self-referencing." },
           { url: `${base}/st-peters/`, pageLabel: "St. Peters", pageType: "city", status: "missing", currentCanonical: null, shouldBe: `${base}/st-peters/`, correctedTag: `<link rel="canonical" href="${base}/st-peters/" />`, severity: "medium", explanation: "No canonical on this city page. Google may not know which URL is definitive for St. Peters searches." },
-          { url: `${base}/st-charles-fire-alarm-monitoring/`, pageLabel: "St. Charles Fire Alarm", pageType: "city-service", status: "city-page-error", currentCanonical: `${base}/fire-alarm-monitoring/`, shouldBe: `${base}/st-charles-fire-alarm-monitoring/`, correctedTag: `<link rel="canonical" href="${base}/st-charles-fire-alarm-monitoring/" />`, severity: "critical", explanation: "This city+service page is canonicalizing to the generic service page. It will never rank for 'fire alarm monitoring St. Charles' — all its ranking signals flow to the parent service page instead." },
-          { url: `${base}/o-fallon-fire-alarm-monitoring/`, pageLabel: "O'Fallon Fire Alarm", pageType: "city-service", status: "city-page-error", currentCanonical: `${base}/fire-alarm-monitoring/`, shouldBe: `${base}/o-fallon-fire-alarm-monitoring/`, correctedTag: `<link rel="canonical" href="${base}/o-fallon-fire-alarm-monitoring/" />`, severity: "critical", explanation: "Same template error as St. Charles page. This city page points to the parent service page — it cannot rank for O'Fallon searches." },
+          { url: `${base}/st-charles-fire-alarm-monitoring/`, pageLabel: "St. Charles Fire Alarm", pageType: "city-service", status: "city-page-error", currentCanonical: `${base}/fire-alarm-monitoring/`, shouldBe: `${base}/st-charles-fire-alarm-monitoring/`, correctedTag: `<link rel="canonical" href="${base}/st-charles-fire-alarm-monitoring/" />`, severity: "critical", explanation: "This city+service page is canonicalizing to the generic service page. It will never rank for 'fire alarm monitoring St. Charles' â€” all its ranking signals flow to the parent service page instead." },
+          { url: `${base}/o-fallon-fire-alarm-monitoring/`, pageLabel: "O'Fallon Fire Alarm", pageType: "city-service", status: "city-page-error", currentCanonical: `${base}/fire-alarm-monitoring/`, shouldBe: `${base}/o-fallon-fire-alarm-monitoring/`, correctedTag: `<link rel="canonical" href="${base}/o-fallon-fire-alarm-monitoring/" />`, severity: "critical", explanation: "Same template error as St. Charles page. This city page points to the parent service page â€” it cannot rank for O'Fallon searches." },
           { url: `${base}/st-charles-security-cameras/`, pageLabel: "St. Charles Security Cameras", pageType: "city-service", status: "correct", currentCanonical: `${base}/st-charles-security-cameras/`, shouldBe: `${base}/st-charles-security-cameras/`, correctedTag: `<link rel="canonical" href="${base}/st-charles-security-cameras/" />`, severity: "pass", explanation: "City+service page canonical is correct." },
-          { url: `${base}/access-control/`, pageLabel: "Access Control", pageType: "service", status: "protocol-mismatch", currentCanonical: `http://citywidealarms.com/access-control/`, shouldBe: `${base}/access-control/`, correctedTag: `<link rel="canonical" href="${base}/access-control/" />`, severity: "high", explanation: "Canonical uses HTTP instead of HTTPS. This creates a trust mismatch — the live page is secure but the canonical points to the non-secure version." },
-          { url: `${base}/alarm-monitoring/`, pageLabel: "Alarm Monitoring", pageType: "service", status: "wrong-url", currentCanonical: `${base}/`, shouldBe: `${base}/alarm-monitoring/`, correctedTag: `<link rel="canonical" href="${base}/alarm-monitoring/" />`, severity: "critical", explanation: "This service page canonicalizes to the homepage. All its ranking signals flow to the homepage — this page will not rank for alarm monitoring searches." },
+          { url: `${base}/access-control/`, pageLabel: "Access Control", pageType: "service", status: "protocol-mismatch", currentCanonical: `http://citywidealarms.com/access-control/`, shouldBe: `${base}/access-control/`, correctedTag: `<link rel="canonical" href="${base}/access-control/" />`, severity: "high", explanation: "Canonical uses HTTP instead of HTTPS. This creates a trust mismatch â€” the live page is secure but the canonical points to the non-secure version." },
+          { url: `${base}/alarm-monitoring/`, pageLabel: "Alarm Monitoring", pageType: "service", status: "wrong-url", currentCanonical: `${base}/`, shouldBe: `${base}/alarm-monitoring/`, correctedTag: `<link rel="canonical" href="${base}/alarm-monitoring/" />`, severity: "critical", explanation: "This service page canonicalizes to the homepage. All its ranking signals flow to the homepage â€” this page will not rank for alarm monitoring searches." },
           { url: `${base}/contact/`, pageLabel: "Contact", pageType: "contact", status: "correct", currentCanonical: `${base}/contact/`, shouldBe: `${base}/contact/`, correctedTag: `<link rel="canonical" href="${base}/contact/" />`, severity: "pass", explanation: "Contact page canonical is correct." },
           { url: `${base}/about/`, pageLabel: "About", pageType: "about", status: "correct", currentCanonical: `${base}/about/`, shouldBe: `${base}/about/`, correctedTag: `<link rel="canonical" href="${base}/about/" />`, severity: "pass", explanation: "About page canonical is correct." },
           { url: `${base}/blog/`, pageLabel: "Blog", pageType: "blog", status: "correct", currentCanonical: `${base}/blog/`, shouldBe: `${base}/blog/`, correctedTag: `<link rel="canonical" href="${base}/blog/" />`, severity: "pass", explanation: "Blog index canonical is correct." },
           { url: `${base}/st-peters-security-cameras/`, pageLabel: "St. Peters Security Cameras", pageType: "city-service", status: "correct", currentCanonical: `${base}/st-peters-security-cameras/`, shouldBe: `${base}/st-peters-security-cameras/`, correctedTag: `<link rel="canonical" href="${base}/st-peters-security-cameras/" />`, severity: "pass", explanation: "City+service page canonical is correct." },
           { url: `${base}/fire-alarm-inspection/`, pageLabel: "Fire Alarm Inspection", pageType: "service", status: "correct", currentCanonical: `${base}/fire-alarm-inspection/`, shouldBe: `${base}/fire-alarm-inspection/`, correctedTag: `<link rel="canonical" href="${base}/fire-alarm-inspection/" />`, severity: "pass", explanation: "Service page canonical is correct." },
         ],
-        topRecommendation: "Fix the 2 city+service pages that canonicalize to the parent service page — these pages cannot rank for city-specific searches until that is corrected. Change each canonical to point to itself."
+        topRecommendation: "Fix the 2 city+service pages that canonicalize to the parent service page â€” these pages cannot rank for city-specific searches until that is corrected. Change each canonical to point to itself."
       });
     }
 
     setRunning(false);
   };
 
-  // ─── Copy to clipboard ──────────────────────────────────────────────────────
+  // â”€â”€â”€ Copy to clipboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const copyTag = (tag, idx) => {
     navigator.clipboard.writeText(tag).then(() => {
       setCopied(idx);
@@ -239,7 +232,7 @@ template error that is common in local SEO.`
     });
   };
 
-  // ─── Filter logic ───────────────────────────────────────────────────────────
+  // â”€â”€â”€ Filter logic â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const FILTERS = [
     { id: "all",              label: "All pages" },
     { id: "errors",          label: "Errors only" },
@@ -263,7 +256,7 @@ template error that is common in local SEO.`
   return (
     <div style={{ maxWidth: 620, fontFamily: "var(--font-sans)" }}>
 
-      {/* ── Module header ───────────────────────────────────────────────────── */}
+      {/* â”€â”€ Module header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div style={{ background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, padding: "14px 16px", marginBottom: 12, display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
         <div style={{ flex: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
@@ -283,11 +276,11 @@ template error that is common in local SEO.`
           disabled={running}
           style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
         >
-          {running ? "Scanning..." : result ? "Re-scan →" : "Scan All Pages →"}
+          {running ? "Scanning..." : result ? "Re-scan â†’" : "Scan All Pages â†’"}
         </button>
       </div>
 
-      {/* ── Results ─────────────────────────────────────────────────────────── */}
+      {/* â”€â”€ Results â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {result && (
         <div>
 
@@ -302,7 +295,7 @@ template error that is common in local SEO.`
               { label: "Correct",   value: st?.correct,           color: "#34D399" },
               { label: "Missing",   value: st?.missing,           color: st?.missing  > 0 ? "#FBBF24" : "#34D399" },
               { label: "Wrong URL", value: st?.wrongUrl,          color: st?.wrongUrl > 0 ? "#F87171" : "#34D399" },
-              { label: "City ✗",    value: st?.cityPageError,     color: st?.cityPageError > 0 ? "#F87171" : "#34D399" },
+              { label: "City âœ—",    value: st?.cityPageError,     color: st?.cityPageError > 0 ? "#F87171" : "#34D399" },
               { label: "Duplicate", value: st?.multipleCanonicals,color: st?.multipleCanonicals > 0 ? "#F87171" : "#34D399" },
             ].map(({ label, value, color }) => (
               <div key={label} style={{ background: "var(--color-background-secondary)", border: `0.5px solid ${color === "#34D399" || value === 0 ? "var(--color-border-tertiary)" : color + "40"}`, borderRadius: 8, padding: "10px 6px", textAlign: "center" }}>
@@ -387,7 +380,7 @@ template error that is common in local SEO.`
                     <div>
                       <span style={{ fontSize: 8, fontWeight: 500, color: sc.color, background: sc.bg, padding: "2px 5px", borderRadius: 3, whiteSpace: "nowrap" }}>{sc.label}</span>
                     </div>
-                    <div style={{ fontSize: 10, color: isError ? "var(--color-text-secondary)" : "transparent" }}>{isError ? (isExpanded ? "▲" : "▼") : ""}</div>
+                    <div style={{ fontSize: 10, color: isError ? "var(--color-text-secondary)" : "transparent" }}>{isError ? (isExpanded ? "â–²" : "â–¼") : ""}</div>
                   </div>
 
                   {/* Expanded fix panel */}
@@ -405,7 +398,7 @@ template error that is common in local SEO.`
                         <div style={{ padding: "8px 10px", background: "var(--color-background-secondary)", borderRadius: 6, border: "0.5px solid #F8717130" }}>
                           <div style={{ fontSize: 9, color: "#F87171", marginBottom: 4, fontWeight: 500 }}>CURRENT (WRONG)</div>
                           <div style={{ fontSize: 10, fontFamily: "var(--font-mono)", color: "var(--color-text-secondary)", wordBreak: "break-all", lineHeight: 1.5 }}>
-                            {page.currentCanonical || "— no canonical tag found —"}
+                            {page.currentCanonical || "â€” no canonical tag found â€”"}
                           </div>
                         </div>
                         <div style={{ padding: "8px 10px", background: "var(--color-background-secondary)", borderRadius: 6, border: "0.5px solid #34D39930" }}>
@@ -425,7 +418,7 @@ template error that is common in local SEO.`
                               onClick={e => { e.stopPropagation(); copyTag(page.correctedTag, i); }}
                               style={{ fontSize: 9, padding: "2px 8px", border: "0.5px solid #34D39940", borderRadius: 4, background: copied === i ? "#34D39920" : "transparent", color: copied === i ? "#34D399" : "var(--color-text-secondary)", cursor: "pointer" }}
                             >
-                              {copied === i ? "Copied!" : "Copy →"}
+                              {copied === i ? "Copied!" : "Copy â†’"}
                             </button>
                           ) : null}
                         </div>
@@ -455,10 +448,11 @@ template error that is common in local SEO.`
       {/* Empty state */}
       {!result && !running && (
         <div style={{ textAlign: "center", padding: "40px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, color: "var(--color-text-secondary)", fontSize: 12 }}>
-          Scans every page — homepage, service pages, city pages, city+service combinations — for canonical tag errors
+          Scans every page â€” homepage, service pages, city pages, city+service combinations â€” for canonical tag errors
         </div>
       )}
 
     </div>
   );
 }
+

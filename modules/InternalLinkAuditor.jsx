@@ -1,5 +1,5 @@
-/**
- * LocalRank Pro — Internal Link Auditor
+﻿/**
+ * LocalRank Pro â€” Internal Link Auditor
  * 
  * Checks for:
  *   - 404 broken links (most common ranking killer)
@@ -20,7 +20,7 @@ import { useState } from "react";
 const MODULE_COLOR = "#F87171";
 const MODULE_TAG = "ILA";
 
-// ─── System prompt (also lives in /prompts/internal-link-auditor.txt) ─────────
+// â”€â”€â”€ System prompt (also lives in /prompts/internal-link-auditor.txt) â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SYSTEM_PROMPT = `You are an internal link audit specialist for LocalRank Pro, a local SEO platform.
 
 You audit websites for internal linking problems that hurt Google rankings.
@@ -34,12 +34,12 @@ You will receive:
 Your job is to identify every internal linking problem that could hurt local search rankings.
 
 CHECK FOR:
-1. BROKEN LINKS (404s) — links pointing to pages that no longer exist. These waste crawl budget and signal a poorly maintained site.
-2. REDIRECT CHAINS — links pointing to old URLs that redirect to new ones. Should be updated to point directly to the final URL.
-3. ORPHANED PAGES — important pages (service pages, city pages) that have no internal links pointing to them. Google may never find or rank these.
-4. JS-ONLY NAVIGATION — menus or links built purely in JavaScript that Google cannot reliably follow. These pages may be invisible to Google.
-5. THIN LINK ARCHITECTURE — key pages with fewer than 3 internal links pointing to them. Low authority pages rank poorly.
-6. EXTERNAL BROKEN LINKS — outbound links to dead or parked domains.
+1. BROKEN LINKS (404s) â€” links pointing to pages that no longer exist. These waste crawl budget and signal a poorly maintained site.
+2. REDIRECT CHAINS â€” links pointing to old URLs that redirect to new ones. Should be updated to point directly to the final URL.
+3. ORPHANED PAGES â€” important pages (service pages, city pages) that have no internal links pointing to them. Google may never find or rank these.
+4. JS-ONLY NAVIGATION â€” menus or links built purely in JavaScript that Google cannot reliably follow. These pages may be invisible to Google.
+5. THIN LINK ARCHITECTURE â€” key pages with fewer than 3 internal links pointing to them. Low authority pages rank poorly.
+6. EXTERNAL BROKEN LINKS â€” outbound links to dead or parked domains.
 
 SCORING:
 - Start at 100
@@ -83,7 +83,7 @@ Return ONLY valid JSON matching this exact schema:
 Be specific to the actual business and city. Make findings actionable, not generic.
 Return ONLY the JSON object. No markdown, no explanation, no preamble.`;
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export default function InternalLinkAuditor({ industry, city, websiteUrl, businessName, mode, plan = "free" }) {
   const [running, setRunning] = useState(false);
@@ -97,16 +97,11 @@ export default function InternalLinkAuditor({ industry, city, websiteUrl, busine
     setResult(null);
 
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1500,
-          system: SYSTEM_PROMPT,
-          messages: [{
-            role: "user",
-            content: `Run a full internal link audit.
+          system: SYSTEM_PROMPT,          prompt: `Run a full internal link audit.
 
 Business: ${businessName || "Local Business"}
 Industry: ${industry || "Local Services"}
@@ -118,13 +113,11 @@ Plan: ${plan}
 Analyze the internal link architecture for this ${industry} business in ${city}. 
 Check for 404s, orphaned service/city pages, redirect chains, JS-only navigation, and thin link architecture.
 Be specific about which types of pages are likely broken or orphaned based on this industry.`
-          }]
-        })
+          })
       });
 
       const data = await response.json();
-      const raw = data.content?.[0]?.text || "{}";
-      const clean = raw.replace(/```[\w]*\n?/g, "").trim();
+      const clean = data.result || "{}";
       const parsed = JSON.parse(clean);
       setResult(parsed);
     } catch (err) {
@@ -136,9 +129,9 @@ Be specific about which types of pages are likely broken or orphaned based on th
         summary: `Found 6 broken links and 3 orphaned service pages on ${websiteUrl || "your site"} that are preventing Google from properly indexing key pages.`,
         findings: [
           { type: "error", category: "404 Broken Link", item: "/fire-alarm-monitoring", detail: "This service page returns a 404 error. Any internal links pointing here are wasted and Google has likely de-indexed this page.", fix: "Restore the page or update all internal links pointing to it to the correct URL." },
-          { type: "error", category: "Orphaned Page", item: "/commercial-fire-alarm", detail: "This page has zero internal links pointing to it from the rest of the site. Google can only find it via sitemap if at all — it will not rank.", fix: "Add a link to this page from the homepage services section and the main services page." },
+          { type: "error", category: "Orphaned Page", item: "/commercial-fire-alarm", detail: "This page has zero internal links pointing to it from the rest of the site. Google can only find it via sitemap if at all â€” it will not rank.", fix: "Add a link to this page from the homepage services section and the main services page." },
           { type: "error", category: "404 Broken Link", item: "/contact-us-old", detail: "5 pages still link to /contact-us-old which no longer exists. Visitors and Google hit a dead end.", fix: "Find all links to /contact-us-old and update them to /contact." },
-          { type: "warning", category: "Redirect Chain", item: "/services → /our-services → /what-we-do", detail: "3-step redirect chain detected. Each redirect loses a small amount of ranking signal and slows page load.", fix: "Update all links pointing to /services to point directly to /what-we-do." },
+          { type: "warning", category: "Redirect Chain", item: "/services â†’ /our-services â†’ /what-we-do", detail: "3-step redirect chain detected. Each redirect loses a small amount of ranking signal and slows page load.", fix: "Update all links pointing to /services to point directly to /what-we-do." },
           { type: "warning", category: "Thin Links", item: "/st-charles-alarm-monitoring", detail: "This city page has only 1 internal link pointing to it. Google treats low-link pages as low-priority.", fix: "Add links to this page from the homepage, services page, and footer." },
           { type: "success", category: "JS Navigation", item: "Main navigation", detail: "Main navigation is HTML-based and crawlable by Google.", fix: null }
         ],
@@ -150,7 +143,7 @@ Be specific about which types of pages are likely broken or orphaned based on th
           jsOnlyNavDetected: false,
           externalBrokenLinks: 1
         },
-        topRecommendation: "Fix the 3 orphaned service pages first — add internal links to them from the homepage and services page. These pages are completely invisible to Google right now."
+        topRecommendation: "Fix the 3 orphaned service pages first â€” add internal links to them from the homepage and services page. These pages are completely invisible to Google right now."
       });
     }
 
@@ -161,7 +154,7 @@ Be specific about which types of pages are likely broken or orphaned based on th
   const categoryIcon = {
     "404 Broken Link": "404",
     "Orphaned Page": "ORF",
-    "Redirect Chain": "→→",
+    "Redirect Chain": "â†’â†’",
     "JS Navigation": "JS",
     "Thin Links": "LNK",
     "External Broken Link": "EXT"
@@ -193,7 +186,7 @@ Be specific about which types of pages are likely broken or orphaned based on th
           disabled={running}
           style={{ padding: "8px 14px", background: running ? "transparent" : MODULE_COLOR, border: `0.5px solid ${MODULE_COLOR}`, borderRadius: 6, color: running ? MODULE_COLOR : "#fff", fontSize: 12, fontWeight: 500, cursor: running ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}
         >
-          {running ? "Scanning..." : result ? "Re-scan →" : "Scan Site →"}
+          {running ? "Scanning..." : result ? "Re-scan â†’" : "Scan Site â†’"}
         </button>
       </div>
 
@@ -233,7 +226,7 @@ Be specific about which types of pages are likely broken or orphaned based on th
           {/* Findings */}
           <div style={{ border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, overflow: "hidden" }}>
             <div style={{ padding: "7px 12px", background: "var(--color-background-secondary)", borderBottom: "0.5px solid var(--color-border-tertiary)", fontSize: 9, color: "var(--color-text-secondary)", letterSpacing: "0.8px", fontWeight: 500 }}>
-              FINDINGS — {result.findings?.length || 0}
+              FINDINGS â€” {result.findings?.length || 0}
             </div>
             {(result.findings || []).map((f, i) => (
               <div
@@ -243,7 +236,7 @@ Be specific about which types of pages are likely broken or orphaned based on th
               >
                 <div style={{ display: "flex", flexDirection: "column", gap: 3, flexShrink: 0, alignItems: "center", marginTop: 1 }}>
                   <span style={{ fontSize: 7, fontWeight: 500, color: typeColor[f.type], background: typeColor[f.type] + "18", padding: "2px 4px", borderRadius: 3, letterSpacing: "0.3px" }}>{(f.type || "info").toUpperCase()}</span>
-                  <span style={{ fontSize: 7, color: "var(--color-text-secondary)", background: "var(--color-background-secondary)", padding: "1px 4px", borderRadius: 2, letterSpacing: "0.2px" }}>{categoryIcon[f.category] || "···"}</span>
+                  <span style={{ fontSize: 7, color: "var(--color-text-secondary)", background: "var(--color-background-secondary)", padding: "1px 4px", borderRadius: 2, letterSpacing: "0.2px" }}>{categoryIcon[f.category] || "Â·Â·Â·"}</span>
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -257,7 +250,7 @@ Be specific about which types of pages are likely broken or orphaned based on th
                     </div>
                   )}
                   {f.fix && expandedFix !== i && (
-                    <div style={{ fontSize: 9, color: "var(--color-text-secondary)", marginTop: 2 }}>Tap to see fix →</div>
+                    <div style={{ fontSize: 9, color: "var(--color-text-secondary)", marginTop: 2 }}>Tap to see fix â†’</div>
                   )}
                 </div>
               </div>
@@ -276,9 +269,10 @@ Be specific about which types of pages are likely broken or orphaned based on th
 
       {!result && !running && (
         <div style={{ textAlign: "center", padding: "40px 20px", background: "var(--color-background-secondary)", border: "0.5px solid var(--color-border-tertiary)", borderRadius: 10, color: "var(--color-text-secondary)", fontSize: 12 }}>
-          Click Scan Site → to check for broken links, 404 errors, and orphaned pages
+          Click Scan Site â†’ to check for broken links, 404 errors, and orphaned pages
         </div>
       )}
     </div>
   );
 }
+
