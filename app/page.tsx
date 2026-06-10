@@ -13,7 +13,7 @@ export default function Home() {
       <main style={{
         minHeight: "100vh",
         display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
+        alignItems: "center", justifyContent: "flex-end",
         fontFamily: "system-ui, sans-serif",
         position: "relative", overflow: "hidden",
         background: "#0B0E16",
@@ -33,7 +33,7 @@ export default function Home() {
         {/* Dark overlay — heavy at top, lighter at bottom so arch shows */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(180deg, #0B0E16 0%, #0B0E16CC 35%, #0B0E1699 60%, #0B0E1644 85%, transparent 100%)",
+          background: "linear-gradient(180deg, #0B0E16 0%, #0B0E16EE 25%, #0B0E16AA 55%, #0B0E1655 80%, #0B0E1622 100%)",
         }} />
 
         {/* Subtle grid on top */}
@@ -47,7 +47,7 @@ export default function Home() {
         <div style={{
           maxWidth: 560, width: "100%", textAlign: "center",
           position: "relative", zIndex: 10,
-          padding: "24px 24px 320px",  // bottom padding pulls content up between the legs
+          padding: "24px 24px 200px",  // sits down between the arch legs
         }}>
 
           {/* ── Billboard / H1 ── */}
