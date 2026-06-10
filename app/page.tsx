@@ -11,22 +11,19 @@ const INDUSTRIES = [
 
 export default function Home() {
   const router = useRouter();
-  const [website,      setWebsite]      = useState("");
-  const [city,         setCity]         = useState("");
-  const [industry,     setIndustry]     = useState("");
-  const [phone,        setPhone]        = useState("");
-  const [email,        setEmail]        = useState("");
-  const [smsChecked,   setSmsChecked]   = useState(true);
-  const [emailChecked, setEmailChecked] = useState(true);
-  const [submitting,   setSubmitting]   = useState(false);
-  const [error,        setError]        = useState("");
+  const [website,    setWebsite]    = useState("");
+  const [city,       setCity]       = useState("");
+  const [industry,   setIndustry]   = useState("");
+  const [email,      setEmail]      = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error,      setError]      = useState("");
 
   function validate() {
-    if (!website.trim())  { setError("Please enter your website URL.");        return false; }
-    if (!city.trim())     { setError("Please enter your city.");               return false; }
-    if (!industry)        { setError("Please select your industry.");          return false; }
-    if (!phone.trim())    { setError("Please enter your mobile number.");      return false; }
-    if (emailChecked && !email.trim()) { setError("Enter your email or uncheck the email option."); return false; }
+    if (!website.trim())  { setError("Please enter your website URL.");   return false; }
+    if (!city.trim())     { setError("Please enter your city.");           return false; }
+    if (!industry)        { setError("Please select your industry.");      return false; }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                          { setError("Please enter a valid email address."); return false; }
     return true;
   }
 
@@ -36,10 +33,7 @@ export default function Home() {
     if (!validate()) return;
     setSubmitting(true);
     const url = /^https?:\/\//i.test(website.trim()) ? website.trim() : `https://${website.trim()}`;
-    const params = new URLSearchParams({ url, city, industry, phone });
-    if (email) params.set("email", email);
-    if (smsChecked)   params.set("sms",  "1");
-    if (emailChecked) params.set("mail", "1");
+    const params = new URLSearchParams({ url, city, industry, email });
     router.push(`/audit?${params.toString()}`);
   }
 
@@ -49,43 +43,52 @@ export default function Home() {
     borderRadius: 8, color: "#F1F5F9", fontSize: 16,
     boxSizing: "border-box", outline: "none",
   };
+  const lbl: React.CSSProperties = {
+    fontSize: 13, fontWeight: 700, color: "#64748B",
+    display: "block", marginBottom: 6,
+    textTransform: "uppercase", letterSpacing: "0.8px",
+  };
 
   return (
     <main style={{ background: "#0B0E16", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, sans-serif", padding: "20px" }}>
       <div style={{ maxWidth: 520, width: "100%" }}>
 
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#10D9A0", letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>
-            AI Local SEO &amp; AEO Platform
+        {/* ── Billboard ─────────────────────────────────────────── */}
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+
+          <div style={{ fontSize: "clamp(38px, 9vw, 58px)", fontWeight: 900, letterSpacing: "-2px", lineHeight: 1, marginBottom: 18 }}>
+            <span style={{ color: "#10D9A0" }}>LocalSEO</span><span style={{ color: "#F1F5F9" }}>AEO</span><span style={{ color: "#A78BFA" }}>Pro</span>
           </div>
-          <h1 style={{ fontSize: 32, fontWeight: 800, color: "#F1F5F9", lineHeight: 1.2, margin: "0 0 12px", letterSpacing: "-0.02em" }}>
+
+          <h1 style={{ fontSize: "clamp(19px, 3.5vw, 24px)", fontWeight: 800, color: "#F1F5F9", lineHeight: 1.3, margin: "0 0 14px", letterSpacing: "-0.01em" }}>
             Free Local SEO Audit
           </h1>
-          <p style={{ fontSize: 17, color: "#94A3B8", margin: 0, lineHeight: 1.7 }}>
-            We scan 74 signals and show you exactly what&apos;s costing you calls and customers.
+
+          <p style={{ fontSize: 17, color: "#94A3B8", margin: 0, lineHeight: 1.75 }}>
+            Analyzes <strong style={{ color: "#F1F5F9" }}>74 signals.</strong> We fix{" "}
+            <strong style={{ color: "#10D9A0" }}>47 of them in 24 hours</strong>{" "}
+            and show you results in <strong style={{ color: "#A78BFA" }}>days — not years.</strong>
           </p>
         </div>
 
+        {/* ── Form ──────────────────────────────────────────────── */}
         <div style={{ background: "#161B2E", border: "1px solid #1E293B", borderRadius: 12, padding: 28 }}>
           <form onSubmit={handleSubmit} noValidate>
 
             {/* Website */}
             <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", display: "block", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.8px" }}>
-                Website URL
-              </label>
+              <label style={lbl}>Website URL</label>
               <input style={inp} type="text" placeholder="yourwebsite.com" value={website} onChange={e => setWebsite(e.target.value)} />
             </div>
 
             {/* City + Industry */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
               <div>
-                <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", display: "block", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.8px" }}>City</label>
+                <label style={lbl}>City</label>
                 <input style={inp} type="text" placeholder="St. Louis" value={city} onChange={e => setCity(e.target.value)} />
               </div>
               <div>
-                <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", display: "block", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.8px" }}>Industry</label>
+                <label style={lbl}>Industry</label>
                 <select style={{ ...inp, appearance: "none" }} value={industry} onChange={e => setIndustry(e.target.value)}>
                   <option value="">Select…</option>
                   {INDUSTRIES.map(i => <option key={i} value={i}>{i}</option>)}
@@ -93,60 +96,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Phone */}
-            <div style={{ marginBottom: 14 }}>
-              <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B", display: "block", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.8px" }}>
-                Mobile Number
-              </label>
-              <input style={inp} type="tel" placeholder="(314) 555-5555" value={phone} onChange={e => setPhone(e.target.value)} />
-            </div>
-
-            {/* Delivery options */}
-            <div style={{ background: "#0B0E16", border: "1px solid #1E293B", borderRadius: 10, padding: "16px 18px", marginBottom: 20 }}>
-              <div style={{ fontSize: 13, color: "#475569", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12 }}>
-                How to receive your report
-              </div>
-
-              {/* SMS */}
-              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", marginBottom: 10 }}>
-                <div
-                  onClick={() => setSmsChecked(v => !v)}
-                  style={{ width: 22, height: 22, borderRadius: 6, flexShrink: 0, background: smsChecked ? "#10D9A0" : "transparent", border: `2px solid ${smsChecked ? "#10D9A0" : "#374151"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s", cursor: "pointer" }}
-                >
-                  {smsChecked && <span style={{ color: "#0B0E16", fontSize: 14, fontWeight: 800, lineHeight: 1 }}>✓</span>}
-                </div>
-                <div>
-                  <div style={{ fontSize: 16, color: "#F1F5F9", fontWeight: 600 }}>
-                    📱 Text me the link <span style={{ fontSize: 13, color: "#10D9A0", fontWeight: 700 }}>— Recommended</span>
-                  </div>
-                  <div style={{ fontSize: 14, color: "#64748B" }}>98% open rate — you&apos;ll have it in seconds</div>
-                </div>
-              </label>
-
-              {/* Email */}
-              <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
-                <div
-                  onClick={() => setEmailChecked(v => !v)}
-                  style={{ width: 22, height: 22, borderRadius: 6, flexShrink: 0, background: emailChecked ? "#10D9A0" : "transparent", border: `2px solid ${emailChecked ? "#10D9A0" : "#374151"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.15s", cursor: "pointer" }}
-                >
-                  {emailChecked && <span style={{ color: "#0B0E16", fontSize: 14, fontWeight: 800, lineHeight: 1 }}>✓</span>}
-                </div>
-                <div>
-                  <div style={{ fontSize: 16, color: "#F1F5F9", fontWeight: 600 }}>✉️ Email me the link</div>
-                  <div style={{ fontSize: 14, color: "#64748B" }}>Permanent link — easy to share or revisit</div>
-                </div>
-              </label>
-
-              {/* Email input — shown when checked */}
-              {emailChecked && (
-                <input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  style={{ ...inp, marginTop: 12, background: "#161B2E", border: "1px solid #1E293B" }}
-                />
-              )}
+            {/* Email */}
+            <div style={{ marginBottom: 22 }}>
+              <label style={lbl}>Email — we&apos;ll send you the report link</label>
+              <input style={inp} type="email" placeholder="you@yourbusiness.com" value={email} onChange={e => setEmail(e.target.value)} />
             </div>
 
             {error && (
