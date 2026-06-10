@@ -3,7 +3,6 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
-// Code-split — don't load the full chat bot until the user clicks
 const AuditChatBot = dynamic(() => import("@/components/AuditChatBot"), { ssr: false });
 
 export default function Home() {
@@ -12,34 +11,57 @@ export default function Home() {
   return (
     <>
       <main style={{
-        background: "#0B0E16", minHeight: "100vh",
+        minHeight: "100vh",
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        fontFamily: "system-ui, sans-serif", padding: "24px",
+        fontFamily: "system-ui, sans-serif",
         position: "relative", overflow: "hidden",
+        background: "#0B0E16",
       }}>
 
-        {/* Subtle grid */}
+        {/* ── St. Louis Arch — bottom of page, corner to corner ── */}
         <div style={{
-          position: "absolute", inset: 0, opacity: 0.025,
+          position: "absolute",
+          bottom: 0, left: 0, right: 0,
+          height: "100%",
+          backgroundImage: "url('https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?w=1600&q=80')",
+          backgroundSize: "cover",
+          backgroundPosition: "bottom center",
+          backgroundRepeat: "no-repeat",
+        }} />
+
+        {/* Dark overlay — heavy at top, lighter at bottom so arch shows */}
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(180deg, #0B0E16 0%, #0B0E16CC 35%, #0B0E1699 60%, #0B0E1644 85%, transparent 100%)",
+        }} />
+
+        {/* Subtle grid on top */}
+        <div style={{
+          position: "absolute", inset: 0, opacity: 0.02,
           backgroundImage: "linear-gradient(#A78BFA 1px,transparent 1px),linear-gradient(90deg,#A78BFA 1px,transparent 1px)",
           backgroundSize: "44px 44px",
         }} />
 
-        <div style={{ maxWidth: 560, width: "100%", textAlign: "center", position: "relative" }}>
+        {/* ── Content — floats between the arch legs ── */}
+        <div style={{
+          maxWidth: 560, width: "100%", textAlign: "center",
+          position: "relative", zIndex: 10,
+          padding: "24px 24px 320px",  // bottom padding pulls content up between the legs
+        }}>
 
-          {/* ── Billboard / H1 ───────────────────────────────────── */}
+          {/* ── Billboard / H1 ── */}
           <h1 style={{
             fontSize: "clamp(40px, 10vw, 64px)",
             fontWeight: 900, letterSpacing: "-2.5px",
-            lineHeight: 1, marginBottom: 20, margin: "0 0 20px",
+            lineHeight: 1, margin: "0 0 20px",
           }}>
             <span style={{ color: "#10D9A0" }}>LocalSEO</span>
             <span style={{ color: "#F1F5F9" }}>AEO</span>
             <span style={{ color: "#A78BFA" }}>Pro</span>
           </h1>
 
-          {/* ── Subheading ───────────────────────────────────────── */}
+          {/* ── Subheading ── */}
           <h2 style={{
             fontSize: "clamp(20px, 3.5vw, 26px)",
             fontWeight: 800, color: "#F1F5F9",
@@ -49,19 +71,19 @@ export default function Home() {
             Free Local SEO Audit
           </h2>
 
-          {/* ── Value prop ───────────────────────────────────────── */}
-          <p style={{ fontSize: 18, color: "#94A3B8", margin: "0 0 10px", lineHeight: 1.7 }}>
+          {/* ── Value prop ── */}
+          <p style={{ fontSize: 18, color: "#CBD5E1", margin: "0 0 10px", lineHeight: 1.7 }}>
             Analyzes <strong style={{ color: "#F1F5F9" }}>74 signals.</strong>{" "}
-            We fix <strong style={{ color: "#10D9A0" }}>47 of them in 24 hours</strong>{" "}
-            and show you results in{" "}
-            <strong style={{ color: "#A78BFA" }}>days — not years.</strong>
+            We can fix <strong style={{ color: "#10D9A0" }}>47 of those signals in 24 hours</strong>{" "}
+            and we will let you know the process it takes to complete the rest.{" "}
+            <strong style={{ color: "#A78BFA" }}>Clicks on your site in Days not Years.</strong>
           </p>
 
-          <p style={{ fontSize: 16, color: "#475569", margin: "0 0 40px" }}>
+          <p style={{ fontSize: 16, color: "#64748B", margin: "0 0 40px" }}>
             No account. No credit card. Takes 60 seconds to start.
           </p>
 
-          {/* ── CTA ──────────────────────────────────────────────── */}
+          {/* ── CTA ── */}
           <button
             onClick={() => setChatOpen(true)}
             style={{
@@ -70,22 +92,22 @@ export default function Home() {
               border: "none", borderRadius: 12,
               color: "#fff", fontSize: 18, fontWeight: 700,
               cursor: "pointer", letterSpacing: "-0.01em",
-              boxShadow: "0 0 40px #A78BFA30",
+              boxShadow: "0 0 40px #A78BFA40",
               transition: "transform 0.15s, box-shadow 0.15s",
             }}
             onMouseEnter={e => {
               (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
-              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 60px #A78BFA50";
+              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 60px #A78BFA60";
             }}
             onMouseLeave={e => {
               (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 40px #A78BFA30";
+              (e.currentTarget as HTMLElement).style.boxShadow = "0 0 40px #A78BFA40";
             }}
           >
             🤖 Run My Free SEO Audit →
           </button>
 
-          {/* ── Trust signals ────────────────────────────────────── */}
+          {/* ── Trust signals ── */}
           <div style={{
             display: "flex", justifyContent: "center",
             gap: 28, marginTop: 32, flexWrap: "wrap",
@@ -97,13 +119,13 @@ export default function Home() {
             ].map(([num, label]) => (
               <div key={label} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 26, fontWeight: 800, color: "#A78BFA", letterSpacing: "-1px" }}>{num}</div>
-                <div style={{ fontSize: 13, color: "#475569", fontWeight: 600 }}>{label}</div>
+                <div style={{ fontSize: 13, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>{label}</div>
               </div>
             ))}
           </div>
 
-          {/* ── Login link ───────────────────────────────────────── */}
-          <div style={{ marginTop: 36, fontSize: 14, color: "#374151" }}>
+          {/* ── Login link ── */}
+          <div style={{ marginTop: 36, fontSize: 16, color: "#475569" }}>
             Already a customer?{" "}
             <a href="/login" style={{ color: "#A78BFA", textDecoration: "none", fontWeight: 600 }}>
               Log in to your dashboard →
@@ -113,7 +135,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* ── Chat overlay ─────────────────────────────────────────── */}
       {chatOpen && <AuditChatBot onClose={() => setChatOpen(false)} />}
     </>
   );

@@ -170,10 +170,10 @@ function CompactCountdown({ apiDone, onZero }: { apiDone: boolean; onZero: () =>
           {count}
         </div>
         <div style={{ flex:1, minWidth:0 }}>
-          <div style={{ fontSize:11, color:"#64748B", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:3 }}>
+          <div style={{ fontSize:13, color:"#64748B", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:3 }}>
             Signals Remaining
           </div>
-          <div style={{ fontSize:13, color:"#A78BFA", fontWeight:600, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
+          <div style={{ fontSize:16, color:"#A78BFA", fontWeight:600, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
             {label}
           </div>
         </div>
@@ -181,7 +181,7 @@ function CompactCountdown({ apiDone, onZero }: { apiDone: boolean; onZero: () =>
       <div style={{ background:"#1A1040", borderRadius:4, height:4, overflow:"hidden", marginBottom:4 }}>
         <div style={{ height:"100%", width:`${progress}%`, background:"linear-gradient(90deg,#A78BFA,#60A5FA)", borderRadius:4, transition:"width 0.35s linear" }} />
       </div>
-      <div style={{ fontSize:11, color:"#374151", textAlign:"right" }}>{idx} / {total}</div>
+      <div style={{ fontSize:13, color:"#374151", textAlign:"right" }}>{idx} / {total}</div>
     </div>
   );
 }
@@ -196,19 +196,19 @@ function ResultCard({ data, url }: { data: AuditResult; url: string }) {
     <div style={{ width:"100%", background:"#0D0A1F", border:"1px solid #A78BFA30", borderRadius:12, overflow:"hidden" }}>
       {/* Header */}
       <div style={{ padding:"14px 16px", background:"linear-gradient(135deg,#1A0E3D,#0D0A1F)", borderBottom:"1px solid #A78BFA20" }}>
-        <div style={{ fontSize:11, color:"#A78BFA", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:4 }}>
+        <div style={{ fontSize:13, color:"#A78BFA", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:4 }}>
           LocalSEOAEOPro Audit Report
         </div>
-        <div style={{ fontSize:15, fontWeight:700, color:"#F1F5F9" }}>{hostname}</div>
+        <div style={{ fontSize:16, fontWeight:700, color:"#F1F5F9" }}>{hostname}</div>
       </div>
 
       {/* Scores */}
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", borderBottom:"1px solid #1E1040" }}>
         {[["📱 Mobile", ms],["🖥️ Desktop", ds]].map(([label, score]) => (
           <div key={String(label)} style={{ padding:"12px 16px", textAlign:"center" }}>
-            <div style={{ fontSize:11, color:"#64748B", marginBottom:4 }}>{label}</div>
+            <div style={{ fontSize:13, color:"#64748B", marginBottom:4 }}>{label}</div>
             <div style={{ fontSize:32, fontWeight:800, color:SC(Number(score)), lineHeight:1 }}>{score}</div>
-            <div style={{ fontSize:11, color:SC(Number(score)), marginTop:2 }}>/100</div>
+            <div style={{ fontSize:13, color:SC(Number(score)), marginTop:2 }}>/100</div>
           </div>
         ))}
       </div>
@@ -216,7 +216,7 @@ function ResultCard({ data, url }: { data: AuditResult; url: string }) {
       {/* 1-second verdict */}
       <div style={{ padding:"10px 16px", borderBottom:"1px solid #1E1040", display:"flex", alignItems:"center", gap:8 }}>
         <span style={{ fontSize:16 }}>{data.passesOneSecond ? "✅" : "❌"}</span>
-        <span style={{ fontSize:13, color: data.passesOneSecond ? "#34D399" : "#F87171", fontWeight:600 }}>
+        <span style={{ fontSize:16, color: data.passesOneSecond ? "#34D399" : "#F87171", fontWeight:600 }}>
           {data.passesOneSecond ? "Passes Google's 1-second test" : "Failing Google's 1-second test"}
         </span>
       </div>
@@ -224,11 +224,11 @@ function ResultCard({ data, url }: { data: AuditResult; url: string }) {
       {/* Top issues */}
       {top3.length > 0 && (
         <div style={{ padding:"12px 16px", borderBottom:"1px solid #1E1040" }}>
-          <div style={{ fontSize:11, color:"#F87171", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>
+          <div style={{ fontSize:13, color:"#F87171", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>
             Top Issues Found
           </div>
           {top3.map((issue, i) => (
-            <div key={i} style={{ fontSize:12, color:"#CBD5E1", lineHeight:1.5, marginBottom:5, paddingLeft:8, borderLeft:"2px solid #F8717150" }}>
+            <div key={i} style={{ fontSize:16, color:"#CBD5E1", lineHeight:1.5, marginBottom:5, paddingLeft:8, borderLeft:"2px solid #F8717150" }}>
               {issue.replace(/^\[\d+\]\s*/, "")}
             </div>
           ))}
@@ -238,8 +238,8 @@ function ResultCard({ data, url }: { data: AuditResult; url: string }) {
       {/* Fix promise */}
       <div style={{ padding:"12px 16px", background:"#10D9A008", display:"flex", alignItems:"center", gap:10 }}>
         <span style={{ fontSize:18, flexShrink:0 }}>⚡</span>
-        <span style={{ fontSize:13, color:"#10D9A0", fontWeight:600 }}>
-          We can fix 47 of these in 24 hours. Results in days — not years.
+        <span style={{ fontSize:16, color:"#10D9A0", fontWeight:600 }}>
+          Analyzes 74 signals. We can fix 47 of those signals in 24 hours and we will let you know the process it takes to complete the rest. Clicks on your site in Days not Years.
         </span>
       </div>
     </div>
@@ -384,7 +384,7 @@ export default function AuditChatBot({ onClose }: { onClose: () => void }) {
       await botSay(`Your full report has been sent to ${result.url ? "" : "your email"}. The link is permanent — you can share it with your team. 📩`);
     }
 
-    await botSay("We can fix 47 of these issues in 24 hours and have you seeing results within days. What questions do you have? Ask me anything.");
+    await botSay("Analyzes 74 signals. We can fix 47 of those signals in 24 hours and we will let you know the process it takes to complete the rest. Clicks on your site in Days not Years. What questions do you have? Ask me anything.");
     setStage("qa");
   }, [addMsg, botSay, botSayFast]);
 
@@ -524,10 +524,10 @@ Answer the user's question conversationally. Be specific to their data. Keep it 
             display:"flex", alignItems:"center", justifyContent:"center", fontSize:20,
           }}>🤖</div>
           <div>
-            <div style={{ fontSize:15, fontWeight:700, color:"#F1F5F9" }}>LocalSEOAEOPro Bot</div>
+            <div style={{ fontSize:16, fontWeight:700, color:"#F1F5F9" }}>LocalSEOAEOPro Bot</div>
             <div style={{ display:"flex", alignItems:"center", gap:5 }}>
               <div style={{ width:7, height:7, borderRadius:"50%", background:"#34D399" }} />
-              <span style={{ fontSize:12, color:"#64748B" }}>
+              <span style={{ fontSize:13, color:"#64748B" }}>
                 {stage === "running" ? "Scanning your site..." : stage === "qa" ? "Ready to answer your questions" : "Online — let's audit your site"}
               </span>
             </div>
@@ -557,7 +557,7 @@ Answer the user's question conversationally. Be specific to their data. Keep it 
         background:"#0D0A1F",
       }}>
         {stage === "qa" && (
-          <div style={{ fontSize:12, color:"#374151", marginBottom:6, textAlign:"center" }}>
+          <div style={{ fontSize:16, color:"#374151", marginBottom:6, textAlign:"center" }}>
             💬 Ask anything — powered by Claude AI
           </div>
         )}
@@ -658,7 +658,7 @@ function MessageRow({
               style={{
                 padding:"8px 14px", background:"#1A1040",
                 border:"1px solid #A78BFA40", borderRadius:20,
-                color:"#C4B5FD", fontSize:14, fontWeight:600,
+                color:"#C4B5FD", fontSize:16, fontWeight:600,
                 cursor:"pointer", transition:"all 0.15s",
               }}
               onMouseEnter={e => { (e.target as HTMLElement).style.background="#2D1B69"; (e.target as HTMLElement).style.borderColor="#A78BFA"; }}
@@ -697,7 +697,7 @@ function MessageRow({
         background: isBot ? "#1A1040" : "#2D1B69",
         border: isBot ? "1px solid #A78BFA20" : "1px solid #A78BFA40",
         borderRadius: isBot ? "4px 12px 12px 12px" : "12px 4px 12px 12px",
-        fontSize:15, color:"#E2E8F0", lineHeight:1.55,
+        fontSize:16, color:"#E2E8F0", lineHeight:1.55,
       }}>
         {msg.text}
       </div>
