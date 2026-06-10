@@ -22,8 +22,7 @@ export default function Home() {
         {/* ── St. Louis Arch — bottom of page, corner to corner ── */}
         <div style={{
           position: "absolute",
-          bottom: 0, left: 0, right: 0,
-          height: "100%",
+          top: 0, left: 0, right: 0, bottom: 0,
           backgroundImage: "url('/arch.jpg')",
           backgroundSize: "100% 100%",
           backgroundPosition: "center center",
@@ -33,7 +32,7 @@ export default function Home() {
         {/* Dark overlay — heavy at top, lighter at bottom so arch shows */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(180deg, #060D1C99 0%, #060D1C88 30%, #060D1C55 60%, #060D1C33 80%, #060D1C11 100%)",
+          background: "linear-gradient(180deg, rgba(6,13,28,0.55) 0%, rgba(6,13,28,0.35) 40%, rgba(6,13,28,0.15) 100%)",
         }} />
 
         {/* Subtle grid on top */}
