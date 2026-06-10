@@ -44,7 +44,7 @@ export default function Home() {
 
         {/* ── Content — floats between the arch legs ── */}
         <div style={{
-          maxWidth: 420, width: "100%", textAlign: "center",
+          maxWidth: 640, width: "100%", textAlign: "center",
           position: "relative", zIndex: 10,
           padding: "24px 24px 24px",
         }}>
