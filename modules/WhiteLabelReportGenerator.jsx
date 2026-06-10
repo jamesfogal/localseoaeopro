@@ -1,34 +1,14 @@
 /**
  * LocalRank Pro — White Label Report Generator
  * Tag: WLR | Group: Overview
- *
- * Assembles all module findings into a branded,
- * shareable client report. Two modes:
- *
- * PROSPECT MODE (Anonymous):
- *   - Shows scores, issues, and urgency
- *   - Competitor data labeled A/B/C
- *   - Ends with a call to action to work with you
- *   - Used as a sales tool before they become a client
- *
- * CLIENT MODE (Named):
- *   - Full detail report with all findings
- *   - Shows before/after progress over time
- *   - Shows fixes completed this month
- *   - Monthly ranking movement
- *   - Used for client retention and reporting
- *
- * Output: Shareable link + PDF download
- *
- * Agency branding: Upload logo, set agency colors,
- * set custom domain for the report link.
  */
 
-import { useState } from "react";
-const MODULE_COLOR = "#A78BFA";
-const MODULE_TAG = "WLR";
+import { useState, useEffect, useRef, useCallback } from "react";
 
-// ── Mock module scores (in production these come from running all modules) ─────
+const MODULE_COLOR = "#A78BFA";
+const MODULE_TAG   = "WLR";
+
+// ── Demo scores ───────────────────────────────────────────────────────────────
 const DEMO_SCORES = {
   "On-Page":       { score: 42, issues: 8,  critical: 3 },
   "Technical":     { score: 38, issues: 12, critical: 4 },
@@ -42,19 +22,338 @@ const DEMO_SCORES = {
   "Hosting":       { score: 22, issues: 6,  critical: 3 },
 };
 
+const SC = s => s >= 80 ? "#34D399" : s >= 60 ? "#84CC16" : s >= 40 ? "#FBBF24" : s >= 20 ? "#F97316" : "#F87171";
+const SL = s => s >= 80 ? "Strong"  : s >= 60 ? "Good"    : s >= 40 ? "Needs work" : s >= 20 ? "Poor"  : "Critical";
 const OVERALL_SCORE = Math.round(Object.values(DEMO_SCORES).reduce((a,b) => a + b.score, 0) / Object.keys(DEMO_SCORES).length);
 
-const SC = s => s >= 80 ? "#34D399" : s >= 60 ? "#84CC16" : s >= 40 ? "#FBBF24" : s >= 20 ? "#F97316" : "#F87171";
-const SL = s => s >= 80 ? "Strong" : s >= 60 ? "Good" : s >= 40 ? "Needs work" : s >= 20 ? "Poor" : "Critical";
+// ── Phase 1 — 36 signals ──────────────────────────────────────────────────────
+const SIGNALS = [
+  "Heading structure (H1–H4)",
+  "Title tags & meta descriptions",
+  "Canonical tag audit",
+  "Image alt text & compression",
+  "Internal link architecture",
+  "Critical signals checklist",
+  "Keyword inspector",
+  "Keyword ownership map",
+  "Keyword intelligence layer",
+  "Competitor intelligence scan",
+  "Geo-grid rank positions",
+  "Google Business Profile health",
+  "GBP post schedule",
+  "GBP listing protection",
+  "Citation accuracy (50+ directories)",
+  "Citation search engine sweep",
+  "Citation auto-submit queue",
+  "Review request campaign status",
+  "Multi-platform review monitor",
+  "AI visibility score (ChatGPT + Gemini)",
+  "AEO Q&A generator check",
+  "AEO Q&A page status",
+  "City page coverage",
+  "Blog calendar & content gap",
+  "FAQ page structure",
+  "Pricing page schema",
+  "Comparison page presence",
+  "PageSpeed Intelligence (mobile + desktop)",
+  "Hosting intelligence verdict",
+  "Rank tracker — 90-day trend",
+  "Backlink finder & toxic link check",
+  "XML sitemap builder status",
+  "Social presence scanner",
+  "Tracking pixel detector",
+  "SSL certificate monitor",
+  "Redirect chain detector",
+];
 
+// ── Phase 2 — compile checks ──────────────────────────────────────────────────
+const COMPILE_STEPS = [
+  "Scoring on-page signals",
+  "Scoring technical health",
+  "Scoring local SEO layer",
+  "Scoring AI visibility",
+  "Scoring reputation",
+  "Weighing critical issues",
+  "Ranking fix priorities",
+  "Calculating opportunity score",
+  "Formatting insights",
+  "Building score grid",
+  "Applying agency branding",
+  "Finalizing report",
+];
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BotBubble — animated chat bubble
+// ═══════════════════════════════════════════════════════════════════════════════
+function BotBubble({ text, delay = 0, onDone }) {
+  const [visible, setVisible] = useState(false);
+  const [typed,   setTyped]   = useState("");
+  const doneRef = useRef(false);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => {
+      setVisible(true);
+      let i = 0;
+      const speed = Math.max(18, Math.min(28, 1200 / text.length));
+      const t2 = setInterval(() => {
+        i++;
+        setTyped(text.slice(0, i));
+        if (i >= text.length) {
+          clearInterval(t2);
+          if (!doneRef.current) { doneRef.current = true; onDone?.(); }
+        }
+      }, speed);
+      return () => clearInterval(t2);
+    }, delay);
+    return () => clearTimeout(t1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div style={{ display: "flex", gap: 10, marginBottom: 14, alignItems: "flex-start" }}>
+      {/* Avatar */}
+      <div style={{
+        width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
+        background: "linear-gradient(135deg, #7C3AED, #A78BFA)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 16, border: "1px solid #A78BFA40",
+      }}>🤖</div>
+      {/* Bubble */}
+      <div style={{
+        background: "#1A1040", border: "1px solid #A78BFA30",
+        borderRadius: "4px 12px 12px 12px",
+        padding: "10px 14px", maxWidth: "85%",
+        fontSize: 16, color: "#E2E8F0", lineHeight: 1.55,
+      }}>
+        {typed}
+        {typed.length < text.length && (
+          <span style={{ display: "inline-block", width: 2, height: 14, background: "#A78BFA", marginLeft: 2, verticalAlign: "middle", animation: "blink 0.7s infinite" }} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CountdownBlock — shared countdown display used in phase 1 + 2
+// ═══════════════════════════════════════════════════════════════════════════════
+function CountdownBlock({ items, totalMs, color, onComplete }) {
+  const total = items.length;
+  const [idx, setIdx]       = useState(0);
+  const idxRef              = useRef(0);
+  const timerRef            = useRef(null);
+  const onCompleteRef       = useRef(onComplete);
+  onCompleteRef.current     = onComplete;
+
+  const msEach = totalMs / total;
+
+  const tick = useCallback((currentIdx) => {
+    timerRef.current = setTimeout(() => {
+      const next = currentIdx + 1;
+      idxRef.current = next;
+      setIdx(next);
+      if (next >= total) { onCompleteRef.current?.(); }
+      else { tick(next); }
+    }, msEach);
+  }, [msEach, total]);
+
+  useEffect(() => {
+    tick(0);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const count    = total - idx;
+  const progress = (idx / total) * 100;
+  const label    = idx >= total ? "Done ✓" : items[idx];
+
+  return (
+    <div style={{
+      background: "#0D0A1F", border: `1px solid ${color}30`,
+      borderRadius: 12, padding: "20px 20px 16px",
+      marginBottom: 16,
+    }}>
+      {/* Number + label row */}
+      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
+        <div style={{
+          fontSize: 64, fontWeight: 800, color: count === 0 ? "#34D399" : color,
+          lineHeight: 1, fontVariantNumeric: "tabular-nums", letterSpacing: "-2px",
+          minWidth: 72, textAlign: "center",
+          transition: "color 0.3s",
+        }}>
+          {count}
+        </div>
+        <div>
+          <div style={{ fontSize: 13, color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>
+            {total === SIGNALS.length ? "Signals Remaining" : "Steps Remaining"}
+          </div>
+          <div style={{ fontSize: 16, color, fontWeight: 600 }}>
+            {label}
+          </div>
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ background: "#1A1040", borderRadius: 6, height: 6, overflow: "hidden", marginBottom: 6 }}>
+        <div style={{
+          height: "100%", width: `${progress}%`,
+          background: `linear-gradient(90deg, ${color}, #60A5FA)`,
+          borderRadius: 6, transition: "width 0.4s linear",
+        }} />
+      </div>
+      <div style={{ fontSize: 13, color: "#374151", textAlign: "right" }}>
+        {idx} / {total}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FinalCountdown — 5-4-3-2-1
+// ═══════════════════════════════════════════════════════════════════════════════
+function FinalCountdown({ onComplete }) {
+  const [n, setN]           = useState(5);
+  const onCompleteRef       = useRef(onComplete);
+  onCompleteRef.current     = onComplete;
+
+  useEffect(() => {
+    let current = 5;
+    const t = setInterval(() => {
+      current--;
+      setN(current);
+      if (current <= 0) { clearInterval(t); setTimeout(() => onCompleteRef.current?.(), 400); }
+    }, 700);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div style={{ textAlign: "center", padding: "28px 0 20px" }}>
+      <div style={{
+        fontSize: 96, fontWeight: 800, lineHeight: 1,
+        color: n === 0 ? "#34D399" : "#F1F5F9",
+        letterSpacing: "-4px", fontVariantNumeric: "tabular-nums",
+        transition: "color 0.3s, transform 0.2s",
+        transform: "scale(1)",
+      }}>
+        {n === 0 ? "✓" : n}
+      </div>
+      <div style={{ fontSize: 16, color: "#64748B", marginTop: 10 }}>
+        {n === 0 ? "Report ready!" : "Generating your report…"}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ReportBot — the full bot experience
+// ═══════════════════════════════════════════════════════════════════════════════
+function ReportBot({ businessName, city, industry, reportMode, agencyBrand, onReady }) {
+  // phase: 0=intro bubbles, 1=signals countdown, 2=compile bubble, 3=compile countdown, 4=final bubble, 5=final countdown
+  const [phase, setPhase] = useState(0);
+
+  const advance = useCallback((to) => setPhase(to), []);
+
+  return (
+    <div style={{
+      background: "linear-gradient(180deg, #0A0718 0%, #0D0A1F 100%)",
+      border: "1px solid #A78BFA20", borderRadius: 14,
+      padding: "24px 20px", minHeight: 320,
+    }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, paddingBottom: 16, borderBottom: "1px solid #1E1040" }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: "50%",
+          background: "linear-gradient(135deg, #7C3AED, #A78BFA)",
+          display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18,
+        }}>🤖</div>
+        <div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#E2E8F0" }}>LocalRank AI</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#34D399" }} />
+            <span style={{ fontSize: 13, color: "#64748B" }}>Compiling report for {businessName || "your business"}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Phase 0 — Intro bubbles */}
+      {phase >= 0 && (
+        <BotBubble
+          text={`Hey! I'm pulling together every signal we track for ${businessName ? businessName : "your business"} in ${city || "your market"}.`}
+          delay={200}
+          onDone={() => advance(0.5)}
+        />
+      )}
+      {phase >= 0.5 && (
+        <BotBubble
+          text={`I'm scanning all ${SIGNALS.length} local SEO signals right now — let's count them down together.`}
+          delay={0}
+          onDone={() => advance(1)}
+        />
+      )}
+
+      {/* Phase 1 — 36-signal countdown */}
+      {phase >= 1 && (
+        <CountdownBlock
+          items={SIGNALS}
+          totalMs={22000}
+          color={MODULE_COLOR}
+          onComplete={() => advance(2)}
+        />
+      )}
+
+      {/* Phase 2 — "Now let's compile" bubble */}
+      {phase >= 2 && (
+        <BotBubble
+          text="All signals collected. Now let's compile this report."
+          delay={300}
+          onDone={() => advance(3)}
+        />
+      )}
+
+      {/* Phase 3 — Compile countdown */}
+      {phase >= 3 && (
+        <CountdownBlock
+          items={COMPILE_STEPS}
+          totalMs={10000}
+          color="#60A5FA"
+          onComplete={() => advance(4)}
+        />
+      )}
+
+      {/* Phase 4 — Final step bubble */}
+      {phase >= 4 && (
+        <BotBubble
+          text="This is the final step. Your report is being built right now."
+          delay={400}
+          onDone={() => advance(5)}
+        />
+      )}
+
+      {/* Phase 5 — 5-4-3-2-1 */}
+      {phase >= 5 && (
+        <FinalCountdown onComplete={onReady} />
+      )}
+
+      {/* Blink keyframe */}
+      <style>{`@keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0 } }`}</style>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Main module
+// ═══════════════════════════════════════════════════════════════════════════════
 export default function WhiteLabelReportGenerator({
   industry, city, businessName, websiteUrl, mode = "named", plan = "free",
   agencyName = "LocalRank Pro", agencyLogo = null
 }) {
-  const [reportMode, setReportMode] = useState(mode === "anonymous" ? "prospect" : "client");
-  const [generated,  setGenerated]  = useState(false);
-  const [copied,     setCopied]     = useState(false);
-  const [agencyBrand,setAgencyBrand]= useState(agencyName || "LocalRank Pro");
+  const [reportMode,  setReportMode]  = useState(mode === "anonymous" ? "prospect" : "client");
+  const [stage,       setStage]       = useState("idle");   // idle | bot | report
+  const [copied,      setCopied]      = useState(false);
+  const [agencyBrand, setAgencyBrand] = useState(agencyName || "LocalRank Pro");
 
   const totalIssues    = Object.values(DEMO_SCORES).reduce((a,b) => a + b.issues,   0);
   const criticalIssues = Object.values(DEMO_SCORES).reduce((a,b) => a + b.critical, 0);
@@ -66,6 +365,8 @@ export default function WhiteLabelReportGenerator({
 
   return (
     <div style={{ maxWidth: 640, fontFamily: "var(--font-sans)" }}>
+
+      {/* ── Controls ──────────────────────────────────────────────── */}
       <div style={{ background:"var(--color-background-secondary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:10, padding:"14px 16px", marginBottom:12 }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:12 }}>
           <div style={{ flex:1 }}>
@@ -73,7 +374,9 @@ export default function WhiteLabelReportGenerator({
               <span style={{ fontSize:9, fontWeight:500, color:MODULE_COLOR, background:MODULE_COLOR+"18", padding:"2px 6px", borderRadius:3 }}>{MODULE_TAG}</span>
               <span style={{ fontSize:13, fontWeight:500, color:"var(--color-text-primary)" }}>White Label Report Generator</span>
             </div>
-            <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:"0 0 10px", lineHeight:1.5 }}>Assembles all module findings into a branded, shareable report. Prospect mode for sales. Client mode for monthly reporting. Generates a shareable link and PDF download.</p>
+            <p style={{ fontSize:11, color:"var(--color-text-secondary)", margin:"0 0 10px", lineHeight:1.5 }}>
+              Assembles all module findings into a branded, shareable report. Prospect mode for sales. Client mode for monthly reporting.
+            </p>
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
               <div>
                 <div style={{ fontSize:9, color:"var(--color-text-secondary)", marginBottom:4 }}>Agency/Business name on report</div>
@@ -91,15 +394,31 @@ export default function WhiteLabelReportGenerator({
               </div>
             </div>
           </div>
-          <button onClick={() => setGenerated(true)} style={{ padding:"8px 14px", background:MODULE_COLOR, border:`0.5px solid ${MODULE_COLOR}`, borderRadius:6, color:"#fff", fontSize:12, fontWeight:500, cursor:"pointer", whiteSpace:"nowrap", flexShrink:0 }}>
-            {generated?"Regenerate →":"Generate Report →"}
+          <button
+            onClick={() => setStage("bot")}
+            disabled={stage === "bot"}
+            style={{ padding:"8px 14px", background: stage === "bot" ? MODULE_COLOR+"60" : MODULE_COLOR, border:`0.5px solid ${MODULE_COLOR}`, borderRadius:6, color:"#fff", fontSize:12, fontWeight:500, cursor: stage === "bot" ? "not-allowed" : "pointer", whiteSpace:"nowrap", flexShrink:0 }}
+          >
+            {stage === "report" ? "Regenerate →" : stage === "bot" ? "Running…" : "Generate Report →"}
           </button>
         </div>
       </div>
 
-      {generated && (
+      {/* ── Bot experience ────────────────────────────────────────── */}
+      {stage === "bot" && (
+        <ReportBot
+          businessName={businessName}
+          city={city}
+          industry={industry}
+          reportMode={reportMode}
+          agencyBrand={agencyBrand}
+          onReady={() => setStage("report")}
+        />
+      )}
+
+      {/* ── Report output ─────────────────────────────────────────── */}
+      {stage === "report" && (
         <div>
-          {/* Report preview */}
           <div style={{ border:`0.5px solid ${MODULE_COLOR}40`, borderRadius:12, overflow:"hidden", marginBottom:12 }}>
 
             {/* Report header */}
@@ -120,7 +439,7 @@ export default function WhiteLabelReportGenerator({
               </div>
               <div style={{ fontSize:11, color:"#94A3B8", lineHeight:1.6 }}>
                 {reportMode === "prospect"
-                  ? `This report analyzes ${totalIssues} SEO issues affecting ${reportMode==="prospect"?"your business's":"this business's"} local search visibility. ${criticalIssues} issues are critical and are actively costing calls and revenue right now.`
+                  ? `This report analyzes ${totalIssues} SEO issues affecting this business's local search visibility. ${criticalIssues} issues are critical and actively costing calls and revenue right now.`
                   : `This month's report covers all active optimizations, rankings movement, and fixes completed. ${criticalIssues} critical issues remain in the queue.`
                 }
               </div>
@@ -219,7 +538,8 @@ export default function WhiteLabelReportGenerator({
         </div>
       )}
 
-      {!generated && (
+      {/* ── Idle state ────────────────────────────────────────────── */}
+      {stage === "idle" && (
         <div style={{ textAlign:"center", padding:"36px 20px", background:"var(--color-background-secondary)", border:"0.5px solid var(--color-border-tertiary)", borderRadius:10, color:"var(--color-text-secondary)", fontSize:12 }}>
           Generates a branded shareable report — use Prospect mode to close sales, Client mode for monthly reporting
         </div>
