@@ -293,8 +293,8 @@ export default function Dashboard() {
             <div style={{ padding: "16px 16px 12px", borderBottom: "1px solid #1F2937", display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 30, height: 30, borderRadius: 8, background: "linear-gradient(135deg, #6366f1, #10D9A0)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#fff", flexShrink: 0 }}>LS</div>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#F9FAFB" }}>Local SEO &amp; AEO Pro</div>
-                <div style={{ fontSize: 10, color: "#6B7280" }}>{profile.business_name}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#F9FAFB" }}>Local SEO &amp; AEO Pro</div>
+                <div style={{ fontSize: 12, color: "#6B7280" }}>{profile.business_name}</div>
               </div>
             </div>
           )}
@@ -304,7 +304,7 @@ export default function Dashboard() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: wpPanelOpen ? 8 : 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <div style={{ width: 7, height: 7, borderRadius: "50%", background: wpConnected ? "#34D399" : "#F87171", flexShrink: 0 }} />
-                <span style={{ fontSize: 11, color: wpConnected ? "#34D399" : "#94A3B8" }}>
+                <span style={{ fontSize: 12, color: wpConnected ? "#34D399" : "#94A3B8" }}>
                   {wpConnected ? "WordPress connected" : "Connect WordPress"}
                 </span>
               </div>
@@ -345,7 +345,7 @@ export default function Dashboard() {
           <div style={{ flex: 1, padding: "8px 0" }}>
             {NAV.map(group => (
               <div key={group.group} style={{ marginBottom: 4 }}>
-                <div style={{ padding: "8px 16px 4px", fontSize: 10, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                <div style={{ padding: "8px 16px 4px", fontSize: 11, fontWeight: 700, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                   {group.group}
                 </div>
                 {group.modules.map(mod => {
@@ -363,7 +363,7 @@ export default function Dashboard() {
                       <span style={{ fontSize: 9, fontWeight: 700, color: active ? mod.color : "#6B7280", background: active ? mod.color + "22" : "#1F2937", padding: "2px 5px", borderRadius: 3, minWidth: 28, textAlign: "center", fontFamily: "monospace", flexShrink: 0 }}>
                         {mod.tag}
                       </span>
-                      <span style={{ fontSize: 12, color: active ? "#F9FAFB" : "#D1D5DB", lineHeight: 1.3, flex: 1 }}>
+                      <span style={{ fontSize: 13, color: active ? "#F9FAFB" : "#D1D5DB", lineHeight: 1.3, flex: 1 }}>
                         {mod.label}
                       </span>
                       {status && (
@@ -378,9 +378,9 @@ export default function Dashboard() {
 
           {/* Footer */}
           <div style={{ padding: "12px 16px", borderTop: "1px solid #1F2937" }}>
-            <div style={{ fontSize: 10, color: "#6B7280", marginBottom: 2 }}>{userEmail}</div>
-            <div style={{ fontSize: 10, color: "#6B7280", marginBottom: 8 }}>{profile.city} · {profile.website.replace(/^https?:\/\//, "")}</div>
-            <button onClick={signOut} style={{ fontSize: 11, color: "#9CA3AF", background: "none", border: "1px solid #374151", borderRadius: 6, padding: "5px 12px", cursor: "pointer", width: "100%" }}>
+            <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 2 }}>{userEmail}</div>
+            <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 8 }}>{profile.city} · {profile.website.replace(/^https?:\/\//, "")}</div>
+            <button onClick={signOut} style={{ fontSize: 13, color: "#9CA3AF", background: "none", border: "1px solid #374151", borderRadius: 6, padding: "6px 12px", cursor: "pointer", width: "100%" }}>
               Sign out
             </button>
           </div>
@@ -396,7 +396,7 @@ export default function Dashboard() {
                   <span style={{ fontSize: 10, fontWeight: 700, color: activeMeta.color, background: activeMeta.color + "22", padding: "3px 8px", borderRadius: 4, fontFamily: "monospace" }}>
                     {activeMeta.tag}
                   </span>
-                  <span style={{ fontSize: 15, fontWeight: 600, color: "#F9FAFB" }}>{activeMeta.label}</span>
+                  <span style={{ fontSize: 16, fontWeight: 600, color: "#F9FAFB" }}>{activeMeta.label}</span>
                 </>
               )}
             </div>

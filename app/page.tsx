@@ -71,24 +71,24 @@ export default function Home() {
     window.location.href = "/verify-email";
   }
 
-  const inp: React.CSSProperties = { width: "100%", padding: "10px 13px", background: "#0B0E16", border: "1px solid #1E293B", borderRadius: 7, color: "#F1F5F9", fontSize: 14, boxSizing: "border-box", outline: "none" };
-  const lbl: React.CSSProperties = { fontSize: 11, fontWeight: 600, color: "#94A3B8", display: "block", marginBottom: 4, textTransform: "uppercase", letterSpacing: "1px" };
-  const err: React.CSSProperties = { fontSize: 11, color: "#F87171", marginTop: 3 };
-  const row: React.CSSProperties = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 };
+  const inp: React.CSSProperties = { width: "100%", padding: "11px 14px", background: "#0B0E16", border: "1px solid #1E293B", borderRadius: 7, color: "#F1F5F9", fontSize: 16, boxSizing: "border-box", outline: "none" };
+  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: "#94A3B8", display: "block", marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.8px" };
+  const err: React.CSSProperties = { fontSize: 13, color: "#F87171", marginTop: 4 };
+  const row: React.CSSProperties = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 };
 
   return (
     <main style={{ background: "#0B0E16", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, sans-serif", padding: "20px" }}>
       <div style={{ maxWidth: 560, width: "100%" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "#10D9A0", letterSpacing: "2px", textTransform: "uppercase", marginBottom: 12 }}>AI Local SEO &amp; AEO Platform</div>
-          <h1 style={{ fontSize: 28, fontWeight: 800, color: "#F1F5F9", lineHeight: 1.2, margin: "0 0 10px", letterSpacing: "-0.02em" }}>The Most Powerful AI Local SEO &amp; AEO Platform</h1>
-          <p style={{ fontSize: 14, color: "#94A3B8", margin: 0, lineHeight: 1.6 }}>Analyzes 74 signals. 47 get fixed automatically. Access all 32 modules.</p>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#10D9A0", letterSpacing: "2px", textTransform: "uppercase", marginBottom: 14 }}>AI Local SEO &amp; AEO Platform</div>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: "#F1F5F9", lineHeight: 1.2, margin: "0 0 12px", letterSpacing: "-0.02em" }}>The Most Powerful AI Local SEO &amp; AEO Platform</h1>
+          <p style={{ fontSize: 17, color: "#94A3B8", margin: 0, lineHeight: 1.7 }}>Analyzes 74 signals. 47 get fixed automatically. Access all 36 modules.</p>
         </div>
 
         <div style={{ background: "#161B2E", border: "1px solid #1E293B", borderRadius: 12, padding: 28 }}>
 
           {/* Section: Account */}
-          <div style={{ fontSize: 10, fontWeight: 700, color: "#10D9A0", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 14, paddingBottom: 8, borderBottom: "1px solid #1E293B" }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#10D9A0", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: 14, paddingBottom: 8, borderBottom: "1px solid #1E293B" }}>
             Your Account
           </div>
 
@@ -113,7 +113,7 @@ export default function Home() {
             </div>
 
             {/* Section: Business */}
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#10D9A0", letterSpacing: "1.5px", textTransform: "uppercase", margin: "20px 0 14px", paddingBottom: 8, borderBottom: "1px solid #1E293B" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#10D9A0", letterSpacing: "1.5px", textTransform: "uppercase", margin: "22px 0 14px", paddingBottom: 8, borderBottom: "1px solid #1E293B" }}>
               Your Business
             </div>
 
@@ -163,13 +163,13 @@ export default function Home() {
               </div>
             )}
 
-            <button type="submit" disabled={submitting} style={{ width: "100%", padding: 14, background: submitting ? "#0B3D2E" : "#10D9A0", border: "none", borderRadius: 8, color: submitting ? "#10D9A0" : "#0B0E16", fontSize: 15, fontWeight: 700, cursor: submitting ? "not-allowed" : "pointer" }}>
+            <button type="submit" disabled={submitting} style={{ width: "100%", padding: 15, background: submitting ? "#0B3D2E" : "#10D9A0", border: "none", borderRadius: 8, color: submitting ? "#10D9A0" : "#0B0E16", fontSize: 16, fontWeight: 700, cursor: submitting ? "not-allowed" : "pointer" }}>
               {submitting ? "Creating your account…" : "Run My Free SEO Audit →"}
             </button>
           </form>
         </div>
 
-        <div style={{ textAlign: "center", marginTop: 16, fontSize: 13, color: "#64748B" }}>
+        <div style={{ textAlign: "center", marginTop: 18, fontSize: 16, color: "#64748B" }}>
           Already have an account?{" "}
           <a href="/login" style={{ color: "#10D9A0", textDecoration: "none" }}>Log in →</a>
         </div>
