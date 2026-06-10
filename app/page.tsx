@@ -24,8 +24,8 @@ export default function Home() {
           position: "absolute",
           bottom: 0, left: 0, right: 0,
           height: "100%",
-          backgroundImage: "url('https://images.unsplash.com/photo-1675906798386-a9ed241c7ed2?w=1600&q=80')",
-          backgroundSize: "150%",
+          backgroundImage: "url('/arch.jpg')",
+          backgroundSize: "cover",
           backgroundPosition: "center top",
           backgroundRepeat: "no-repeat",
         }} />
