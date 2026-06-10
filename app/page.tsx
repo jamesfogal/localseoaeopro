@@ -45,9 +45,9 @@ export default function Home() {
 
         {/* ── Content — floats between the arch legs ── */}
         <div style={{
-          maxWidth: 560, width: "100%", textAlign: "center",
+          maxWidth: 420, width: "100%", textAlign: "center",
           position: "relative", zIndex: 10,
-          padding: "24px 24px 200px",  // sits down between the arch legs
+          padding: "24px 24px 160px",  // sits down between the arch legs
         }}>
 
           {/* ── Billboard / H1 ── */}
