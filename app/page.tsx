@@ -25,8 +25,8 @@ export default function Home() {
           bottom: 0, left: 0, right: 0,
           height: "100%",
           backgroundImage: "url('/arch.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
+          backgroundSize: "100% 100%",
+          backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
         }} />
 
