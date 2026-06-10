@@ -13,7 +13,7 @@ export default function Home() {
       <main style={{
         minHeight: "100vh",
         display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "flex-end",
+        alignItems: "center", justifyContent: "center",
         fontFamily: "system-ui, sans-serif",
         position: "relative", overflow: "hidden",
         background: "#060D1C",
@@ -25,8 +25,8 @@ export default function Home() {
           bottom: 0, left: 0, right: 0,
           height: "100%",
           backgroundImage: "url('https://images.unsplash.com/photo-1675906798386-a9ed241c7ed2?w=1600&q=80')",
-          backgroundSize: "180%",
-          backgroundPosition: "center 20%",
+          backgroundSize: "cover",
+          backgroundPosition: "center bottom",
           backgroundRepeat: "no-repeat",
         }} />
 
@@ -47,7 +47,7 @@ export default function Home() {
         <div style={{
           maxWidth: 420, width: "100%", textAlign: "center",
           position: "relative", zIndex: 10,
-          padding: "24px 24px 160px",  // sits down between the arch legs
+          padding: "24px 24px 24px",
         }}>
 
           {/* ── Billboard / H1 ── */}
