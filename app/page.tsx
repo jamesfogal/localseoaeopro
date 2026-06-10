@@ -28,26 +28,26 @@ export default function Home() {
 
         <div style={{ maxWidth: 560, width: "100%", textAlign: "center", position: "relative" }}>
 
-          {/* ── Billboard ────────────────────────────────────────── */}
-          <div style={{
+          {/* ── Billboard / H1 ───────────────────────────────────── */}
+          <h1 style={{
             fontSize: "clamp(40px, 10vw, 64px)",
             fontWeight: 900, letterSpacing: "-2.5px",
-            lineHeight: 1, marginBottom: 20,
+            lineHeight: 1, marginBottom: 20, margin: "0 0 20px",
           }}>
             <span style={{ color: "#10D9A0" }}>LocalSEO</span>
             <span style={{ color: "#F1F5F9" }}>AEO</span>
             <span style={{ color: "#A78BFA" }}>Pro</span>
-          </div>
+          </h1>
 
-          {/* ── Headline ─────────────────────────────────────────── */}
-          <h1 style={{
+          {/* ── Subheading ───────────────────────────────────────── */}
+          <h2 style={{
             fontSize: "clamp(20px, 3.5vw, 26px)",
             fontWeight: 800, color: "#F1F5F9",
             lineHeight: 1.3, margin: "0 0 16px",
             letterSpacing: "-0.01em",
           }}>
             Free Local SEO Audit
-          </h1>
+          </h2>
 
           {/* ── Value prop ───────────────────────────────────────── */}
           <p style={{ fontSize: 18, color: "#94A3B8", margin: "0 0 10px", lineHeight: 1.7 }}>
