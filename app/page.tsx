@@ -119,7 +119,7 @@ export default function Home() {
                   <div style={{ fontSize: 16, color: "#F1F5F9", fontWeight: 600 }}>
                     📱 Text me the link <span style={{ fontSize: 13, color: "#10D9A0", fontWeight: 700 }}>— Recommended</span>
                   </div>
-                  <div style={{ fontSize: 14, color: "#64748B" }}>98% open rate — you'll have it in seconds</div>
+                  <div style={{ fontSize: 14, color: "#64748B" }}>98% open rate — you&apos;ll have it in seconds</div>
                 </div>
               </label>
 
