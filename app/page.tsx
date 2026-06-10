@@ -16,7 +16,7 @@ export default function Home() {
         alignItems: "center", justifyContent: "flex-end",
         fontFamily: "system-ui, sans-serif",
         position: "relative", overflow: "hidden",
-        background: "#0B0E16",
+        background: "#060D1C",
       }}>
 
         {/* ── St. Louis Arch — bottom of page, corner to corner ── */}
@@ -24,16 +24,16 @@ export default function Home() {
           position: "absolute",
           bottom: 0, left: 0, right: 0,
           height: "100%",
-          backgroundImage: "url('https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?w=1600&q=80')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1675906798386-a9ed241c7ed2?w=1600&q=80')",
           backgroundSize: "cover",
-          backgroundPosition: "bottom center",
+          backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
         }} />
 
         {/* Dark overlay — heavy at top, lighter at bottom so arch shows */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(180deg, #0B0E16 0%, #0B0E16EE 25%, #0B0E16AA 55%, #0B0E1655 80%, #0B0E1622 100%)",
+          background: "linear-gradient(180deg, #060D1C99 0%, #060D1C88 30%, #060D1C55 60%, #060D1C33 80%, #060D1C11 100%)",
         }} />
 
         {/* Subtle grid on top */}
