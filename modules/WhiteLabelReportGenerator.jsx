@@ -66,6 +66,20 @@ const SIGNALS = [
   "Redirect chain detector",
 ];
 
+// ── Attention-grabbing flash messages (fire throughout the bot phase) ─────────
+const FLASH_MESSAGES = [
+  "🔥 This is going to be a huge report.",
+  "👀 We're finding things most tools completely miss.",
+  "📊 Your competitors don't know we're doing this.",
+  "💡 Some of these findings are going to surprise you.",
+  "🕵️ We're checking signals your last agency never looked at.",
+  "⚡ This data takes most agencies a week to pull manually.",
+  "🎯 We just found something in your GBP that needs attention.",
+  "🚨 Three critical issues identified so far — and counting.",
+  "🔍 Digging deeper than any free tool can go.",
+  "💰 Every second of this scan is protecting your revenue.",
+];
+
 // ── Phase 2 — compile checks ──────────────────────────────────────────────────
 const COMPILE_STEPS = [
   "Scoring on-page signals",
@@ -132,6 +146,64 @@ function BotBubble({ text, delay = 0, onDone }) {
           <span style={{ display: "inline-block", width: 2, height: 14, background: "#A78BFA", marginLeft: 2, verticalAlign: "middle", animation: "blink 0.7s infinite" }} />
         )}
       </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FlashMessage — rotating attention-grabbers that fire during the bot phase
+// ═══════════════════════════════════════════════════════════════════════════════
+function FlashMessage({ startDelay = 3000 }) {
+  const [msgIdx,   setMsgIdx]   = useState(-1);   // -1 = not yet started
+  const [visible,  setVisible]  = useState(false);
+
+  useEffect(() => {
+    // Shuffle messages for variety each run
+    const shuffled = [...FLASH_MESSAGES].sort(() => Math.random() - 0.5);
+    let current = 0;
+
+    const show = () => {
+      setMsgIdx(current % shuffled.length);
+      setVisible(true);
+
+      // Fade out after 2.6s, then wait 1.4s, then show next
+      const fadeOut = setTimeout(() => setVisible(false), 2600);
+      const next    = setTimeout(() => {
+        current++;
+        show();
+      }, 4200);
+
+      return () => { clearTimeout(fadeOut); clearTimeout(next); };
+    };
+
+    const start = setTimeout(show, startDelay);
+    return () => clearTimeout(start);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (msgIdx < 0) return null;
+
+  const msg = [...FLASH_MESSAGES].sort(() => 0)[msgIdx % FLASH_MESSAGES.length];
+
+  return (
+    <div style={{
+      padding: "10px 16px",
+      background: "linear-gradient(90deg, #1A1040, #12102A)",
+      border: "1px solid #A78BFA25",
+      borderLeft: "3px solid #A78BFA",
+      borderRadius: 8,
+      marginBottom: 12,
+      fontSize: 16,
+      color: "#C4B5FD",
+      fontWeight: 600,
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(-4px)",
+      transition: "opacity 0.4s ease, transform 0.4s ease",
+      minHeight: 44,
+      display: "flex",
+      alignItems: "center",
+    }}>
+      {FLASH_MESSAGES[msgIdx % FLASH_MESSAGES.length]}
     </div>
   );
 }
@@ -277,6 +349,9 @@ function ReportBot({ businessName, city, industry, reportMode, agencyBrand, onRe
           </div>
         </div>
       </div>
+
+      {/* Flash messages — run the entire time the bot is active */}
+      <FlashMessage startDelay={3500} />
 
       {/* Phase 0 — Intro bubbles */}
       {phase >= 0 && (
