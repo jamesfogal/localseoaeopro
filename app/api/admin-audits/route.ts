@@ -12,9 +12,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Missing NEXT_PUBLIC_SUPABASE_URL" }, { status: 500 });
   }
 
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceKey = process.env.SUPABASE_SECRET_KEY;
   if (!serviceKey) {
-    return NextResponse.json({ ok: false, error: "Missing SUPABASE_SERVICE_ROLE_KEY" }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Missing SUPABASE_SECRET_KEY" }, { status: 500 });
   }
 
   try {
